@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --charcoal: #26272b;
+  --charcoal-transparent: #26272BFA;
+  --charcoal-light: #403C44; /* non opaque version */
+  --egg: #EDE5DB;
+  --ruby: #E73742;
+  --ash: #948F8B;
+  --ashy-egg: #DAD2CC;
+  --snow: #F2F2F2;
+}
+
+.markdown-content a {
+  @apply text-blue-500 hover:text-blue-700 underline;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--ruby); /* Scrollbar thumb color */
+  border-radius: 10px;
+  border: 2px solid transparent; /* Padding around the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--snow);
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+::selection{
+  background: var(--ruby);
+}
+
+.react-multi-carousel-list{
+  position: relative !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Removes the default number input arrows (spinners) */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.custom-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
