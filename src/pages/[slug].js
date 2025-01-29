@@ -199,7 +199,7 @@ export default function Resource({ resource }) {
           justify-content: space-between;
           align-items: flex-start;
           width: 100vw;
-          height: 100vh;
+          min-height: 100vh;
           // background-color: #f9f9f9;
           font-family: "Noto Sans", sans-serif;
         }

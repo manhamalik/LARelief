@@ -1,6 +1,15 @@
 import { Client } from "pg";
 
 export default async function handler(req, res) {
+    // Log environment variables to verify they're loaded
+    console.log('Environment Variables:', {
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASS,
+        port: process.env.DB_PORT,
+    });
+    
     const { slug } = req.query;
 
     if (req.method !== "GET") {
@@ -14,7 +23,10 @@ export default async function handler(req, res) {
         database: process.env.DB_NAME,
         password: process.env.DB_PASS,
         port: process.env.DB_PORT,
-    });
+        ssl: {
+            rejectUnauthorized: false, // Required for Render-hosted databases
+        },
+    });    
 
     try {
         await client.connect();

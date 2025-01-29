@@ -12,7 +12,10 @@ export default async function handler(req, res) {
         database: process.env.DB_NAME,
         password: process.env.DB_PASS,
         port: process.env.DB_PORT,
-    });
+        ssl: {
+            rejectUnauthorized: false, // Required for Render-hosted databases
+        },
+    });   
 
     try {
         await client.connect();
