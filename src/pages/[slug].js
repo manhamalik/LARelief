@@ -102,22 +102,26 @@ const resources = [
   },
 ];
 
-export async function getServerSideProps({ params }) {
-    const res = await fetch(`http://localhost:3000/api/resources?slug=${params.slug}`);
-    const resourceData = await res.json();
-  
-    if (!resourceData || resourceData.error) {
+export async function getServerSideProps({ params, req }) {
+  const baseUrl = process.env.NODE_ENV === "production"
+      ? `https://${req.headers.host}`
+      : "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/resources?slug=${params.slug}`);
+  const resourceData = await res.json();
+
+  if (!resourceData || resourceData.error) {
       return {
-        notFound: true,
+          notFound: true,
       };
-    }
-  
-    return {
+  }
+
+  return {
       props: {
-        resource: resourceData,
+          resource: resourceData,
       },
-    };
-  }  
+  };
+}
 
 export default function Resource({ resource }) {
   console.log("Resource prop:", resource);
