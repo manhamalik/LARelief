@@ -17,13 +17,16 @@ import {
   faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import resources from "@/data/resources";
+import ClusteredMarkers from "@/components/ClusteredMarkers";
 
-// Dynamically import Leaflet components
+// Dynamically import react-leaflet components
 const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
-const ClusteredMarkers = dynamic(() => import("@/components/ClusteredMarkers"), { ssr: false });
+const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
 
 let L;
+
 if (typeof window !== "undefined") {
   L = require("leaflet");
 }
@@ -44,28 +47,22 @@ const iconConfig = {
 };
 
 const createCustomIcon = (types) => {
-  if (typeof window === "undefined" || !L) return null; // Guard for SSR
+  const colors = types.map((type) => iconConfig[type]?.color || "#000");
+  const icons = types.map((type) => iconConfig[type]?.icon || "fa-circle");
 
-  const icons = types.map((type) => ({
-    color: iconConfig[type]?.color || "#000",
-    iconClass: iconConfig[type]?.icon.replace("fa-solid ", "") || "fa-circle",
-  }));
-
-  // Generate HTML for the marker with Font Awesome icons
+  // Generate HTML for stacked or inline icons
   const iconHTML = icons
     .map(
-      (icon) =>
-        `<i class="fa ${icon.iconClass}" style="color: ${icon.color}; font-size: 18px; margin-right: 4px;"></i>`
+      (icon, index) =>
+        `<i class="${icon}" style="color: ${colors[index]}; font-size: 16px; margin-right: 2px;"></i>`
     )
     .join("");
 
   return L.divIcon({
-    html: `<div style="display: flex; align-items: center; justify-content: center;">
-              ${iconHTML}
-           </div>`,
-    className: "custom-div-icon", // Optional CSS class for further styling
-    iconSize: [30, 30], // Size of the marker
-    iconAnchor: [15, 30], // Anchor point for positioning
+    html: `<div style="display: flex; align-items: center;">${iconHTML}</div>`,
+    className: "custom-div-icon",
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
   });
 };
 
@@ -109,9 +106,14 @@ export default function MapPage() {
     },
   ];
 
+  const [isClient, setIsClient] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [selectedResource, setSelectedResource] = useState(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category === selectedCategory ? null : category);
@@ -139,6 +141,10 @@ export default function MapPage() {
 
     return resource.mainCategory === selectedCategory;
   });
+
+  if (!isClient) {
+    return null; // Prevent SSR-related errors
+  }
 
   return (
     <div className="relative">
@@ -213,6 +219,7 @@ export default function MapPage() {
                 createCustomIcon={createCustomIcon}
                 handleMarkerClick={handleMarkerClick}
               />
+
             </MapContainer>
 
             {/* Selected Resource Card */}
