@@ -82,8 +82,13 @@ const resources = [
   },
 ];
 
-export async function getServerSideProps({ params }) {
-  const res = await fetch(`http://localhost:3000/api/donations?slug=${params.slug}`);
+export async function getServerSideProps({ params, req }) {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? `https://${req.headers.host}`
+      : "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/donations?slug=${params.slug}`);
   const donation = await res.json();
 
   if (!donation || donation.error) {
