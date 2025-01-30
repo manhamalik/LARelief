@@ -9,7 +9,7 @@ export default async function handler(req, res) {
         password: process.env.DB_PASS,
         port: process.env.DB_PORT,
     });
-    
+
     const { slug } = req.query;
 
     if (req.method !== "GET") {
@@ -26,10 +26,12 @@ export default async function handler(req, res) {
         ssl: {
             rejectUnauthorized: false, // Required for Render-hosted databases
         },
-    });    
+    });
 
     try {
+        console.log("Connecting to the database...");
         await client.connect();
+        console.log("Database connected successfully");
 
         const query = `
             SELECT r.*, 
@@ -43,20 +45,30 @@ export default async function handler(req, res) {
             LEFT JOIN resource_types t ON rt.type_id = t.id
             WHERE r.slug = $1
             GROUP BY r.id
-            `;
+        `;
 
         const values = [slug];
+        console.log("Executing query:", query, "with values:", values);
+
         const result = await client.query(query, values);
+        console.log("Query executed successfully. Result:", result.rows);
 
         if (result.rows.length === 0) {
+            console.log("Resource not found for slug:", slug);
             res.status(404).json({ error: "Resource not found" });
         } else {
+            console.log("Resource found:", result.rows[0]);
             res.status(200).json(result.rows[0]);
         }
     } catch (error) {
-        console.error("Database query error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Database query error:", error.message);
+        res.status(500).json({
+            error: "Internal Server Error",
+            details: error.message,
+        });
     } finally {
+        console.log("Closing database connection...");
         await client.end();
+        console.log("Database connection closed.");
     }
 }

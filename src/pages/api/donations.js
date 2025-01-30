@@ -14,16 +14,22 @@ export default async function handler(req, res) {
     console.log('DB_NAME:', process.env.DB_NAME);
     console.log('DB_PORT:', process.env.DB_PORT);
 
+    const { Client } = require('pg');
+
     const client = new Client({
         user: process.env.DB_USER,
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         password: process.env.DB_PASS,
         port: process.env.DB_PORT,
-        ssl: {
-            rejectUnauthorized: false, // Required for Render
-        },
-    });   
+        ssl: { rejectUnauthorized: false },
+    });
+    
+    client.connect()
+        .then(() => console.log("Connected to the database!"))
+        .catch((err) => console.error("Database connection error:", err))
+        .finally(() => client.end());
+     
 
     try {
         await client.connect();
