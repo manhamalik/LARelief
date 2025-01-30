@@ -143,7 +143,15 @@ const Search = () => {
 
 
   return (
-    <div style={{ backgroundColor: "#183917", minHeight: "100vh" }}>
+    <div
+  style={{
+    backgroundColor: "#183917",
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
       <Head>
         <title>LA Relief - Discover Aid Near You</title>
         <meta
@@ -162,7 +170,7 @@ const Search = () => {
       </Head>
 
       {/* Header */}
-      <div className="pl-10 pr-10 pt-10 pb-8 select-none">
+      <div className="px-8 pt-8 select-none">
         <div
           className="heading-container max-w-7xl flex flex-col md:flex-row
           md:items-baseline
@@ -314,8 +322,7 @@ const Search = () => {
           )}
         </div>
         <div
-          className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-start 
-          border-2"
+          className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]"
         >
           {essentialsResources.slice(0, visibleResources).map((resource) => (
           <ResourceCard key={resource.id} resource={resource} />
@@ -351,7 +358,7 @@ const Search = () => {
             mainCategory="Shelter & Support Services"
           />
         </div>
-        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 justify-center">
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
           {shelterResources.slice(0, visibleResources).map((resource) => (
             <ResourceCard key={resource.id} resource={resource} />
           ))}
@@ -380,7 +387,7 @@ const Search = () => {
             mainCategory="Medical & Health"
           />
         </div>
-        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-center">
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
           {medicalResources.slice(0, visibleResources).map((resource) => (
             <ResourceCard key={resource.id} resource={resource} />
           ))}
@@ -409,7 +416,7 @@ const Search = () => {
             mainCategory="Animal Support"
           />
         </div>
-        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-center">
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
           {animalResources.slice(0, visibleResources).map((resource) => (
             <ResourceCard key={resource.id} resource={resource} />
           ))}
