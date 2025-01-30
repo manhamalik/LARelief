@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -9,40 +9,175 @@ import { Link } from "react-scroll";
 import { scroller } from "react-scroll";
 import { Link as ScrollLink } from "react-scroll";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {
+  faMagnifyingGlass,
+  faArrowDown,
+  faCalendar,
+  faCalendarAlt,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
+import "@fontsource/potta-one";
+import CategoryButtons from "@/components/CategoryButtons";
+import { filterResources } from "../components/filter";
 
 export default function Home() {
-	const resources = [
-		{
-		  title: "Union Station Homeless Services",
-		  address: "412 S. Raymond Avenue, Pasadena, CA",
-		  date: "Feb 3, 2025",
-		  time: "8:30AM - 5:00PM",
-		  image: "/images/resource-1.jpg",
-		},
-		{
-		  title: "La Puente Food Distribution",
-		  address: "1720 N. Walnut Ave, La Puente, CA",
-		  date: "Feb 11, 2025",
-		  time: "3:00PM - 6:00PM",
-		  image: "/images/resource-2.jpg",
-		},
-		{
-		  title: "Compassion Connection",
-		  address: "1711 N Van Ness Ave, Hollywood, CA",
-		  date: "Feb 4, 2025",
-		  time: "9:30AM - 3:00PM",
-		  image: "/images/resource-3.jpg",
-		},
-		{
-		  title: "Food Pantry Distribution",
-		  address: "4368 Santa Anita Ave, El Monte, CA",
-		  date: "Feb 4, 2025",
-		  time: "9:00AM - 12:00PM",
-		  image: "/images/resource-4.jpg",
-		},
-	  ];
+  const [resources, setResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+  const [visibleResources, setVisibleResources] = useState(4);
+
+  const handleSearch = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategories((prevSelectedCategories) =>
+      prevSelectedCategories.includes(category)
+        ? prevSelectedCategories.filter((c) => c !== category)
+        : [...prevSelectedCategories, category]
+    );
+    setVisibleResources(4); // Reset visible resources to initial value
+  };
+
+  const handleSubCategoryClick = (mainCategory, subCategory) => {
+    setSelectedSubCategories((prevSelectedSubCategories) => {
+      const subCategoriesForCategory =
+        prevSelectedSubCategories[mainCategory] || [];
+      const updatedSubCategories = subCategoriesForCategory.includes(
+        subCategory
+      )
+        ? subCategoriesForCategory.filter((sc) => sc !== subCategory) // Remove if clicked again
+        : [...subCategoriesForCategory, subCategory]; // Add if not already selected
+      return {
+        ...prevSelectedSubCategories,
+        [mainCategory]: updatedSubCategories,
+      };
+    });
+
+    setVisibleResources(4); // Reset visible resources to initial value
+  };
+
+  const clearDateSelection = () => {
+    setStartDate(null);
+    setEndDate(null);
+  };
+
+  useEffect(() => {
+    console.log("Filtered resources:", filterResources);
+
+    const fetchResources = async () => {
+      try {
+        const response = await fetch("/api/resource-list");
+        const data = await response.json();
+        setResources(data);
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchResources();
+  }, []);
+  
+  const filterResourcesByCategory = (mainCategory) => {
+    if (!resources || resources.length === 0) return [];
+    return filterResources(
+      resources,
+      mainCategory,
+      selectedSubCategories[mainCategory] || [],
+      searchInput,
+      startDate,
+      endDate
+    ).slice(0, visibleResources);
+  };
+  
+  
+  
+
+  const handleShowMore = () => {
+    setVisibleResources((prevVisibleResources) => prevVisibleResources + 12);
+  };
+
+  const numberOfRows = Math.ceil(visibleResources / 4);
+
+  const essentialsResources = filterResources(
+    resources,
+    "Essentials",
+    selectedSubCategories["Essentials"] || [],
+    searchInput,
+    startDate,
+    endDate
+  ).slice(0, visibleResources);
+  
+  const shelterResources = filterResources(
+    resources,
+    "Shelter & Support Services",
+    selectedSubCategories["Shelter & Support Services"] || [],
+    searchInput,
+    startDate,
+    endDate
+  ).slice(0, visibleResources);
+  
+  const medicalResources = filterResources(
+    resources,
+    "Medical & Health",
+    selectedSubCategories["Medical & Health"] || [],
+    searchInput,
+    startDate,
+    endDate
+  ).slice(0, visibleResources);
+  
+  const animalResources = filterResources(
+    resources,
+    "Animal Support",
+    selectedSubCategories["Animal Support"] || [],
+    searchInput,
+    startDate,
+    endDate
+  ).slice(0, visibleResources);
+  
+  
+  if (loading) return <p>Loading resources...</p>;
+  if (!resources || resources.length === 0) return <p>No resources available.</p>;
+
+	// const resources = [
+	// 	{
+	// 	  title: "Union Station Homeless Services",
+	// 	  address: "412 S. Raymond Avenue, Pasadena, CA",
+	// 	  date: "Feb 3, 2025",
+	// 	  time: "8:30AM - 5:00PM",
+	// 	  image: "/images/resource-1.jpg",
+	// 	},
+	// 	{
+	// 	  title: "La Puente Food Distribution",
+	// 	  address: "1720 N. Walnut Ave, La Puente, CA",
+	// 	  date: "Feb 11, 2025",
+	// 	  time: "3:00PM - 6:00PM",
+	// 	  image: "/images/resource-2.jpg",
+	// 	},
+	// 	{
+	// 	  title: "Compassion Connection",
+	// 	  address: "1711 N Van Ness Ave, Hollywood, CA",
+	// 	  date: "Feb 4, 2025",
+	// 	  time: "9:30AM - 3:00PM",
+	// 	  image: "/images/resource-3.jpg",
+	// 	},
+	// 	{
+	// 	  title: "Food Pantry Distribution",
+	// 	  address: "4368 Santa Anita Ave, El Monte, CA",
+	// 	  date: "Feb 4, 2025",
+	// 	  time: "9:00AM - 12:00PM",
+	// 	  image: "/images/resource-4.jpg",
+	// 	},
+	//   ];
 
     const deduplicateResources = (resources) => {
       return Array.from(new Map(resources.map((r) => [r.id, r])).values());
@@ -123,8 +258,7 @@ export default function Home() {
 
       {/* Mission Section */}
 <section section id="mission" className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden">
-{/* <section id="resources" className="py-16" style={{ backgroundColor: "#183917" }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8"> */}
+  <div>
 {/* lighter green square with drop shadow */}
 <div
   className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
@@ -153,7 +287,6 @@ export default function Home() {
 >
   OUR MISSION
 </h2>
-
 
 	{/* Paragraph */}
 	<p
@@ -191,7 +324,6 @@ export default function Home() {
 >
   EXPLORE RESOURCES
 </button>
-
 
 <button
   className="bg-transparent border-2 border-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-green-900 transition-all duration-300"
@@ -244,8 +376,8 @@ export default function Home() {
 	</div>
   </div>
 </div>
-{/* Scroll Arrow Component */}
 <ScrollArrow to="map" />
+</div>
 </section>
 
 {/* Map Section */}
@@ -334,72 +466,290 @@ export default function Home() {
 </section>
 
 {/* Resources Section */}
-<section id="resources" className="py-16" style={{ backgroundColor: "#183917" }}>
-  <div className="w-[100vw] mx-auto px-4 md:px-8">
-    {/* Section Header */}
-    <h2
-      className="text-center text-white mb-12"
-      style={{
-        fontFamily: "'Noto Sans', sans-serif",
-        fontWeight: "900",
-        fontSize: "64px",
-        textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-      }}
-    >
-      SEARCH FOR RESOURCES
-    </h2>
-
-    {/* Categories */}
-    <div className="flex flex-wrap justify-center gap-4 mb-12">
-      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-        Food & Water
-      </button>
-      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-        Clothing & Personal Items
-      </button>
-      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-        Hygiene & Sanitation
-      </button>
-      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-        Financial Support
-      </button>
-    </div>
-
-{/* Resource Cards */}
-<div
-  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full"
+<section id="resources">
+    <div
   style={{
-    outline: "2px dashed red",
-    gridAutoRows: "minmax(200px, auto)",
+    backgroundColor: "#183917",
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   }}
 >
-  {deduplicateResources(resources).map((resource, index) => (
-    <div
-      key={resource.id || index}
-      style={{
-        backgroundColor: "lightblue",
-        outline: "1px solid blue",
-        height: "auto", // Set to auto or specific height for debugging
-      }}
-    >
-      <ResourceCard resource={resource} />
+
+      {/* Header */}
+      <div className="px-8 pt-8 select-none">
+        <div
+          className="heading-container max-w-7xl flex flex-col md:flex-row
+          md:items-baseline
+          gap-6"
+        >
+           <div className="max-w-2xl">
+            {/* Section Header */}
+            <h2 className="relative text-center">
+            {/* Stroke/Outline Layer */}
+            <span
+              className="absolute inset-0 text-center"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "900",
+                fontSize: "5.5rem",
+                top: "-0.25rem",
+                left: "-0.75rem",
+                color: "transparent",
+                WebkitTextStroke: "1px #ffffff",
+              }}
+            >
+              SEARCH FOR
+            </span>
+
+            {/* Main Filled Layer */}
+            <span
+              className="relative text-white"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "900",
+                fontSize: "5.5rem",
+                textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+              }}
+            >
+              SEARCH FOR
+            </span>
+          </h2>
+          </div>
+          <div
+            className="search-container relative"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontSize: "16px",
+              fontWeight: "700",
+            }}
+          >
+            {/* Search and Date Filter */}
+            <div className="flex items-center gap-4">
+              <div className="search-filter-containers relative flex items-center">
+                <input
+                  type="text"
+                  placeholder="Name of Organization"
+                  onChange={handleSearch}
+                  value={searchInput}
+                  className="rounded-full py-2 px-6"
+                />
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass}
+                  style={{
+                    color: "#AAAAAA",
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    height: "15px",
+                    transform: "translateY(-50%)",
+                  }}
+                />
+              </div>
+              <div className="date-picker-container relative flex gap-4 items-center">
+                <div>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(dates) => {
+                      const [start, end] = dates;
+                      setStartDate(start);
+                      setEndDate(end);
+                    }}
+                    startDate={startDate}
+                    endDate={endDate}
+                    selectsRange
+                    placeholderText="Date"
+                    className="rounded-full w-60 h-10 text-center pr-4"
+                  />
+                  <FontAwesomeIcon
+                    icon={faCalendarAlt}
+                    style={{
+                      color: "#71767B",
+                      position: "absolute",
+                      height: "20px",
+                      top: "20%",
+                      right: "12px",
+                    }}
+                  />
+                </div>
+              </div>
+              {startDate && endDate && (
+                <button
+                  onClick={clearDateSelection}
+                  className="bg-white text-black font-bold py-2 px-4 rounded-full"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Essentials Category */}
+        <div className="flex flex-wrap gap-4 mt-0 items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h2
+              className="text-xl font-bold"
+              style={{
+                fontFamily: "'Potta One', normal",
+                fontSize: "50px",
+                color: "#ffffff",
+                marginTop: "15px",
+                marginBottom: "20px",
+              }}
+            >
+              Essentials
+            </h2>
+            <CategoryButtons
+              categories={[
+                "Food & Water",
+                "Clothing & Personal Items",
+                "Hygiene & Sanitation",
+                "Financial Assistance",
+              ]}
+              selectedCategories={selectedSubCategories["Essentials"] || []}
+              handleCategoryClick={(subCategory) =>
+                handleSubCategoryClick("Essentials", subCategory)
+              }
+              mainCategory="Essentials"
+            />
+          </div>
+          {visibleResources < essentialsResources.length && (
+            <button
+              onClick={handleShowMore}
+              className="bg-white text-black font-bold py-1.5 px-4 rounded-full mt-3 flex flex-wrap gap-1 items-center"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                position: "flex",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronDown} width="16px" />
+              <span>Show More</span>
+            </button>
+          )}
+        </div>
+        <div
+          className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]"
+        >
+          {essentialsResources.slice(0, visibleResources).map((resource) => (
+          <ResourceCard key={resource.id} resource={resource} />
+        ))}
+        </div>
+
+        {/* Shelter & Support Services Category */}
+        <div className="flex flex-wrap gap-4 mt-4 items-center">
+          <h2
+            className="text-xl font-bold"
+            style={{
+              fontFamily: "'Potta One', normal",
+              fontSize: "50px",
+              color: "#ffffff",
+              marginTop: "15px",
+              marginBottom: "20px",
+            }}
+          >
+            Shelter & Support Services
+          </h2>
+          <CategoryButtons
+            categories={[
+              "Shelters & Housing Assistance",
+              "Transportation Assistance",
+              "Legal Aid",
+            ]}
+            selectedCategories={
+              selectedSubCategories["Shelter & Support Services"] || []
+            }
+            handleCategoryClick={(subCategory) =>
+              handleSubCategoryClick("Shelter & Support Services", subCategory)
+            }
+            mainCategory="Shelter & Support Services"
+          />
+        </div>
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+          {shelterResources.slice(0, visibleResources).map((resource) => (
+            <ResourceCard key={resource.id} resource={resource} />
+          ))}
+        </div>
+
+        {/* Medical & Health Category */}
+        <div className="flex flex-wrap gap-4 mt-4 items-center ">
+          <h2
+            className="text-xl font-bold"
+            style={{
+              fontFamily: "'Potta One', normal",
+              fontSize: "50px",
+              color: "#ffffff",
+              marginTop: "15px",
+              marginBottom: "20px",
+            }}
+          >
+            Medical & Health
+          </h2>
+          <CategoryButtons
+            categories={["Medical Aid & First Aid", "Mental Health Support"]}
+            selectedCategories={selectedSubCategories["Medical & Health"] || []}
+            handleCategoryClick={(subCategory) =>
+              handleSubCategoryClick("Medical & Health", subCategory)
+            }
+            mainCategory="Medical & Health"
+          />
+        </div>
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+          {medicalResources.slice(0, visibleResources).map((resource) => (
+            <ResourceCard key={resource.id} resource={resource} />
+          ))}
+        </div>
+
+        {/* Shelter & Support Services Category */}
+        <div className="flex flex-wrap gap-4 mt-4 items-center">
+          <h2
+            className="text-xl font-bold"
+            style={{
+              fontFamily: "'Potta One', normal",
+              fontSize: "50px",
+              color: "#ffffff",
+              marginTop: "15px",
+              marginBottom: "20px",
+            }}
+          >
+            Animal Support
+          </h2>
+          <CategoryButtons
+            categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
+            selectedCategories={selectedSubCategories["Animal Support"] || []}
+            handleCategoryClick={(subCategory) =>
+              handleSubCategoryClick("Animal Support", subCategory)
+            }
+            mainCategory="Animal Support"
+          />
+        </div>
+        <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+          {animalResources.slice(0, visibleResources).map((resource) => (
+            <ResourceCard key={resource.id} resource={resource} />
+          ))}
+        </div>
+
+        {numberOfRows > 3 && numberOfRows % 2 === 1 && (
+          <button
+            onClick={handleShowMore}
+            className="bg-blue-500 text-white font-bold py-2 px-6 rounded-full mt-4 flex items-center justify-center"
+          >
+            <FontAwesomeIcon icon={faArrowDown} size="2x" />
+          </button>
+        )}
+      </div>
     </div>
-  ))}
-</div>
+    </section>
 
-
-
-
-  </div>
-
-  {/* Scroll Arrow Component */}
-  <ScrollArrow to="support" />
-</section>
-
+    <section className="bg-[#183917]" style={{ height: "5vw" }}>
+    <ScrollArrow to="support"  />
+    </section>
 
 {/* Support Section */}
-      <section id="support" className="bg-[#267738] min-h-screen flex items-center">
-  <div className="w-full px-4 md:px-0 flex flex-col lg:flex-row">
+      <section id="support" className="bg-[#267738] min-h-screen flex items-center pb-20">
+      <div className="bg-[#267738]">
+  <div className="w-[100vw] px-4 md:px-10 flex flex-col lg:flex-row">
     {/* Text Content */}
     <div className="flex flex-col justify-center items-start lg:w-1/2 text-white text-left">
       <div className="flex flex-col justify-center items-start h-full mx-auto">
@@ -478,8 +828,9 @@ export default function Home() {
       </div>
     </div>
   </div>
-  {/* Scroll Arrow Component */}
+    {/* Scroll Arrow Component */}
 <ScrollArrow to="faq" />
+</div>
 </section>
 
 {/* FAQ Section */}

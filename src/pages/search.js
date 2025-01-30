@@ -143,6 +143,8 @@ const Search = () => {
 
 
   return (
+
+    <section>
     <div
   style={{
     backgroundColor: "#183917",
@@ -432,6 +434,7 @@ const Search = () => {
         )}
       </div>
     </div>
+    </section>
   );
 };
 

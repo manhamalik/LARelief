@@ -188,7 +188,7 @@ const ResourceCard = ({ resource }) => {
                 <span
                   style={{
                     color: "#6C727D",
-                    marginLeft: "6px",
+                    marginLeft: "7px",
                     fontSize: "1rem",
                   }}
                 >
@@ -208,7 +208,7 @@ const ResourceCard = ({ resource }) => {
                 <span
                   style={{
                     color: "#6C727D",
-                    marginLeft: "6px",
+                    marginLeft: "7px",
                     fontSize: "1rem",
                   }}
                 >
@@ -256,6 +256,7 @@ const ResourceCard = ({ resource }) => {
         .cardBottom {
           display: flex;
           justify-content: space-between;
+          // width:23.5vw;
         }
         .resourceName {
           white-space: nowrap;
