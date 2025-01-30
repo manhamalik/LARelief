@@ -17,6 +17,12 @@ export default async function handler(req, res) {
         return;
     }
 
+    if (!slug) {
+        console.error("Slug is missing from the request.");
+        res.status(400).json({ error: "Slug is required" });
+        return;
+    }
+
     const client = new Client({
         user: process.env.DB_USER,
         host: process.env.DB_HOST,
@@ -57,8 +63,19 @@ export default async function handler(req, res) {
             console.log("Resource not found for slug:", slug);
             res.status(404).json({ error: "Resource not found" });
         } else {
-            console.log("Resource found:", result.rows[0]);
-            res.status(200).json(result.rows[0]);
+            // Ensure JSON fields are properly formatted
+            const formattedResult = {
+                ...result.rows[0],
+                categories: Array.isArray(result.rows[0].categories)
+                    ? result.rows[0].categories
+                    : JSON.parse(result.rows[0].categories),
+                types: Array.isArray(result.rows[0].types)
+                    ? result.rows[0].types
+                    : JSON.parse(result.rows[0].types),
+            };
+
+            console.log("Resource found:", formattedResult);
+            res.status(200).json(formattedResult);
         }
     } catch (error) {
         console.error("Database query error:", error.message);
