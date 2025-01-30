@@ -43,6 +43,10 @@ export default function Home() {
 		  image: "/images/resource-4.jpg",
 		},
 	  ];
+
+    const deduplicateResources = (resources) => {
+      return Array.from(new Map(resources.map((r) => [r.id, r])).values());
+    };
 	
   return (
     <div className="relative">
@@ -331,47 +335,67 @@ export default function Home() {
 
 {/* Resources Section */}
 <section id="resources" className="py-16" style={{ backgroundColor: "#183917" }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {/* Section Header */}
-          <h2
-            className="text-center text-white mb-12"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: "900",
-              fontSize: "64px",
-              textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-            }}
-          >
-            SEARCH FOR RESOURCES
-          </h2>
+  <div className="w-[100vw] mx-auto px-4 md:px-8">
+    {/* Section Header */}
+    <h2
+      className="text-center text-white mb-12"
+      style={{
+        fontFamily: "'Noto Sans', sans-serif",
+        fontWeight: "900",
+        fontSize: "64px",
+        textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+      }}
+    >
+      SEARCH FOR RESOURCES
+    </h2>
 
-          {/* Categories */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-              Food & Water
-            </button>
-            <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-              Clothing & Personal Items
-            </button>
-            <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-              Hygiene & Sanitation
-            </button>
-            <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
-              Financial Support
-            </button>
-          </div>
-		     {/* Resource Cards */}
-          <div className="flex justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-7xl">
-              {resources.map((resource, index) => (
-                <ResourceCard key={index} resource={resource} />
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Scroll Arrow Component */}
-<ScrollArrow to="support" />
-      </section>
+    {/* Categories */}
+    <div className="flex flex-wrap justify-center gap-4 mb-12">
+      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
+        Food & Water
+      </button>
+      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
+        Clothing & Personal Items
+      </button>
+      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
+        Hygiene & Sanitation
+      </button>
+      <button className="bg-white text-[#183917] font-bold py-2 px-6 rounded-full">
+        Financial Support
+      </button>
+    </div>
+
+{/* Resource Cards */}
+<div
+  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full"
+  style={{
+    outline: "2px dashed red",
+    gridAutoRows: "minmax(200px, auto)",
+  }}
+>
+  {deduplicateResources(resources).map((resource, index) => (
+    <div
+      key={resource.id || index}
+      style={{
+        backgroundColor: "lightblue",
+        outline: "1px solid blue",
+        height: "auto", // Set to auto or specific height for debugging
+      }}
+    >
+      <ResourceCard resource={resource} />
+    </div>
+  ))}
+</div>
+
+
+
+
+  </div>
+
+  {/* Scroll Arrow Component */}
+  <ScrollArrow to="support" />
+</section>
+
 
 {/* Support Section */}
       <section id="support" className="bg-[#267738] min-h-screen flex items-center">

@@ -10,7 +10,6 @@ import {
   faCalendarAlt,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
-// import resources from "@/data/resources";
 import ResourceCard from "@/components/ResourceCard";
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
@@ -63,6 +62,8 @@ const Search = () => {
   };
 
   useEffect(() => {
+    console.log("Filtered resources:", filterResources);
+
     const fetchResources = async () => {
       try {
         const response = await fetch("/api/resource-list");
