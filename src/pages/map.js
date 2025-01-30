@@ -14,7 +14,17 @@ import {
   faBrain,
   faPaw,
   faBone,
+  faMapPin,
+  faBurger,
+  faBath,
+  faUsers,
   faCircleInfo,
+  faDog,
+  faSearch,
+  faClock,
+  faDollarSign,
+  faHandsHelping,
+  faFire,
 } from "@fortawesome/free-solid-svg-icons";
 import resources from "@/data/resources";
 
@@ -30,17 +40,17 @@ if (typeof window !== "undefined") {
 
 // Icon configuration
 const iconConfig = {
-  "Food & Water": { icon: "fa-solid fa-utensils", color: "#015BC3" },
+  "Food & Water": { icon: "fa-solid fa-burger", color: "#015BC3" },
   "Clothing & Personal Items": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
-  "Hygiene & Sanitation": { icon: "fa-solid fa-toilet", color: "#015BC3" },
+  "Hygiene & Sanitation": { icon: "fa-solid fa-bath ", color: "#015BC3" },
   "Financial Support": { icon: "fa-solid fa-money-bill-wave", color: "#015BC3" },
   "Shelters & Housing Assistance": { icon: "fa-solid fa-home", color: "#4D03CD" },
   "Transportation Assistance": { icon: "fa-solid fa-car", color: "#4D03CD" },
   "Legal Aid": { icon: "fa-solid fa-gavel", color: "#4D03CD" },
   "Medical Aid & First Aid": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
-  "Mental Health Support": { icon: "fa-solid fa-brain", color: "#CC0000" },
-  "Animal Boarding": { icon: "fa-solid fa-paw", color: "#CF5700" },
-  "Veterinary Care & Pet Food": { icon: "fa-solid fa-bone", color: "#CF5700" },
+  "Mental Health Support": { icon: "fa-solid fa-users", color: "#CC0000" },
+  "Animal Boarding": { icon: "fa-solid fa-dog", color: "#CF5700" },
+  "Veterinary Care & Pet Food": { icon: "fa-solid fa-paw", color: "#CF5700" },
 };
 
 const createCustomIcon = (types) => {
@@ -69,22 +79,21 @@ const createCustomIcon = (types) => {
   });
 };
 
-
 export default function MapPage() {
   const categories = [
     {
       label: "Essentials",
-      icon: faUtensils,
+      icon: faMapPin,
       subcategories: [
-        { label: "Food & Water", icon: faUtensils },
+        { label: "Food & Water", icon: faBurger },
         { label: "Clothing & Personal Items", icon: faTshirt },
-        { label: "Hygiene & Sanitation", icon: faToilet },
+        { label: "Hygiene & Sanitation", icon: faBath },
         { label: "Financial Support", icon: faMoneyBillWave },
       ],
     },
     {
       label: "Shelter & Support Services",
-      icon: faHome,
+      icon: faMapPin,
       subcategories: [
         { label: "Shelters & Housing Assistance", icon: faHome },
         { label: "Transportation Assistance", icon: faCar },
@@ -93,29 +102,28 @@ export default function MapPage() {
     },
     {
       label: "Medical & Health",
-      icon: faBriefcaseMedical,
+      icon: faMapPin,
       subcategories: [
         { label: "Medical Aid & First Aid", icon: faBriefcaseMedical },
-        { label: "Mental Health Support", icon: faBrain },
+        { label: "Mental Health Support", icon: faUsers },
       ],
     },
     {
       label: "Animal Support",
-      icon: faPaw,
+      icon: faMapPin,
       subcategories: [
-        { label: "Animal Boarding", icon: faPaw },
-        { label: "Veterinary Care & Pet Food", icon: faBone },
+        { label: "Animal Boarding", icon: faDog },
+        { label: "Veterinary Care & Pet Food", icon: faPaw },
       ],
     },
   ];
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [selectedResource, setSelectedResource] = useState(null);
+  const [sidebar, setSidebar] = useState("resources"); // Active sidebar: resources, donations, volunteering
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category === selectedCategory ? null : category);
-    setSelectedSubcategories([]);
+  const handleButtonClick = (type) => {
+    setSidebar(type);
   };
 
   const handleSubcategoryClick = (subcategory) => {
@@ -131,14 +139,79 @@ export default function MapPage() {
   };
 
   const filteredResources = resources.filter((resource) => {
-    if (!selectedCategory && selectedSubcategories.length === 0) return true;
+    if (selectedSubcategories.length === 0) return true; // Show all resources if no subcategories are selected
 
-    if (selectedSubcategories.length > 0) {
-      return resource.types.some((type) => selectedSubcategories.includes(type));
-    }
-
-    return resource.mainCategory === selectedCategory;
+    return resource.types.some((type) => selectedSubcategories.includes(type));
   });
+
+  const renderSidebar = () => {
+    if (sidebar === "resources") {
+      return (
+        <aside className="w-full md:w-1/4 bg-white text-black p-6">
+          <h3 className="text-2xl font-bold mb-4">Resource Options</h3>
+          <ul className="space-y-4">
+            {categories.map((category) => (
+              <li key={category.label}>
+                <div className="flex items-center gap-3 font-bold">
+                  <FontAwesomeIcon icon={category.icon} />
+                  {category.label}
+                </div>
+                <button
+                  className="text-sm text-blue-300 hover:underline mt-1"
+                  onClick={() =>
+                    setSelectedSubcategories((prev) =>
+                      prev.some((sub) =>
+                        category.subcategories.map((sub) => sub.label).includes(sub)
+                      )
+                        ? prev.filter(
+                            (sub) =>
+                              !category.subcategories
+                                .map((sub) => sub.label)
+                                .includes(sub)
+                          )
+                        : [...prev, ...category.subcategories.map((sub) => sub.label)]
+                    )
+                  }
+                >
+                  Select All
+                </button>
+                <ul className="pl-6 mt-2 space-y-2">
+                  {category.subcategories.map((subcategory) => (
+                    <li
+                      key={subcategory.label}
+                      className={`cursor-pointer flex items-center gap-3 ${
+                        selectedSubcategories.includes(subcategory.label)
+                          ? "font-bold"
+                          : ""
+                      }`}
+                      onClick={() => handleSubcategoryClick(subcategory.label)}
+                    >
+                      <FontAwesomeIcon icon={subcategory.icon} />
+                      {subcategory.label}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      );
+    } else if (sidebar === "donations") {
+      return (
+        <aside className="w-full md:w-1/4 bg-white text-black p-6">
+          <h3 className="text-2xl font-bold mb-4">Donation Options</h3>
+          {/* Add donation options */}
+        </aside>
+      );
+    } else if (sidebar === "volunteering") {
+      return (
+        <aside className="w-full md:w-1/4 bg-white text-black p-6">
+          <h3 className="text-2xl font-bold mb-4">Volunteer Options</h3>
+          {/* Add volunteering options */}
+        </aside>
+      );
+    }
+  };
 
   return (
     <div className="relative">
@@ -146,55 +219,42 @@ export default function MapPage() {
         <title>LA Relief - Map of Resources</title>
       </Head>
 
-      <section id="map" className="relative bg-green-800 text-white">
+      <section id="map" className="relative bg-green-900 text-white">
+        {/* Top Buttons */}
+        <div className="flex justify-between items-center p-4 bg-gray-100">
+          <input
+            type="text"
+            placeholder="Search or use my current location"
+            className="p-2 border rounded-md w-full max-w-md"
+          />
+          <div className="flex gap-4">
+            <button
+              className="p-2 bg-green-500 text-white rounded-md"
+              onClick={() => handleButtonClick("resources")}
+            >
+              <FontAwesomeIcon icon={faClock} /> Open Now
+            </button>
+            <button
+              className="p-2 bg-blue-500 text-white rounded-md"
+              onClick={() => handleButtonClick("donations")}
+            >
+              <FontAwesomeIcon icon={faDollarSign} /> Donations Needed
+            </button>
+            <button
+              className="p-2 bg-red-500 text-white rounded-md"
+              onClick={() => handleButtonClick("volunteering")}
+            >
+              <FontAwesomeIcon icon={faHandsHelping} /> Volunteer Opportunities
+            </button>
+            <button className="p-2 bg-orange-500 text-white rounded-md">
+              <FontAwesomeIcon icon={faFire} /> Wildfire Warning
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col md:flex-row">
           {/* Sidebar */}
-          <aside className="w-full md:w-1/4 bg-green-900 text-white p-6">
-            <h3 className="text-2xl font-bold mb-4">Resource Options</h3>
-            <ul className="space-y-4">
-              {categories.map((category) => (
-                <li key={category.label}>
-                  <div
-                    className={`cursor-pointer flex items-center gap-3 ${
-                      selectedCategory === category.label ? "font-bold" : ""
-                    }`}
-                    onClick={() => handleCategoryClick(category.label)}
-                  >
-                    <FontAwesomeIcon icon={category.icon} />
-                    {category.label}
-                  </div>
-                  {selectedCategory === category.label && (
-                    <ul className="pl-6 mt-2 space-y-2">
-                      {category.subcategories.map((subcategory) => (
-                        <li
-                          key={subcategory.label}
-                          className={`cursor-pointer flex items-center gap-3 ${
-                            selectedSubcategories.includes(subcategory.label)
-                              ? "font-bold"
-                              : ""
-                          }`}
-                          onClick={() => handleSubcategoryClick(subcategory.label)}
-                        >
-                          <FontAwesomeIcon icon={subcategory.icon} />
-                          {subcategory.label}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-              <li
-                className="cursor-pointer flex items-center gap-3 font-bold mt-4"
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedSubcategories([]);
-                }}
-              >
-                <FontAwesomeIcon icon={faCircleInfo} />
-                Show All
-              </li>
-            </ul>
-          </aside>
+          {renderSidebar()}
 
           {/* Map */}
           <div className="relative w-full h-screen">

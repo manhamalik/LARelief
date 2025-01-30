@@ -2,125 +2,44 @@ import React, { useEffect, useState } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 
-// Utility function to cluster markers
 const clusterMarkers = (resources, zoomLevel) => {
   const clusters = [];
   const threshold = zoomLevel < 10 ? Number.MAX_VALUE : zoomLevel < 12 ? 0.05 : 0.01;
 
   resources.forEach((resource) => {
     let added = false;
-
+    if (zoomLevel >= 14) {
+      clusters.push({ center: [resource.latitude, resource.longitude], resources: [resource] });
+      return;
+    }
     for (const cluster of clusters) {
       const [lat, lon] = cluster.center;
-      const distance = Math.sqrt(
-        Math.pow(lat - resource.latitude, 2) + Math.pow(lon - resource.longitude, 2)
-      );
-
+      const distance = Math.sqrt(Math.pow(lat - resource.latitude, 2) + Math.pow(lon - resource.longitude, 2));
       if (distance < threshold) {
         cluster.resources.push(resource);
-        cluster.center = [
-          (lat * cluster.resources.length + resource.latitude) / (cluster.resources.length + 1),
-          (lon * cluster.resources.length + resource.longitude) / (cluster.resources.length + 1),
-        ];
         added = true;
         break;
       }
     }
-
     if (!added) {
       clusters.push({ center: [resource.latitude, resource.longitude], resources: [resource] });
     }
   });
-
   return clusters;
 };
 
 const createClusterIcon = (resources, typeColors) => {
-    // Get all unique colors from the resource types in the cluster
-    const colors = Array.from(
-      new Set(resources.flatMap((resource) => resource.types.map((type) => typeColors[type] || "#000")))
-    );
-
-    // If only one color, return a solid icon
-    if (colors.length === 1) {
-      return L.divIcon({
-        html: `<div style="
-          background: ${colors[0]};
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 14px;
-          font-weight: bold;
-          border: 2px solid white;
-          position: relative;
-        ">
-          <span style="
-            position: relative;
-            z-index: 2;
-          ">${resources.length}</span>
-          <span style="
-            position: absolute;
-            width: 20px;
-            height: 1px;
-            background: radial-gradient(circle, rgba(138, 138, 138, 0.7) 20%, rgba(255,255,255,0) 80%);
-            border-radius: 50%;
-            z-index: 1;
-          "></span>
-        </div>`,
-        className: "custom-cluster-icon",
-        iconSize: [40, 40],
-      });
-    }
-
-    // Generate a soft blended gradient for 2+ colors
-    const totalColors = colors.length;
-    const gradientStops = colors
-      .map((color, index) => `${color} ${(index / totalColors) * 80 + 10}%`)
-      .join(", ");
-
-    const backgroundStyle = `linear-gradient(135deg, ${gradientStops})`;
-
-    return L.divIcon({
-      html: `<div style="
-        background: ${backgroundStyle};
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 14px;
-        font-weight: bold;
-        border: 2px solid white;
-        position: relative;
-      ">
-        <span style="
-          position: relative;
-          z-index: 2;
-        ">${resources.length}</span>
-        <span style="
-          position: absolute;
-          width: 10px;
-          height: 1px;
-          background: radial-gradient(circle, rgba(103, 103, 103, 0.7) 20%, rgba(255,255,255,0) 80%);
-          border-radius: 50%;
-          z-index: 1;
-        "></span>
-      </div>`,
-      className: "custom-cluster-icon",
-      iconSize: [40, 40],
-    });
+  const colors = Array.from(new Set(resources.flatMap((resource) => resource.types.map((type) => typeColors[type] || "#000"))));
+  const totalColors = colors.length;
+  const gradientStops = colors.map((color, index) => `${color} ${(index / totalColors) * 80 + 10}%`).join(", ");
+  const backgroundStyle = colors.length === 1 ? colors[0] : `linear-gradient(135deg, ${gradientStops})`;
+  
+  return L.divIcon({
+    html: `<div style="background: ${backgroundStyle}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; border: 2px solid white;"><span>${resources.length}</span></div>`,
+    className: "custom-cluster-icon",
+    iconSize: [40, 40],
+  });
 };
-
-
-  
-  
-  
 
 const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) => {
   const map = useMap();
@@ -137,7 +56,6 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
     setClusteredResources(clusterMarkers(resources, zoomLevel));
   }, [resources, zoomLevel]);
 
-  // Color mapping for resource types
   const typeColors = {
     "Food & Water": "#015BC3",
     "Clothing & Personal Items": "#015BC3",
@@ -155,14 +73,9 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
   return (
     <>
       {clusteredResources.map((cluster, index) => {
-        if (zoomLevel < 10 || cluster.resources.length > 1) {
-          // Render cluster marker
+        if (zoomLevel < 14 && cluster.resources.length > 1) {
           return (
-            <Marker
-              key={index}
-              position={cluster.center}
-              icon={createClusterIcon(cluster.resources, typeColors)}
-            >
+            <Marker key={index} position={cluster.center} icon={createClusterIcon(cluster.resources, typeColors)}>
               <Popup>
                 <strong>{cluster.resources.length} Resources</strong>
                 <ul>
@@ -175,21 +88,20 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
             </Marker>
           );
         } else {
-          // Render individual marker
-          const resource = cluster.resources[0];
-          return (
+          return cluster.resources.map((resource, i) => (
             <Marker
-              key={resource.name}
+              key={`marker-${i}`}
               position={[resource.latitude, resource.longitude]}
               icon={createCustomIcon(resource.types)}
               eventHandlers={{ click: () => handleMarkerClick(resource) }}
             >
               <Popup>
-                <strong>{resource.name}</strong>
+                <strong>{resource.organization_name}</strong>
                 <p>{resource.address}</p>
+                <p>{resource.types.join(", ")}</p>
               </Popup>
             </Marker>
-          );
+          ));
         }
       })}
     </>
