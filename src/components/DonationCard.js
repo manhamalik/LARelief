@@ -92,7 +92,6 @@ const ResourceCard = ({ resource }) => {
 
   const currentDayHours = getCurrentDayHours(hours_of_operation);
 
-
   return (
     <div
       key={id}
@@ -114,7 +113,9 @@ const ResourceCard = ({ resource }) => {
         <div
           className="cardContainer"
           style={{
-            backgroundImage: `url(${carousel_images?.[0] || "default-image.jpg"})`,
+            backgroundImage: `url(${
+              carousel_images?.[0] || "default-image.jpg"
+            })`,
           }}
         >
           {/* Resource Card Content */}
@@ -240,7 +241,7 @@ const ResourceCard = ({ resource }) => {
           transition: transform 0.2s ease-out;
           transform: scale(0.9);
         }
-        
+
         .cardContainer:hover {
           transform: scale(0.91);
           cursor: pointer;

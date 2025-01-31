@@ -4,7 +4,7 @@ import { Link } from "react-scroll";
 export default function ScrollArrow({ to, offset = 0, duration = 500 }) {
   return (
     <div
-      className="absolute bottom--50 w-full flex justify-center items-center"
+      className="absolute w-full flex justify-center items-center"
     >
       <Link
         to={to}

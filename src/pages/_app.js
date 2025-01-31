@@ -9,7 +9,7 @@ import Chatbot from "@/components/Chatbot";
 import { log } from "@/util/logger";
 import "web-streams-polyfill";
 import { config, library } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css"; // Import the CSS
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
   faSquareXTwitter,
   faFacebookSquare,
@@ -21,6 +21,9 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import "leaflet/dist/leaflet.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 // Prevent Font Awesome from automatically adding CSS globally
 config.autoAddCss = false;

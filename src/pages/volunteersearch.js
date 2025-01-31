@@ -1,3 +1,20 @@
+// import React from "react";
+// import VolunteerCard from "@/components/VolunteerCard";
+// import volunteeringData from "../data/volunteering"; // Importing from data folder
+
+// const VolunteerPage = () => {
+//   return (
+//     <div style={{ padding: "20px", textAlign: "center" }}>
+//       <h1>Volunteer Opportunities</h1>
+//       {volunteeringData.map((volunteer) => (
+//         <VolunteerCard key={volunteer.id} volunteer={volunteer} />
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default VolunteerPage
+
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

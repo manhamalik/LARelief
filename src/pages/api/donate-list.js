@@ -15,21 +15,18 @@ export default async function handler(req, res) {
         ssl: {
             rejectUnauthorized: false, // Required for Render-hosted databases
         },
-    });   
+    });
 
     try {
         await client.connect();
 
         const query = `
-            SELECT r.*, 
-                   COALESCE(json_agg(DISTINCT c.name) FILTER (WHERE c.name IS NOT NULL), '[]'::json) AS categories,
-                   COALESCE(json_agg(DISTINCT t.name) FILTER (WHERE t.name IS NOT NULL), '[]'::json) AS types
-            FROM resources r
-            LEFT JOIN resource_category rc ON r.id = rc.resource_id
-            LEFT JOIN categories c ON rc.category_id = c.id
-            LEFT JOIN resource_type_map rt ON r.id = rt.resource_id
-            LEFT JOIN resource_types t ON rt.type_id = t.id
-            GROUP BY r.id
+            SELECT d.*, 
+                   COALESCE(json_agg(DISTINCT c.name) FILTER (WHERE c.name IS NOT NULL), '[]'::json) AS categories
+            FROM donations d
+            LEFT JOIN donation_category dc ON d.id = dc.donation_id
+            LEFT JOIN categories c ON dc.category_id = c.id
+            GROUP BY d.id
         `;
 
         const result = await client.query(query);
@@ -38,7 +35,6 @@ export default async function handler(req, res) {
         const formattedRows = result.rows.map((row) => ({
             ...row,
             categories: Array.isArray(row.categories) ? row.categories : JSON.parse(row.categories),
-            types: Array.isArray(row.types) ? row.types : JSON.parse(row.types),
         }));
 
         res.status(200).json(formattedRows);

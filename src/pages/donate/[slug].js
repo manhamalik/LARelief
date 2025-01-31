@@ -82,8 +82,13 @@ const resources = [
   },
 ];
 
-export async function getServerSideProps({ params }) {
-  const res = await fetch(`http://localhost:3000/api/donations?slug=${params.slug}`);
+export async function getServerSideProps({ params, req }) {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? `https://${req.headers.host}`
+      : "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/donations?slug=${params.slug}`);
   const donation = await res.json();
 
   if (!donation || donation.error) {
@@ -179,7 +184,7 @@ export default function Resource({ resource }) {
           justify-content: space-between;
           align-items: flex-start;
           width: 100vw;
-          height: 100vh;
+          min-height: 100vh;
           // background-color: #f9f9f9;
           font-family: "Noto Sans", sans-serif;
         }
