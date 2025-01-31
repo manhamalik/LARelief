@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         const query = `
             SELECT v.*, 
                    COALESCE(json_agg(DISTINCT c.name) FILTER (WHERE c.name IS NOT NULL), '[]'::json) AS categories
-            FROM volunteer_opportunities v
+            FROM volunteering v
             LEFT JOIN volunteer_category vc ON v.id = vc.volunteer_id
             LEFT JOIN categories c ON vc.category_id = c.id
             GROUP BY v.id
