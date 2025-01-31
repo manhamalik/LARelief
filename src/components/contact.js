@@ -238,7 +238,7 @@ export default function Contact() {
 
                 {/* Google Form Button */}
                 <a
-                  href="https://forms.gle/GFPGC5m4kXRbZyVE9"
+                  href="#link-to-google-form"
                   className="mt-6 bg-white text-black font-bold text-[26px] py-4 px-8 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-200 transition duration-300"
                 >
                   GOOGLE FORM

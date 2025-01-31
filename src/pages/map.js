@@ -29,9 +29,18 @@ import {
 import resources from "@/data/resources";
 
 // Dynamically import Leaflet components
-const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
-const ClusteredMarkers = dynamic(() => import("@/components/ClusteredMarkers"), { ssr: false });
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const ClusteredMarkers = dynamic(
+  () => import("@/components/ClusteredMarkers"),
+  { ssr: false }
+);
 
 let L;
 if (typeof window !== "undefined") {
@@ -43,11 +52,20 @@ const iconConfig = {
   "Food & Water": { icon: "fa-solid fa-burger", color: "#015BC3" },
   "Clothing & Personal Items": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
   "Hygiene & Sanitation": { icon: "fa-solid fa-bath ", color: "#015BC3" },
-  "Financial Support": { icon: "fa-solid fa-money-bill-wave", color: "#015BC3" },
-  "Shelters & Housing Assistance": { icon: "fa-solid fa-home", color: "#4D03CD" },
+  "Financial Support": {
+    icon: "fa-solid fa-money-bill-wave",
+    color: "#015BC3",
+  },
+  "Shelters & Housing Assistance": {
+    icon: "fa-solid fa-home",
+    color: "#4D03CD",
+  },
   "Transportation Assistance": { icon: "fa-solid fa-car", color: "#4D03CD" },
   "Legal Aid": { icon: "fa-solid fa-gavel", color: "#4D03CD" },
-  "Medical Aid & First Aid": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
+  "Medical Aid & First Aid": {
+    icon: "fa-solid fa-briefcase-medical",
+    color: "#CC0000",
+  },
   "Mental Health Support": { icon: "fa-solid fa-users", color: "#CC0000" },
   "Animal Boarding": { icon: "fa-solid fa-dog", color: "#CF5700" },
   "Veterinary Care & Pet Food": { icon: "fa-solid fa-paw", color: "#CF5700" },
@@ -161,7 +179,9 @@ export default function MapPage() {
                   onClick={() =>
                     setSelectedSubcategories((prev) =>
                       prev.some((sub) =>
-                        category.subcategories.map((sub) => sub.label).includes(sub)
+                        category.subcategories
+                          .map((sub) => sub.label)
+                          .includes(sub)
                       )
                         ? prev.filter(
                             (sub) =>
@@ -169,7 +189,10 @@ export default function MapPage() {
                                 .map((sub) => sub.label)
                                 .includes(sub)
                           )
-                        : [...prev, ...category.subcategories.map((sub) => sub.label)]
+                        : [
+                            ...prev,
+                            ...category.subcategories.map((sub) => sub.label),
+                          ]
                     )
                   }
                 >
@@ -278,11 +301,16 @@ export default function MapPage() {
             {/* Selected Resource Card */}
             {selectedResource && (
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-black rounded-xl shadow-lg p-6 w-96">
-                <h4 className="text-xl font-bold mb-2">{selectedResource.name}</h4>
-                <p className="text-sm mb-2">{selectedResource.organization_name}</p>
+                <h4 className="text-xl font-bold mb-2">
+                  {selectedResource.name}
+                </h4>
+                <p className="text-sm mb-2">
+                  {selectedResource.organization_name}
+                </p>
                 <p className="text-sm mb-2">{selectedResource.address}</p>
                 <p className="text-sm mb-2">
-                  {selectedResource.start_date} | {selectedResource.start_time} - {selectedResource.end_time}
+                  {selectedResource.start_date} | {selectedResource.start_time}{" "}
+                  - {selectedResource.end_time}
                 </p>
               </div>
             )}

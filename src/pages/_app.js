@@ -23,7 +23,7 @@ import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import "leaflet/dist/leaflet.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
+import { initGA } from "@/util/gtag";
 
 // Prevent Font Awesome from automatically adding CSS globally
 config.autoAddCss = false;
@@ -44,77 +44,92 @@ library.add(
 const saira = Saira({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
-    const router = useRouter();
-    const [isMounted, setIsMounted] = useState(false);
-    const [footerLinks, setFooterLinks] = useState([]);
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  const [footerLinks, setFooterLinks] = useState([]);
 
-    useEffect(() => {
-        // Check sessionStorage for cached footer links
-        const cachedFooterLinks = sessionStorage.getItem("footerLinks");
+  useEffect(() => {
+    // Check sessionStorage for cached footer links
+    const cachedFooterLinks = sessionStorage.getItem("footerLinks");
 
-        if (cachedFooterLinks) {
-            setFooterLinks(JSON.parse(cachedFooterLinks));
-        } else {
-            // If no cache, fetch footer links
-            async function getData() {
-                try {
-                    const footerRes = await fetch(
-                        `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/footer`
-                    );
-                    const footerResObj = await footerRes.json();
+    if (cachedFooterLinks) {
+      setFooterLinks(JSON.parse(cachedFooterLinks));
+    } else {
+      async function getData() {
+        try {
+          const footerRes = await fetch(
+            `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/footer`
+          );
+          if (!footerRes.ok) throw new Error("Failed to fetch footer links");
 
-                    if (footerRes.ok) {
-                        const links = [
-                            footerResObj.data.InstagramLink,
-                            footerResObj.data.LinkedinLink,
-                            footerResObj.data.FacebookLink,
-                        ];
-                        // Store in sessionStorage and update state
-                        sessionStorage.setItem("footerLinks", JSON.stringify(links));
-                        setFooterLinks(links);
-                    } else {
-                        setFooterLinks([]);
-                    }
-                } catch {
-                    setFooterLinks([]);
-                }
-            }
-            getData();
+          const footerResObj = await footerRes.json();
+          const links = [
+            footerResObj.data?.InstagramLink || "",
+            footerResObj.data?.LinkedinLink || "",
+            footerResObj.data?.FacebookLink || "",
+          ];
+          sessionStorage.setItem("footerLinks", JSON.stringify(links));
+          setFooterLinks(links);
+        } catch (error) {
+          console.error("Footer API Error:", error);
+          setFooterLinks([]);
         }
-    }, [router.isReady]);
+      }
+      getData();
+    }
+  }, [router.isReady]);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      initGA(); // Initialize GA when app loads
 
-    return (
-        <>
-            <style jsx global>{`
-                html {
-                    font-family: ${saira.style.fontFamily};
-                }
-            `}</style>
-            <main>
-                {router.pathname != "/" && <NavBar />}
-                {isMounted && (
-                    <Toaster
-                        position="bottom-left"
-                        toastOptions={{
-                            duration: 5000,
-                            loading: {
-                                duration: Infinity,
-                                theme: {
-                                    primary: "green",
-                                    secondary: "black",
-                                },
-                            },
-                        }}
-                    />
-                )}
-                <Component {...pageProps} />
-                <Chatbot />
-                <Footer footerLinks={footerLinks} />
-            </main>
-        </>
-    );
+      const handleRouteChange = (url) => {
+        if (window.gtag) {
+          window.gtag("config", process.env.NEXT_PUBLIC_GA_ID, {
+            page_path: url,
+          });
+        }
+      };
+
+      router.events.on("routeChangeComplete", handleRouteChange);
+      return () => {
+        router.events.off("routeChangeComplete", handleRouteChange);
+      };
+    }
+  }, [router.events]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${saira.style.fontFamily};
+        }
+      `}</style>
+      <main>
+        {router.pathname !== "/" && <NavBar />}
+        {isMounted && (
+          <Toaster
+            position="bottom-left"
+            toastOptions={{
+              duration: 5000,
+              loading: {
+                duration: Infinity,
+                theme: {
+                  primary: "green",
+                  secondary: "black",
+                },
+              },
+            }}
+          />
+        )}
+        <Component {...pageProps} />
+        <Chatbot />
+        <Footer footerLinks={footerLinks} />
+      </main>
+    </>
+  );
 }
