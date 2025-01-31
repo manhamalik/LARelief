@@ -145,39 +145,8 @@ export default function Home() {
   ).slice(0, visibleResources);
   
   
-  if (loading) return <p>Loading resources...</p>;
-  if (!resources || resources.length === 0) return <p>No resources available.</p>;
-
-	// const resources = [
-	// 	{
-	// 	  title: "Union Station Homeless Services",
-	// 	  address: "412 S. Raymond Avenue, Pasadena, CA",
-	// 	  date: "Feb 3, 2025",
-	// 	  time: "8:30AM - 5:00PM",
-	// 	  image: "/images/resource-1.jpg",
-	// 	},
-	// 	{
-	// 	  title: "La Puente Food Distribution",
-	// 	  address: "1720 N. Walnut Ave, La Puente, CA",
-	// 	  date: "Feb 11, 2025",
-	// 	  time: "3:00PM - 6:00PM",
-	// 	  image: "/images/resource-2.jpg",
-	// 	},
-	// 	{
-	// 	  title: "Compassion Connection",
-	// 	  address: "1711 N Van Ness Ave, Hollywood, CA",
-	// 	  date: "Feb 4, 2025",
-	// 	  time: "9:30AM - 3:00PM",
-	// 	  image: "/images/resource-3.jpg",
-	// 	},
-	// 	{
-	// 	  title: "Food Pantry Distribution",
-	// 	  address: "4368 Santa Anita Ave, El Monte, CA",
-	// 	  date: "Feb 4, 2025",
-	// 	  time: "9:00AM - 12:00PM",
-	// 	  image: "/images/resource-4.jpg",
-	// 	},
-	//   ];
+  // if (loading) return <p>Loading resources...</p>;
+  // if (!resources || resources.length === 0) return <p>No resources available.</p>;
 
     const deduplicateResources = (resources) => {
       return Array.from(new Map(resources.map((r) => [r.id, r])).values());
@@ -202,7 +171,6 @@ export default function Home() {
 		  href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
 		  rel="stylesheet"
 		/>
-
       </Head>
 
       {/* Hero Section */}
@@ -219,7 +187,6 @@ export default function Home() {
       <div
         className="flex flex-col justify-center items-center text-center text-white relative z-10"
         style={{ height: "calc(100vh - 4.15rem)" }} // Adjust for navbar height
-
       >
         <h1
 		className="text-6xl md:text-8xl mb-9"

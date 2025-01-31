@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { scroller } from "react-scroll";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ScrollArrow from "@/components/ScrollArrow";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -122,9 +123,9 @@ export default function Home() {
     endDate
   ).slice(0, visibleResources);
 
-  if (loading) return <p>Loading resources...</p>;
-  if (!resources || resources.length === 0)
-    return <p>No resources available.</p>;
+  // if (loading) return <p>Loading resources...</p>;
+  // if (!resources || resources.length === 0)
+  //   return <p>No resources available.</p>;
 
   return (
     <div className="relative">
@@ -145,86 +146,154 @@ export default function Home() {
         />
       </Head>
 
-      {/* Mission Section */}
       <section
-        id="next-section"
-        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
+      id="mission"
+      className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 px-8 relative overflow-hidden"
+    >
+      
+      {/* --- The “road” background image --- */}
+      <img
+        src="/images/road.png"
+        alt="Green road shape"
+        className="absolute bottom-0 left-0 w-[full] md:h-auto object-cover"
+        style={{ zIndex: 0 }}
+      />
+
+      {/* --- Large “VOLUNTEER” label in top/left corner with outline --- */}
+      <div
+        className="absolute top-0 left-0 bg-[#227541] rounded-br-[12vw] flex items-center justify-center"
+        style={{
+          zIndex: 1,
+          height: "10vw",
+          width: "43vw",
+          // boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
+          fontFamily: "'Noto Sans', sans-serif",
+          textAlign: "center",
+        }}
       >
-        <div
-          className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
-          style={{
-            zIndex: 0,
-            width: "30.5%",
-            boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
-          }}
-        ></div>
+        <h2 className="relative text-center font-bold text-white">
+          {/* Stroke/Outline layer */}
+          <span
+            className="absolute inset-0"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: 900,
+              fontSize: "5vw",
+              top: "-2rem",
+              left: "-1vw",
+              color: "transparent",
+              WebkitTextStroke: "1px #ffffff",
+              zIndex: 1,
+            }}
+          >
+            VOLUNTEER
+          </span>
+          {/* Filled text layer */}
+          <span
+            className="relative text-white"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: 900,
+              fontSize: "5vw",
+              textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+              zIndex: 2,
+            }}
+          >
+            VOLUNTEER
+          </span>
+        </h2>
+      </div>
 
-        <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
-          <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
-            <h2
-              className="mb-6"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "900",
-                fontSize: "94px",
-                lineHeight: "1.1",
-                whiteSpace: "nowrap",
-                textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-              }}
-            >
-              VOLUNTEER
-            </h2>
-
-            <p
-              className="text-lg md:text-xl mb-8 leading-relaxed"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "400",
-                fontSize: "22px",
-              }}
-            >
-              Our mission is to stand with communities affected by the Los
-              Angeles wildfires. We’re here to make it easier to find the
-              resources, support, and opportunities needed to recover and
-              rebuild. Whether it’s through donations, volunteering, or simply
-              offering a helping hand, we believe in the power of coming
-              together to make a real difference.
-            </p>
-
-            <div className="flex gap-4">
-              <button
-                className="bg-white text-[#183917] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontSize: "20px",
-                }}
-                onClick={() =>
-                  scroller.scrollTo("resources", {
-                    smooth: true,
-                    duration: 500,
-                    offset: -72, // Adjust based on navbar height
-                  })
-                }
-              >
-                EXPLORE RESOURCES
-              </button>
-            </div>
-          </div>
-
-          <div className="md:w-[55%] relative h-full pl-16">
-            <div className="relative z-10">
-              <img
-                src="/images/mission-graphic.png"
-                alt="Support graphic"
-                className="w-[73%] h-auto"
-              />
-            </div>
-          </div>
+      {/* --- Main Content Row --- */}
+      <div className="relative z-10 flex flex-col md:flex-row items-center w-full max-w-7xl mt-[4vw] ml-[0vw]">
+      
+        <div className="w-full mt-0">
+          <img
+            src="/images/volunteer.png"
+            alt="Volunteers"
+            className="w-[70vw]"
+          />
         </div>
-      </section>
 
+        {/* -- Right Side: Text + Button -- */}
+        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
+          <h3
+            className=""
+            style={{ fontFamily: "'Noto Sans', sans-serif", fontWeight: "400",
+              fontSize: "1.5vw",
+              maxWidth: "100%",
+              margin: "0 auto",  
+            textAlign: "center"
+            }}
+          >
+            Join a community of
+          </h3>
+          <h3
+            className="font-extrabold mt-2"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: "900",
+              fontSize: "5.5vw",
+              margin: "0 auto",
+              paddingTop: "2.25vw",
+              lineHeight: "1rem",
+              textAlign: "center"
+            }}
+          >
+            10,000+
+          </h3>
+          <p
+            className=""
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: "900",
+              fontSize: "5vw",
+              maxWidth: "85%",
+              margin: "0 auto",
+              // paddingLeft: "0vw",
+              paddingTop: "2.5vw",
+              paddingRight: "5vw",
+              lineHeight: "4vw",
+              textAlign: "center"
+  
+            }}
+          >
+            volunteers
+          </p>
+          <p
+            className="-mt-3vw"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: "400", // Normal
+              fontSize: "1.5vw", // Custom font size
+              maxWidth: "46%", // Custom width
+              margin: "0 auto", // Center text
+              padding: "0vw",
+              paddingTop: "0.5vw",
+              textAlign: "center",
+              lineHeight: "2vw",
+              // paddingTop: "-5vw",
+            }}
+          >
+            making a difference in Los Angeles
+          </p>
+          <button
+              className="flex justify-center mt-6 bg-white text-[#194218] right-[9vw] ml-[5vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontSize: "1.5vw",
+              }}
+            >
+              EXPLORE OPPORTUNITIES
+            </button>
+        </div>
+      </div>
+    </section>
+    <section className="bg-[#183917]" style={{ height: "2vw" }}>
+    <ScrollArrow to="resources"  />
+    </section>
       {/* Resources Section */}
-      <section>
+      <section section id="resources">
         <div
           style={{
             backgroundColor: "#183917",

@@ -17,6 +17,7 @@ import {
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "@/components/filter";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [resources, setResources] = useState([]);
@@ -136,9 +137,9 @@ export default function Home() {
     endDate
   ).slice(0, visibleResources);
 
-  if (loading) return <p>Loading resources...</p>;
-  if (!resources || resources.length === 0)
-    return <p>No resources available.</p>;
+  // if (loading) return <p>Loading donations...</p>;
+  // if (!resources || resources.length === 0)
+  //   return <p>No resources available.</p>;
   return (
     <div className="relative">
       <Head>
@@ -167,14 +168,15 @@ export default function Home() {
         id="mission"
         className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
       >
+        <div>
         {/* title text =  */}
         <div
-          className="absolute top-0 left-36 bg-[#267738] rounded-br-[160px] rounded-bl-[100px] flex items-center justify-center text-white font-bold"
+          className="absolute top-0 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold"
           style={{
             zIndex: 0,
-            height: "25.5%",
-            width: "50.5%",
-            boxShadow: "1px 25px 2px 0 rgba(0, 0, 0, 0.3)",
+            height: "10vw",
+            width: "30vw",
+            boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
             fontFamily: "'Noto Sans', sans-serif",
             textAlign: "center",
           }}
@@ -186,11 +188,11 @@ export default function Home() {
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "7rem",
+                fontSize: "5vw",
                 top: "-2rem",
                 left: "-1rem",
                 color: "transparent",
-                WebkitTextStroke: "2px #ffffff",
+                WebkitTextStroke: "1px #ffffff",
                 zIndex: 1,
               }}
             >
@@ -202,7 +204,7 @@ export default function Home() {
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "7rem",
+                fontSize: "5vw",
                 textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                 zIndex: 2,
               }}
@@ -215,101 +217,104 @@ export default function Home() {
         {/* <section id="resources" className="py-16" style={{ backgroundColor: "#183917" }}>
         <div className="max-w-7xl mx-auto px-4 md:px-8"> */}
         {/* lighter green square with drop shadow */}
+        {/* right green square */}
         <div
-          className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
+          className="absolute top-12 right-0 h-full bg-[#267738] rounded-tl-[13vw] rounded-bl-[13vw]"
           style={{
             zIndex: 0,
             width: "30.5%",
+            height: "90vh",
             boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
           }}
         ></div>
 
-        <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
-          {/* Text Content */}
-          <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
-            <div
-              className="relative bg-[#183917] rounded-3xl border-[0.2rem] border-white shadow-lg py-8 px-6"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                color: "#ffffff",
-                maxWidth: "90%",
-              }}
-            >
-              {/* Circle with Star */}
-              <div
-                className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white rounded-full w-16 h-16 flex items-center justify-center"
-                style={{
-                  boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                }}
-              >
-                <i
-                  className="fas fa-star text-[#183917]"
-                  style={{
-                    fontSize: "30px",
-                  }}
-                ></i>
-              </div>
+  <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+    {/* Text Content */}
+    <div className=" w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full ">
+      <div
+        className="relative bg-[#183917] right-[3vw] rounded-[2.5vw] border-[0.2rem] border-white shadow-lg mt-[8vw] py-4 px-0 w-[27vw]"
+        style={{
+          fontFamily: "'Noto Sans', sans-serif",
+          color: "#ffffff",
+          maxWidth: "90%",
+        }}
+      >
+        
+        {/* Circle with Star */}
+        <div
+          className="absolute -top-[3.5vw] left-[13.25vw] transform -translate-x-1/2 bg-white rounded-full w-[5vw] h-[5vw] flex items-center justify-center"
+          style={{
+            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          <i
+            className="fas fa-star text-[#183917]"
+            style={{
+              fontSize: "2.25vw",
+            }}
+          ></i>
+        </div>
 
-              {/* Text Content */}
-              <p
-                className="mb-2 pt-3"
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontWeight: "600", // Semi-bold
-                  fontSize: "1.9rem", // Custom font size
-                  maxWidth: "60%", // Custom width
-                  margin: "0 auto", // Center text
-                }}
-              >
-                Help by donating to any of the
-              </p>
-              <p
-                className=""
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontWeight: "900",
-                  fontSize: "6.8rem",
-                  // width: "85%",
-                  margin: "0 auto",
-                  lineHeight: "6.25rem",
-                }}
-              >
-                100+
-              </p>
-              <p
-                className=""
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontWeight: "900",
-                  fontSize: "4rem",
-                  maxWidth: "85%",
-                  margin: "0 auto",
-                  // lineHeight: "3rem",
-                }}
-              >
-                organizations
-              </p>
-
-              <p
-                className=""
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontWeight: "600", // Normal
-                  fontSize: "1.9rem", // Custom font size
-                  maxWidth: "75%", // Custom width
-                  margin: "0 auto", // Center text
-                }}
-              >
-                supporting Los Angeles through wildfires
-              </p>
-            </div>
-
+        {/* Text Content */}
+        <p
+          className="mb-2 pt-3"
+          style={{
+            fontFamily: "'Noto Sans', sans-serif",
+            fontWeight: "600", // Semi-bold
+            fontSize: "1.5vw", // Custom font size
+            maxWidth: "50%", // Custom width
+            margin: "0 auto", // Center text
+          }}
+        >
+          Help by donating to any of the
+        </p>
+        <p
+          className=""
+          style={{
+            fontFamily: "'Noto Sans', sans-serif",
+            fontWeight: "900",
+            fontSize: "5vw",
+            margin: "0 auto",
+            paddingTop: "2.25vw",
+            lineHeight: "1rem",
+          }}
+        >
+          100+
+        </p>
+        <p
+          className=""
+          style={{
+            fontFamily: "'Noto Sans', sans-serif",
+            fontWeight: "900",
+            fontSize: "3vw",
+            maxWidth: "85%",
+            margin: "0 auto",
+            paddingTop: "1.25vw",
+            lineHeight: "5vw",
+          }}
+        >
+          organizations
+        </p>
+        <p
+          className=""
+          style={{
+            fontFamily: "'Noto Sans', sans-serif",
+            fontWeight: "600", // Normal
+            fontSize: "1.5vw", // Custom font size
+            maxWidth: "70%", // Custom width
+            margin: "0 auto", // Center text
+            paddingTop: "0vw",
+          }}
+        >
+          supporting Los Angeles through wildfires
+        </p>
+      </div>
             {/* Button */}
             <button
-              className="mt-6 bg-white text-[#194218] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+              className="mt-6 bg-white text-[#194218] mr-[6vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
-                fontSize: "20px",
+                fontSize: "1.75vw",
               }}
             >
               EXPLORE OPPORTUNITIES
@@ -317,21 +322,21 @@ export default function Home() {
           </div>
 
           {/* Image Content */}
-          <div className="md:w-[55%] relative h-full pl-16 z-100">
-            <div className="relative z-100">
+          <div className="relative h-full right-[15vw] z-1">
+            <div className="relative z-50">
               <img
                 src="/images/donate.png"
                 alt="Support graphic"
-                className="w-[73%] h-auto"
+                className="w-[60vw] h-auto"
               />
             </div>
             {/* Vertical Texts */}
             <div
-              className="absolute top-1/2 transform -translate-y-1/2 right-[-6.20rem] text-green-100 font-extrabold -rotate-90 z-20"
+              className="absolute w-[40vw] top-[12vw] left-[18vw] text-green-100 font-extrabold -rotate-90 z-20"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "102px",
+                fontSize: "5.5vw",
                 letterSpacing: "normal",
                 color: "#194218",
                 textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
@@ -341,13 +346,13 @@ export default function Home() {
             </div>
 
             <div
-              className="absolute top-1/2 transform -translate-y-1/2 right-[-11.75rem] text-green-100 font-extrabold -rotate-90 z-20"
+              className="absolute  w-[40vw] top-[11vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "102px",
+                fontSize: "5.5vw",
                 letterSpacing: "normal",
-                WebkitTextStroke: "3px #194218",
+                WebkitTextStroke: "2px #194218",
                 color: "transparent",
               }}
             >
@@ -355,10 +360,13 @@ export default function Home() {
             </div>
           </div>
         </div>
+          {/* Scroll Arrow Component */}
+              <ScrollArrow to="resources" />
+              </div>
       </section>
 
       {/* Resources Section */}
-      <section>
+      <section section id="resources">
         <div
           style={{
             backgroundColor: "#183917",
