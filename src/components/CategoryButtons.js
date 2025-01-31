@@ -12,6 +12,9 @@ import {
   faUsers,
   faDog,
   faPaw,
+  faBoxOpen,
+  faBowlRice,
+  faCar,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapping categories to icons with colors
@@ -27,6 +30,36 @@ const categoryIcons = {
   "Mental Health Support": { icon: faUsers, color: "#CC0000" },
   "Animal Boarding": { icon: faDog, color: "#CF5700" },
   "Veterinary Care & Pet Food": { icon: faPaw, color: "#CF5700" },
+  //volunteer categories
+  "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
+  "Food & Water Distribution": { icon: faBurger, color: "#015BC3" },
+  "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
+  "Shelter Assistance": { icon: faHouse, color: "#4D03CD" },
+  "Transporation & Delivery Support": { icon: faCar, color: "#4D03CD" },
+  "Medical Aid Support": { icon: faKitMedical, color: "#CC0000" },
+  "Animal Shelter Assistance": { icon: faDog, color: "#CF5700" },
+  "Animal Rescue & Transport": { icon: faPaw, color: "#CF5700" },
+  "Pet Supply Distribution": { icon: faBowlRice, color: "#CF5700" },
+  //donate categories
+  "Food & Water": { icon: faBurger, color: "#015BC3" },
+  "Clothing & Bedding": { icon: faShirt, color: "#015BC3" },
+  "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
+  "Monetary Donations (Essentials)": { icon: faMoneyBill, color: "#015BC3" },
+  "Emergency Supplies": { icon: faHouse, color: "#4D03CD" },
+  "Monetary Donations (Shelter & Support Services)": {
+    icon: faMoneyBill,
+    color: "#4D03CD",
+  },
+  "Medical Supplies": { icon: faKitMedical, color: "#CC0000" },
+  "Monetary Donations (Medical & Health)": {
+    icon: faMoneyBill,
+    color: "#CC0000",
+  },
+  "Pet Supplies": { icon: faPaw, color: "#CF5700" },
+  "Monetary Donations (Animal Support)": {
+    icon: faMoneyBill,
+    color: "#CF5700",
+  },
 };
 
 // CategoryButtons component

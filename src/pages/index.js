@@ -589,15 +589,6 @@ export default function Home() {
                     </button>
                   )}
                 </div>
-
-                {numberOfRows > 3 && numberOfRows % 2 === 1 && (
-                  <button
-                    onClick={handleShowMore}
-                    className="bg-blue-500 text-white font-bold py-2 px-6 rounded-full mt-4 flex items-center justify-center"
-                  >
-                    <FontAwesomeIcon icon={faArrowDown} size="2x" />
-                  </button>
-                )}
               </div>
             </div>
             {/* Essentials Category */}

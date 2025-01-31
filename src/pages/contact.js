@@ -1,130 +1,230 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Head from "next/head";
-import { scroller } from "react-scroll";
-import ResourceCard from "@/components/ResourceCard";
+import { useRouter } from "next/router";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEnvelope,
+  faPaperPlane,
+  faClipboard,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
+import emailjs from "emailjs-com";
 
-export default function Home() {
-    const resources = [
-        {
-            title: "Union Station Homeless Services",
-            address: "412 S. Raymond Avenue, Pasadena, CA",
-            date: "Feb 3, 2025",
-            time: "8:30AM - 5:00PM",
-            image: "/images/resource-1.jpg",
+export default function Contact() {
+  const formRef = useRef();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadRecaptcha = () => {
+      if (typeof window !== "undefined" && window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          window.grecaptcha.render("recaptcha-container", {
+            sitekey: "YOUR_RECAPTCHA_SITE_KEY",
+            callback: () => setCaptchaVerified(true),
+          });
+        });
+      }
+    };
+    loadRecaptcha();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!captchaVerified) {
+      toast.error("Please complete the reCAPTCHA.");
+      return;
+    }
+    if (!name || !email || !subject || !message) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    toast.loading("Sending message...");
+
+    emailjs
+      .sendForm(
+        "YOUR_SERVICE_ID",
+        "YOUR_TEMPLATE_ID",
+        formRef.current,
+        "YOUR_PUBLIC_KEY"
+      )
+      .then(
+        () => {
+          toast.dismiss();
+          toast.success("Message sent successfully!");
+          setFormSubmitted(true);
         },
-        {
-            title: "La Puente Food Distribution",
-            address: "1720 N. Walnut Ave, La Puente, CA",
-            date: "Feb 11, 2025",
-            time: "3:00PM - 6:00PM",
-            image: "/images/resource-2.jpg",
-        },
-        {
-            title: "Compassion Connection",
-            address: "1711 N Van Ness Ave, Hollywood, CA",
-            date: "Feb 4, 2025",
-            time: "9:30AM - 3:00PM",
-            image: "/images/resource-3.jpg",
-        },
-        {
-            title: "Food Pantry Distribution",
-            address: "4368 Santa Anita Ave, El Monte, CA",
-            date: "Feb 4, 2025",
-            time: "9:00AM - 12:00PM",
-            image: "/images/resource-4.jpg",
-        },
-    ];
+        (error) => {
+          toast.dismiss();
+          toast.error("Failed to send message.");
+          console.error("EmailJS error:", error);
+        }
+      )
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
 
-    return (
-        <div className="relative">
-            <Head>
-                <title>LA Relief - Discover Aid Near You</title>
-                <meta
-                    name="description"
-                    content="Find aid and resources near you for emergencies and support."
-                />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
-                    rel="stylesheet"
-                />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
-                    rel="stylesheet"
-                />
-            </Head>
+  return (
+    <div className="relative">
+      <Head>
+        <title>LA Relief - Discover Aid Near You</title>
+        <meta
+          name="description"
+          content="Find aid and resources near you for emergencies and support."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
 
-            {/* Mission Section */}
-            <section id="next-section" className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden">
-                <div
-                    className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
-                    style={{
-                        zIndex: 0,
-                        width: "30.5%",
-                        boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
-                    }}
-                ></div>
+      <div
+        className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6"
+        style={{ fontfamily: "noto sans sans-serif", fontweight: "700" }}
+      >
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-5xl font-bold text-center"
+        >
+          CONTACT
+        </motion.h1>
 
-                <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
-                    <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
-                        <h2
-                            className="mb-6"
-                            style={{
-                                fontFamily: "'Noto Sans', sans-serif",
-                                fontWeight: "900",
-                                fontSize: "94px",
-                                lineHeight: "1.1",
-                                whiteSpace: "nowrap",
-                                textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-                            }}
-                        >
-                            CONTACT
-                        </h2>
+        {/* Thank You Screen After Submission */}
+        {formSubmitted ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mt-10 text-center bg-gray-900 p-10 rounded-lg shadow-lg max-w-lg w-full"
+          >
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="text-green-500 text-6xl mb-4"
+            />
+            <h2 className="text-3xl font-bold">THANK YOU</h2>
+            <p className="text-white mt-2">
+              We will get back to you as soon as possible!
+            </p>
+            <button
+              onClick={() => setFormSubmitted(false)}
+              className="mt-6 bg-green-500 text-white p-3 rounded-lg hover:bg-green-600"
+            >
+              Send Another Message
+            </button>
+          </motion.div>
+        ) : (
+          <>
+            {/* Info Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="max-w-2xl text-center bg-gray-900 p-6 rounded-lg shadow-lg mt-6"
+            >
+              <p className="">
+                <strong>Welcome to LARelief!</strong>Whether you're here to
+                share ideas, offer support, or ask for help, we're ready to
+                connect and support you every step of the way. Use the fields
+                below to send us a message directly, or feel free to email us at{" "}
+                <a
+                  href="mailto:contact.larelief@gmail.com"
+                  className="text-blue-400"
+                >
+                  contact.larelief@gmail.com
+                </a>
+                . You can also follow and message us on instagram at{" "}
+                <a
+                  href="mailto:contact.larelief@gmail.com"
+                  className="text-blue-400"
+                >
+                  @larelief
+                </a>
+                . We look forward to hearing from you!
+              </p>
+            </motion.div>
 
-                        <p
-                            className="text-lg md:text-xl mb-8 leading-relaxed"
-                            style={{
-                                fontFamily: "'Noto Sans', sans-serif",
-                                fontWeight: "400",
-                                fontSize: "22px",
-                            }}
-                        >
-                            Our mission is to stand with communities affected by the Los Angeles
-                            wildfires. We’re here to make it easier to find the resources,
-                            support, and opportunities needed to recover and rebuild. Whether
-                            it’s through donations, volunteering, or simply offering a helping
-                            hand, we believe in the power of coming together to make a real
-                            difference.
-                        </p>
+            {/* Contact Form */}
+            <motion.form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mt-10 bg-gray-900 p-6 rounded-lg shadow-lg max-w-lg w-full border border-green-500"
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Name*"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-3 mb-4 rounded bg-black text-white border border-gray-700"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address*"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-3 mb-4 rounded bg-black text-white border border-gray-700"
+              />
+              <input
+                type="text"
+                name="subject"
+                placeholder="Subject*"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="w-full p-3 mb-4 rounded bg-black text-white border border-gray-700"
+              />
+              <textarea
+                name="message"
+                placeholder="Message*"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full p-3 mb-4 rounded bg-black text-white border border-gray-700"
+              ></textarea>
 
-                        <div className="flex gap-4">
-                            <button
-                                className="bg-white text-[#183917] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
-                                style={{ fontFamily: "'Noto Sans', sans-serif", fontSize: "20px" }}
-                                onClick={() =>
-                                    scroller.scrollTo("resources", {
-                                        smooth: true,
-                                        duration: 500,
-                                        offset: -72, // Adjust based on navbar height
-                                    })
-                                }
-                            >
-                                EXPLORE RESOURCES
-                            </button>
-                        </div>
-                    </div>
+              {/* reCAPTCHA */}
+              <div id="recaptcha-container" className="mb-4"></div>
 
-                    <div className="md:w-[55%] relative h-full pl-16">
-                        <div className="relative z-10">
-                            <img
-                                src="/images/mission-graphic.png"
-                                alt="Support graphic"
-                                className="w-[73%] h-auto"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
+              {/* Buttons Section */}
+              <div className="flex flex-col md:flex-row justify-between gap-4">
+                {/* Send Message Button */}
+                <button
+                  type="submit"
+                  className="w-full md:w-1/2 bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 flex items-center justify-center"
+                  disabled={isSubmitting}
+                >
+                  <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </button>
+
+                {/* Google Form Button */}
+                <a
+                  href="YOUR_GOOGLE_FORM_LINK"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full md:w-1/2 bg-white text-black font-bold p-3 rounded-lg hover:bg-gray-200 flex items-center justify-center"
+                >
+                  <FontAwesomeIcon icon={faClipboard} className="mr-2" />
+                  Google Form
+                </a>
+              </div>
+            </motion.form>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
