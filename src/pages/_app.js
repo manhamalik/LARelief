@@ -1,6 +1,6 @@
 import NavBar from "@/components/NavBar";
 import "@/styles/globals.css";
-import { Saira } from "next/font/google";
+import { Saira, Noto_Sans } from "next/font/google"; // Import Noto Sans
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
@@ -24,7 +24,6 @@ import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import "leaflet/dist/leaflet.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-
 // Prevent Font Awesome from automatically adding CSS globally
 config.autoAddCss = false;
 
@@ -42,6 +41,7 @@ library.add(
 );
 
 const saira = Saira({ subsets: ["latin"] });
+const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["300", "400", "700"] }); // Import Noto Sans
 
 export default function App({ Component, pageProps }) {
     const router = useRouter();
@@ -91,7 +91,7 @@ export default function App({ Component, pageProps }) {
         <>
             <style jsx global>{`
                 html {
-                    font-family: ${saira.style.fontFamily};
+                    font-family: ${notoSans.style.fontFamily}, ${saira.style.fontFamily}, sans-serif;
                 }
             `}</style>
             <main>

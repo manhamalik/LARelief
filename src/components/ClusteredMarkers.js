@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
+import ResourceCard from "./ResourceCard";
 import L from "leaflet";
 
-const clusterMarkers = (resources, zoomLevel) => {
+const clusterMarkers = (resources, zoomLevel, sidebar) => {
   const clusters = [];
   const threshold = zoomLevel < 10 ? Number.MAX_VALUE : zoomLevel < 12 ? 0.05 : 0.01;
 
@@ -77,7 +78,7 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
           return (
             <Marker key={index} position={cluster.center} icon={createClusterIcon(cluster.resources, typeColors)}>
               <Popup>
-                <strong>{cluster.resources.length} Resources</strong>
+                <strong>{cluster.resources.length} Opportunities</strong>
                 <ul>
                   {cluster.resources.slice(0, 10).map((resource) => (
                     <li key={resource.name}>{resource.name}</li>
@@ -90,17 +91,17 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
         } else {
           return cluster.resources.map((resource, i) => (
             <Marker
-              key={`marker-${i}`}
-              position={[resource.latitude, resource.longitude]}
-              icon={createCustomIcon(resource.types)}
-              eventHandlers={{ click: () => handleMarkerClick(resource) }}
-            >
-              <Popup>
-                <strong>{resource.organization_name}</strong>
-                <p>{resource.address}</p>
-                <p>{resource.types.join(", ")}</p>
-              </Popup>
-            </Marker>
+  key={`marker-${i}`}
+  position={[resource.latitude, resource.longitude]}
+  icon={createCustomIcon(resource.types)}
+  eventHandlers={{ click: () => handleMarkerClick(resource) }}
+>
+<Popup 
+offset={[0, -20]}            // moves the popup up 20px
+    className="my-custom-popup">
+    <ResourceCard resource={resource} />
+  </Popup>
+</Marker>
           ));
         }
       })}

@@ -74,3 +74,19 @@ input[type='number'] {
 .custom-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Opera */
 }
+
+/* .my-custom-popup .leaflet-popup-content-wrapper {
+  background-color: #fff;
+  border-radius: 12px;
+} */
+
+.my-custom-popup .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  width: 20.4vw;
+  height: 20.35vw;
+  background-color: #fff;
+}
+
+.my-custom-popup .leaflet-popup-content {
+  transform: translateX(-5.6vw) translateY(-2.2vw);
+}
