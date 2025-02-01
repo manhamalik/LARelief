@@ -253,30 +253,36 @@ export default function Home() {
         {/* <div className="w-full"> */}
           {/* Section Header */}
           <h2
-            className="text-center relative z-20 flex justify-center items-center gap-2 mb-8"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: "900",
-              fontSize: "94px",
-              color: "white",
-              textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-            }}
-          >
-            MAP
-            {/* Info Icon */}
-            <span className="relative group">
-              <i className="fas fa-circle-info text-lg cursor-pointer text-white"></i>
-              <span
-                className="absolute left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                Search Filter
-Easily find the support you need with our customizable filters. Use the top bar to view organizations currently open, seeking donations, or in need of volunteers. You can also select multiple filters to refine your search.
-Google Map
-Locate help near you using our interactive map. Search by your current location or use the search bar to find specific areas. Click on a place box to access detailed information about the organization.
-              </span>
-            </span>
-          </h2>
+  className="text-center relative z-20 flex justify-center items-center gap-2 mb-8"
+  style={{
+    fontFamily: "'Noto Sans', sans-serif",
+    fontWeight: "900",
+    fontSize: "94px",
+    color: "white",
+    textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+  }}
+>
+  MAP
+  {/* Info Icon */}
+  <span className="relative group">
+    <i className="fas fa-circle-info text-3xl cursor-pointer text-white"></i>
+    <span
+      className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-left rounded-lg"
+      style={{ width: "40vw" }}
+    >
+      <p className="">Search Filter:</p>
+      <p className="mb-2 font-semibold">
+        Easily find the support you need with our customizable filters. Use the top bar to view organizations currently open, seeking donations, or in need of volunteers. You can also select multiple filters to refine your search.
+      </p>
+      <p className="">Google Map:</p>
+      <p className="font-semibold">
+        Locate help near you using our interactive map. Search by your current location or use the search bar to find specific areas. Click on a place box to access detailed information about the organization.
+      </p>
+    </span>
+  </span>
+</h2>
+
+
 
           {/* Map Content */}
           <div className="relative w-full">
