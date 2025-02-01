@@ -159,7 +159,7 @@ export default function Home() {
     };
 	
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <div className="relative">
         <Head>
           <title>LA Relief - Discover Aid Near You</title>
