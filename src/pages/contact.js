@@ -183,7 +183,7 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="max-w-8xl p-6 rounded-[3vw] shadow-lg mt-3 border-4 border-white m-6"
+                className="max-w-8xl p-6 rounded-[2.75vw] shadow-lg mt-3 border-4 border-white m-6"
                 style={{
                   fontFamily: "'noto sans multani', sans-serif",
                   fontSize: "1.2rem",
@@ -192,7 +192,7 @@ export default function Contact() {
                 <p className="font-normal">
                   <strong>Welcome to LARelief!</strong> <br />
                   <span>
-                    Whether you're here to share ideas, offer support, or ask for help, we're ready to connect and support you every step of the way.
+                    Whether you&apos;re here to share ideas, offer support, or ask for help, we&apos;re ready to connect and support you every step of the way.
                     <br /> <br />
                     Use the fields below to send us a message directly, or feel free to email us at{" "}
                     <a
@@ -208,8 +208,7 @@ export default function Contact() {
                     >
                       @larelief
                     </a>
-                    .
-                    <br />
+                    .<br />
                     <br />
                     <strong>A Little About Us</strong> <br />
                     LARelief was founded in response to the devastating fires that impacted Los Angeles on January 7, 2025. Our mission is to provide essential resources and support, helping the community recover and thrive.
@@ -228,7 +227,7 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="relative bg-black border-4 border-white text-white p-6 rounded-[3vw] shadow-xl w-full md:w-1/4 max-w-sm text-center"
+                className="relative bg-black border-4 border-white text-white p-6 rounded-[2.75vw] shadow-xl w-full md:w-1/4 max-w-sm text-center"
               >
                 {/* Star Icon - Positioned Above */}
                 <div className="absolute top-[-30px] left-1/2 transform -translate-x-1/2 bg-white w-16 h-16 flex items-center justify-center rounded-full border-4 border-black">
