@@ -111,7 +111,7 @@ const ResourceCard = ({ resource }) => {
       key={id}
       className="outerContainer"
       style={{
-        fontFamily: "'Noto Sans', sans-serif",
+        fontFamily: "'Noto Sans Multani', sans-serif", // Updated font family
         position: "relative",
         left: "15%",
       }}
@@ -257,7 +257,6 @@ const ResourceCard = ({ resource }) => {
         .cardContainer {
           border-radius: 12px;
           height: 390px;
-          // width: 26vw;
           background-color: #f9f8f8;
           background-repeat: no-repeat;
           background-position: center;
@@ -270,7 +269,6 @@ const ResourceCard = ({ resource }) => {
           transition: transform 0.2s ease-out;
           transform: scale(0.9);
         }
-
         .cardContainer:hover {
           transform: scale(0.91);
           cursor: pointer;
@@ -286,7 +284,6 @@ const ResourceCard = ({ resource }) => {
         .cardBottom {
           display: flex;
           justify-content: space-between;
-          // width:23.5vw;
         }
         .resourceName {
           white-space: nowrap;

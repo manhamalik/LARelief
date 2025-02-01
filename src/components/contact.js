@@ -155,11 +155,11 @@ export default function Contact() {
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
                 <img
-                  src="/images/left-laptop.png"
+                  src="/images/image-removebg-preview_73.png"
                   className="sm:w-[15rem] md:w-[15rem] lg:w-[27rem] h-auto mr-6"
                 />
                 <img
-                  src="/images/right-laptop.png"
+                  src="/images/image-removebg-preview_73_5.png"
                   className="sm:w-[15rem] md:w-[15rem] lg:w-[27rem] h-auto pl-6"
                 />
               </motion.div>
@@ -238,7 +238,7 @@ export default function Contact() {
 
                 {/* Google Form Button */}
                 <a
-                  href="https://forms.gle/GFPGC5m4kXRbZyVE9"
+                  href="#link-to-google-form"
                   className="mt-6 bg-white text-black font-bold text-[26px] py-4 px-8 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-200 transition duration-300"
                 >
                   GOOGLE FORM

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DetailImageCarousel from "@/components/DetailImageCarousel";
-import { format, addDays } from "date-fns";
+import { format, addDays as addDaysDateFns } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -11,6 +11,9 @@ import {
   faPhone,
   faChevronDown,
   faChevronUp,
+  faHandHoldingHeart,
+  faCircleDollarToSlot,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faInstagram,
@@ -34,14 +37,13 @@ const formatPhoneNumber = (phone) => {
   return phone;
 };
 
-// Function to parse the hours of operation
 const parseHours = (hoursOfOperation, day) => {
   if (!hoursOfOperation) return null;
   const hours = hoursOfOperation[day];
   return hours ? (hours === "closed" ? null : hours.split(" - ")) : null;
 };
 
-// Resource data
+// Dummy resource data (for testing purposes)
 const resources = [
   {
     slug: "red-cross",
@@ -55,7 +57,8 @@ const resources = [
     endTime: "5:00 PM",
     about: "Supporting homeless individuals in Pasadena.",
     tasks: "These are items needed.",
-    link_to_volunteer: "https://volunteerconnection.redcross.org/?nd=intake_content&/",
+    link_to_volunteer:
+      "https://volunteerconnection.redcross.org/?nd=intake_content&/",
     contact_info: {
       website: "https://redcross.org",
       phone: "123.456.7890",
@@ -142,41 +145,43 @@ export default function Resource({ resource }) {
 
   const today = new Date();
   const currentDay = weekdays[today.getDay()];
-  const currentHours = parseHours(hours_of_operation, currentDay) || [
-    startTime,
-    endTime,
-  ];
+  const currentHours =
+    parseHours(hours_of_operation, currentDay) || [startTime, endTime];
 
   const startDisplayDate = startDate ? new Date(startDate) : today;
   const endDisplayDate = endDate ? new Date(endDate) : null;
 
   const getDatesRange = () => {
     const dates = [];
-    const today = new Date(); // Current day
-    const limit = addDays(today, 6); // 6 days following today
-  
+    const today = new Date();
+    const limit = addDays(today, 6);
+
     let current = today;
     while (current <= limit) {
       dates.push(new Date(current));
       current = addDays(current, 1);
     }
-  
-    return dates; // Return dates in natural order
+
+    return dates;
   };
-  
-  // Helper function to add days to a date
+
+  // Helper function to add days
   const addDays = (date, days) => {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
   };
 
-  const displayedDates = getDatesRange(startDisplayDate, endDisplayDate);
+  const displayedDates = getDatesRange();
 
   const toggleSchedule = () => setScheduleOpen(!scheduleOpen);
 
   return (
     <div className="page-layout">
+      <style jsx global>{`
+        /* Import Noto Sans Multani with multiple weights (if available) */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Multani:wght@100;200;300;400;500;600;700;800;900&display=swap');
+      `}</style>
       <style jsx>{`
         .page-layout {
           display: flex;
@@ -185,8 +190,8 @@ export default function Resource({ resource }) {
           align-items: flex-start;
           width: 100vw;
           min-height: 100vh;
-          // background-color: #f9f9f9;
-          font-family: "Noto Sans", sans-serif;
+          background-color: #ffffff;
+          font-family: "Noto Sans Multani", sans-serif;
         }
         .carousel-container {
           width: 50%;
@@ -194,9 +199,19 @@ export default function Resource({ resource }) {
           justify-content: center;
           align-items: center;
         }
+        .schedule-dropdown {
+          margin-top: 10px;
+          padding: 15px;
+          background: #f9f9f9;
+          border-radius: 10px;
+          width: 70%;
+          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          animation: fadeIn 0.3s ease-in-out;
+        }
         .details-container {
           width: 50%;
-          padding: 2rem;
+          padding: 3rem;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -214,63 +229,73 @@ export default function Resource({ resource }) {
           font-size: 2rem;
           font-weight: bold;
         }
-          .owned-by {
-            display: flex;
-            align-items: center;
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 1rem;
-          }
-          .organization-image {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-          }
+        .owned-by {
+          display: flex;
+          align-items: center;
+          font-size: 1rem;
+          color: #555;
+          margin-bottom: 1rem;
+        }
+        .organization-image {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          margin-right: 10px;
+          object-fit: cover;
+        }
         .horizontal-container {
           display: flex;
           align-items: center;
           margin-bottom: 1rem;
+          gap: 0.6rem;
         }
         .schedule {
           cursor: pointer;
         }
-        .schedule-dropdown {
-          background-color: #ebebeb;
-          border-radius: 10px;
-          padding: 1rem;
-          margin: 1rem 0;
-          width: 100%;
-          text-align: left;
-        }
         .additional-info {
-          margin-top: 2rem;
+          margin: 0;
           display: flex;
           justify-content: center;
           width: 100%;
+          margin-top: 2rem;
         }
         .info-column {
-          width: 45%;
-          text-align: center;
+          text-align: left;
+        }
+        .accessibility-tags {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0rem;
+        }
+        .tag {
+          background-color: #ebebeb;
+          border-radius: 15px;
+          padding: 0.5rem 1rem;
+          margin-top: 0.5rem;
+          display: flex;
+          align-items: center;
         }
         .buttons-container {
           display: flex;
           justify-content: center;
           margin-top: 2rem;
-          gap: 1rem;
+          gap: 2rem;
         }
         .button {
-          background-color: #007bff;
-          color: white;
+          background-color: rgb(255, 255, 255);
+          font-family: "Noto Sans Multani", sans-serif;
+          color: black;
           border: none;
-          border-radius: 5px;
-          padding: 0.75rem 1.5rem;
+          border-radius: 15px;
+          padding: 0.5rem 1.5rem;
           cursor: pointer;
-          font-size: 1rem;
+          font-size: 1.2rem;
+          font-weight: bold;
+          box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.1);
         }
         .button:hover {
-          background-color: #0056b3;
+          background-color: rgb(104, 167, 98);
         }
         .donation-button {
           display: flex;
@@ -297,7 +322,7 @@ export default function Resource({ resource }) {
         }
         .categories-container {
           display: flex;
-          gap: 0.5rem; /* Spacing between category pills */
+          gap: 0.5rem;
         }
         .pill {
           display: flex;
@@ -317,6 +342,15 @@ export default function Resource({ resource }) {
           background-color: #000;
           color: #fff;
         }
+        .contact-text {
+          margin-left: 0.5rem;
+        }
+        .accessibility-icon {
+          margin-right: 0.5rem;
+        }
+        .accessibility-text {
+          font-size: 0.8rem;
+        }
       `}</style>
 
       {/* Left: Carousel */}
@@ -324,35 +358,33 @@ export default function Resource({ resource }) {
         <DetailImageCarousel imageArray={carousel_images} />
       </div>
 
-        {/* Right: Details */}
-        <div className="details-container">
-       {/* Pills */}
-<div className="pills-container">
-  <div className="categories-container">
-    {categories.map((category, index) => (
-      <div key={index} className="pill category">
-        <FontAwesomeIcon icon={faLocationDot} />
-        {category}
-      </div>
-    ))}
-  </div>
-  <div className="pill donation">
-    <FontAwesomeIcon icon={faLink} />
-    Volunteer
-  </div>
-</div>
-
+      {/* Right: Details */}
+      <div className="details-container">
+        {/* Pills */}
+        <div className="pills-container">
+          <div className="categories-container">
+            {categories.map((category, index) => (
+              <div key={index} className="pill category">
+                <FontAwesomeIcon icon={faLocationDot} />
+                {category}
+              </div>
+            ))}
+          </div>
+          <div className="pill donation">
+            <FontAwesomeIcon icon={faLink} />
+            Volunteer
+          </div>
+        </div>
 
         <h1 className="header">{name}</h1>
         <p className="owned-by">
-        <img
-          src={resource.organization_image}
-          alt={`${name} logo`}
-          className="organization-image"
-        />
-        Hosted by {organization_name}
-      </p>
-
+          <img
+            src={resource.organization_image}
+            alt={`${name} logo`}
+            className="organization-image"
+          />
+          Hosted by {organization_name}
+        </p>
 
         <div className="horizontal-container">
           <FontAwesomeIcon icon={faLocationDot} className="icon" />
@@ -360,56 +392,59 @@ export default function Resource({ resource }) {
         </div>
 
         {/* Start and End Dates */}
-<div className="horizontal-container schedule" onClick={toggleSchedule}>
-  <FontAwesomeIcon icon={faCalendar} className="icon" />
-  <p>
-    {startDate && !endDate
-      ? format(today, "EEEE, MMMM d, yyyy") // Display current day
-      : `${format(startDisplayDate, "EEEE, MMMM d, yyyy")}${
-          endDate ? ` - ${format(endDisplayDate, "EEEE, MMMM d, yyyy")}` : ""
-        }`}
-  </p>
-  <FontAwesomeIcon
-    icon={scheduleOpen ? faChevronUp : faChevronDown}
-    style={{ marginLeft: "1rem" }}
-  />
-</div>
-
+        <div className="horizontal-container schedule" onClick={toggleSchedule}>
+          <FontAwesomeIcon icon={faCalendar} className="icon" />
+          <p>
+            {startDate && !endDate
+              ? format(today, "EEEE, MMMM d, yyyy")
+              : `${format(startDisplayDate, "EEEE, MMMM d, yyyy")}${
+                  endDate
+                    ? ` - ${format(endDisplayDate, "EEEE, MMMM d, yyyy")}`
+                    : ""
+                }`}
+          </p>
+          <FontAwesomeIcon
+            icon={scheduleOpen ? faChevronUp : faChevronDown}
+            style={{ marginLeft: "1rem" }}
+          />
+        </div>
 
         {/* Dropdown Schedule */}
         {scheduleOpen && (
-  <div className="schedule-dropdown">
-    {displayedDates.map((date, index) => {
-      const day = format(date, "EEEE");
-      const hours = parseHours(hours_of_operation, day);
+          <div className="schedule-dropdown">
+            {displayedDates.map((date, index) => {
+              const day = format(date, "EEEE");
+              const hours = parseHours(hours_of_operation, day);
+              return (
+                <p key={index}>
+                  {format(date, "EEEE, MMMM d, yyyy")} :{" "}
+                  {hours ? `${hours[0]} - ${hours[1]}` : "Closed"}
+                </p>
+              );
+            })}
+          </div>
+        )}
 
-      return (
-        <p key={index}>
-          {format(date, "EEEE, MMMM d, yyyy")} :{" "}
-          {hours ? `${hours[0]} - ${hours[1]}` : "Closed"}
-        </p>
-      );
-    })}
-  </div>
-)}
+        {/* Time Section */}
+        <div className="horizontal-container">
+          <FontAwesomeIcon icon={faClock} className="icon" />
+          <p>
+            {currentHours
+              ? `Hours: ${currentHours[0]} - ${currentHours[1]}`
+              : "Closed today"}
+          </p>
+        </div>
 
-
-       {/* Time Section */}
-<div className="horizontal-container">
-  <FontAwesomeIcon icon={faClock} className="icon" />
-  <p>
-    {currentHours
-      ? `Hours: ${currentHours[0]} - ${currentHours[1]}`
-      : "Closed today"}
-  </p>
-</div>
-
-        <h3><b>About</b></h3>
+        <h3>
+          <b>About</b>
+        </h3>
         <p>{about}</p>
-        <br></br>
-        <h3><b>Role Expectations</b></h3>
+        <br />
+        <h3>
+          <b>Role Expectations</b>
+        </h3>
         <p>{tasks}</p>
-        <br></br>
+        <br />
         {/* Donation Link Button */}
         {link_to_volunteer && (
           <a
@@ -422,125 +457,138 @@ export default function Resource({ resource }) {
             Link to Volunteer
           </a>
         )}
-<br></br>
-<div className="info-column">
-  <h2><b>Additional Info</b></h2>
-  <h3>Organization Contact</h3>
-  {contact_info && Object.keys(contact_info).length > 0 ? (
-    Object.keys(contact_info).map((key) => {
-      const value = contact_info[key];
-      if (!value) return null; // Skip empty or null values
-
-      switch (key) {
-        case "website":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faLink} className="icon" />
-              <a href={value} target="_blank" rel="noopener noreferrer">
-                {value}
-              </a>
-            </p>
-          );
-        case "phone":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faPhone} className="icon" />
-              {formatPhoneNumber(value)}
-            </p>
-          );
-        case "email":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faEnvelope} className="icon" />
-              {value}
-            </p>
-          );
-        case "instagram":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faInstagram} className="icon" />
-              <a
-                href={`https://instagram.com/${value.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                @{value.replace(/^@/, "")}
-              </a>
-            </p>
-          );
-        case "twitter":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faTwitter} className="icon" />
-              <a
-                href={`https://twitter.com/${value.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                @{value.replace(/^@/, "")}
-              </a>
-            </p>
-          );
-        case "tiktok":
-          return (
-            <p key={key}>
-              <FontAwesomeIcon icon={faTiktok} className="icon" />
-              <a
-                href={`https://tiktok.com/@${value.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                @{value.replace(/^@/, "")}
-              </a>
-            </p>
-          );
-        default:
-          console.log(`Unknown key: ${key}`);
-          return null;
-      }
-    })
-  ) : (
-    <p>No contact information available</p>
-  )}
-</div>
+        <br />
+        <div className="info-column">
+          <h2>
+            <b>Additional Info</b>
+          </h2>
+          <h3>
+            <i>Organization Contact</i>
+          </h3>
+          {contact_info && Object.keys(contact_info).length > 0 ? (
+            Object.keys(contact_info).map((key) => {
+              const value = contact_info[key];
+              if (!value) return null;
+              switch (key) {
+                case "website":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faLink} className="icon" />
+                      <a href={value} target="_blank" rel="noopener noreferrer">
+                        {value}
+                      </a>
+                    </p>
+                  );
+                case "phone":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faPhone} className="icon" />
+                      {formatPhoneNumber(value)}
+                    </p>
+                  );
+                case "email":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faEnvelope} className="icon" />
+                      {value}
+                    </p>
+                  );
+                case "instagram":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faInstagram} className="icon" />
+                      <a
+                        href={`https://instagram.com/${value.replace(/^@/, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        @{value.replace(/^@/, "")}
+                      </a>
+                    </p>
+                  );
+                case "twitter":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faTwitter} className="icon" />
+                      <a
+                        href={`https://twitter.com/${value.replace(/^@/, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        @{value.replace(/^@/, "")}
+                      </a>
+                    </p>
+                  );
+                case "tiktok":
+                  return (
+                    <p key={key}>
+                      <FontAwesomeIcon icon={faTiktok} className="icon" />
+                      <a
+                        href={`https://tiktok.com/@${value.replace(/^@/, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        @{value.replace(/^@/, "")}
+                      </a>
+                    </p>
+                  );
+                default:
+                  console.log(`Unknown key: ${key}`);
+                  return null;
+              }
+            })
+          ) : (
+            <p>No contact information available</p>
+          )}
+        </div>
 
         {/* Buttons */}
         <div className="buttons-container">
-  <button
-    className="button"
-    onClick={() => {
-      window.open("/donate", "_blank");
-    }}
-  >
-    Donate
-  </button>
-  <button
-    className="button"
-    onClick={() => {
-      window.open("/volunteer", "_blank");
-    }}
-  >
-    Volunteer
-  </button>
-  <button
-  className="button"
-  onClick={() => {
-    // Get specific content
-    const organizationName = document.querySelector(".header").innerText;
-    const dates = document.querySelector(".schedule-dropdown")?.innerText;
-    const hours = document.querySelector(".horizontal-container p").innerText;
-    const about = document.querySelector("h3 + p").innerText;
-    const itemsNeeded = document.querySelector("h3 + p").innerText;
-    
-    // Get contact info if available
-    let contactInfo = '';
-    const contactElements = document.querySelectorAll(".info-column p");
-    contactElements.forEach((el) => {
-      contactInfo += el.innerText + '\n';
-    });
+          <button
+            className="button"
+            onClick={() => {
+              window.open("/donate", "_blank");
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCircleDollarToSlot}
+              className="text-[#2B9FD0] mr-2"
+            />
+            Donate
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              window.open("/volunteer", "_blank");
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faHandHoldingHeart}
+              className="text-[#D55858] mr-2"
+            />
+            Volunteer
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              const organizationName =
+                document.querySelector(".header").innerText;
+              const dates =
+                document.querySelector(".schedule-dropdown")?.innerText;
+              const hours = document.querySelector(
+                ".horizontal-container p"
+              ).innerText;
+              const about = document.querySelector("h3 + p").innerText;
+              const itemsNeeded = document.querySelector("h3 + p").innerText;
 
-    // Format the text you want to copy
-    const textToCopy = `
+              let contactInfo = "";
+              const contactElements =
+                document.querySelectorAll(".info-column p");
+              contactElements.forEach((el) => {
+                contactInfo += el.innerText + "\n";
+              });
+
+              const textToCopy = `
       Organization: ${organizationName}
       Address: ${hours || "No address information available"}
       About: ${about || "No description available"}
@@ -549,22 +597,25 @@ export default function Resource({ resource }) {
       ${contactInfo || "No contact information available"}
     `;
 
-    // Copy the selected text to the clipboard
-    navigator.clipboard
-      .writeText(textToCopy)
-      .then(() => {
-        alert("Information copied to clipboard! Please share this opportunity!"); 
-      })
-      .catch((err) => {
-        console.error("Failed to copy content: ", err);
-      });
-  }}
->
-  Share
-</button>
-
-</div>
-
+              navigator.clipboard
+                .writeText(textToCopy)
+                .then(() => {
+                  alert(
+                    "Information copied to clipboard! Please share this opportunity!"
+                  );
+                })
+                .catch((err) => {
+                  console.error("Failed to copy content: ", err);
+                });
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="text-[#000000] mr-2"
+            />
+            Share
+          </button>
+        </div>
       </div>
     </div>
   );

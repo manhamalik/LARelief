@@ -28,7 +28,6 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
 
   useEffect(() => {
     const handleRouteChange = () => setIsOpen(false);
-
     router.events.on("routeChangeStart", handleRouteChange);
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
@@ -41,12 +40,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
         const scrollY = window.scrollY;
         const heroHeight = document.querySelector("#hero")?.offsetHeight || 0;
         const offset = 70;
-
-        if (scrollY > heroHeight - offset) {
-          setIsScrolled(true);
-        } else {
-          setIsScrolled(false);
-        }
+        setIsScrolled(scrollY > heroHeight - offset);
       };
 
       window.addEventListener("scroll", handleScroll);
@@ -61,8 +55,9 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 py-4 md:px-4 text-white transition-all duration-300 ${
-        isHomePage && isScrolled ? "bg-[#183917]" : initialBackgroundColor
+      style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+      className={`sticky top-0 z-[9999] py-4 md:px-4 text-white transition-all duration-300 ${
+        isHomePage && isScrolled ? "bg-black" : initialBackgroundColor
       }`}
     >
       <div className="relative flex justify-between px-4 md:px-0 items-center">
@@ -84,32 +79,32 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
           <div className="flex space-x-6">
             <span
               onClick={() => handleNavigation("map")}
-              className="group relative font-sans font-semibold transition-transform ease-in-out duration-300 cursor-pointer"
+              className="group relative font-semibold transition-transform ease-in-out duration-300 cursor-pointer"
             >
               Map
               <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
             </span>
             <Link href="/volunteer">
-              <span className="group relative font-sans font-semibold transition-transform ease-in-out duration-300">
+              <span className="group relative font-semibold transition-transform ease-in-out duration-300">
                 Volunteer
                 <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
               </span>
             </Link>
             <Link href="/donate">
-              <span className="group relative font-sans font-semibold transition-transform ease-in-out duration-300">
+              <span className="group relative font-semibold transition-transform ease-in-out duration-300">
                 Donate
                 <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
               </span>
             </Link>
             <span
               onClick={() => handleNavigation("faq")}
-              className="group relative font-sans font-semibold transition-transform ease-in-out duration-300 cursor-pointer"
+              className="group relative font-semibold transition-transform ease-in-out duration-300 cursor-pointer"
             >
               FAQs
               <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
             </span>
             <Link href="/contact">
-              <span className="group relative font-sans font-semibold transition-transform ease-in-out duration-300">
+              <span className="group relative font-semibold transition-transform ease-in-out duration-300">
                 Contact
                 <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
               </span>
@@ -132,7 +127,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                 alt="Language Icon"
                 className="w-auto h-3"
               />
-              <span className="font-sans font-semibold text-white">English</span>
+              <span className="font-semibold text-white">English</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -159,7 +154,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                 <li>
                   <Link
                     href="#"
-                    className="block px-3 py-1 font-sans font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    className="block px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                   >
                     English
                   </Link>
@@ -167,7 +162,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                 <li className="border-t border-gray-300">
                   <Link
                     href="#"
-                    className="block px-3 py-1 font-sans font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    className="block px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                   >
                     Spanish
                   </Link>

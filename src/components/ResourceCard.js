@@ -71,7 +71,6 @@ const ResourceCard = ({ resource }) => {
   const displayDate = (() => {
     const start = new Date(start_date);
     const end = new Date(end_date);
-
     if (end_date) {
       if (start.getFullYear() === end.getFullYear()) {
         return `${start.toLocaleDateString("en-US", {
@@ -91,13 +90,12 @@ const ResourceCard = ({ resource }) => {
 
   const currentDayHours = getCurrentDayHours(hours_of_operation);
 
-
   return (
     <div
       key={id}
       className="outerContainer"
       style={{
-        fontFamily: "'Noto Sans', sans-serif",
+        fontFamily: "'Noto Sans Multani', sans-serif",
         position: "relative",
         left: "15%",
       }}
@@ -169,8 +167,10 @@ const ResourceCard = ({ resource }) => {
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
-                <h2 className="resourceName">{name}</h2>
-                <p>{address}</p>
+                <h2 className="resourceName" style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>
+                  {name}
+                </h2>
+                <p style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>{address}</p>
               </div>
             </div>
             <div className="cardBottom">
@@ -189,6 +189,7 @@ const ResourceCard = ({ resource }) => {
                     color: "#6C727D",
                     marginLeft: "7px",
                     fontSize: "1rem",
+                    fontFamily: "'Noto Sans Multani', sans-serif",
                   }}
                 >
                   {displayDate}
@@ -209,6 +210,7 @@ const ResourceCard = ({ resource }) => {
                     color: "#6C727D",
                     marginLeft: "7px",
                     fontSize: "1rem",
+                    fontFamily: "'Noto Sans Multani', sans-serif",
                   }}
                 >
                   {currentDayHours}
@@ -226,7 +228,6 @@ const ResourceCard = ({ resource }) => {
         .cardContainer {
           border-radius: 12px;
           height: 390px;
-          // width: 26vw;
           background-color: #f9f8f8;
           background-repeat: no-repeat;
           background-position: center;
@@ -239,7 +240,6 @@ const ResourceCard = ({ resource }) => {
           transition: transform 0.2s ease-out;
           transform: scale(0.9);
         }
-        
         .cardContainer:hover {
           transform: scale(0.91);
           cursor: pointer;
@@ -255,7 +255,6 @@ const ResourceCard = ({ resource }) => {
         .cardBottom {
           display: flex;
           justify-content: space-between;
-          // width:23.5vw;
         }
         .resourceName {
           white-space: nowrap;

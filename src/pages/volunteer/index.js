@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { scroller } from "react-scroll";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ScrollArrow from "@/components/ScrollArrow";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   faMagnifyingGlass,
   faArrowDown,
-  faCalendar,
   faCalendarAlt,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +14,7 @@ import VolunteerCard from "@/components/VolunteerCard";
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "@/components/filter";
+import ScrollArrow from "@/components/ScrollArrow";
 
 export default function Home() {
   const [resources, setResources] = useState([]);
@@ -44,17 +43,14 @@ export default function Home() {
     setSelectedSubCategories((prevSelectedSubCategories) => {
       const subCategoriesForCategory =
         prevSelectedSubCategories[mainCategory] || [];
-      const updatedSubCategories = subCategoriesForCategory.includes(
-        subCategory
-      )
-        ? subCategoriesForCategory.filter((sc) => sc !== subCategory) // Remove if clicked again
-        : [...subCategoriesForCategory, subCategory]; // Add if not already selected
+      const updatedSubCategories = subCategoriesForCategory.includes(subCategory)
+        ? subCategoriesForCategory.filter((sc) => sc !== subCategory)
+        : [...subCategoriesForCategory, subCategory];
       return {
         ...prevSelectedSubCategories,
         [mainCategory]: updatedSubCategories,
       };
     });
-
     setVisibleResources(4); // Reset visible resources to initial value
   };
 
@@ -87,6 +83,7 @@ export default function Home() {
 
   const numberOfRows = Math.ceil(visibleResources / 4);
 
+  // Updated category/sub-category names that match your data
   const essentialsResources = filterResources(
     resources,
     "Essentials",
@@ -123,10 +120,6 @@ export default function Home() {
     endDate
   ).slice(0, visibleResources);
 
-  // if (loading) return <p>Loading resources...</p>;
-  // if (!resources || resources.length === 0)
-  //   return <p>No resources available.</p>;
-
   return (
     <div className="relative">
       <Head>
@@ -136,6 +129,7 @@ export default function Home() {
           content="Find aid and resources near you for emergencies and support."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Original fonts */}
         <link
           href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
           rel="stylesheet"
@@ -144,141 +138,149 @@ export default function Home() {
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
           rel="stylesheet"
         />
+        {/* Added Google Font for Noto Sans Multani */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Multani&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
+      {/* Mission Section */}
       <section
-      id="mission"
-      className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 px-8 relative overflow-hidden"
-    >
-      
-      {/* --- The “road” background image --- */}
-      <img
-        src="/images/road.png"
-        alt="Green road shape"
-        className="absolute bottom-0 left-0 w-[full] md:h-auto object-cover"
-        style={{ zIndex: 0 }}
-      />
-
-      {/* --- Large “VOLUNTEER” label in top/left corner with outline --- */}
-      <div
-        className="absolute top-0 left-0 bg-[#227541] rounded-br-[12vw] flex items-center justify-center"
-        style={{
-          zIndex: 1,
-          height: "10vw",
-          width: "43vw",
-          // boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
-          fontFamily: "'Noto Sans', sans-serif",
-          textAlign: "center",
-        }}
+        id="mission"
+        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 px-8 relative overflow-hidden"
       >
-        <h2 className="relative text-center font-bold text-white">
-          {/* Stroke/Outline layer */}
-          <span
-            className="absolute inset-0"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: 900,
-              fontSize: "5vw",
-              top: "-2rem",
-              left: "-1vw",
-              color: "transparent",
-              WebkitTextStroke: "1px #ffffff",
-              zIndex: 1,
-            }}
-          >
-            VOLUNTEER
-          </span>
-          {/* Filled text layer */}
-          <span
-            className="relative text-white"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: 900,
-              fontSize: "5vw",
-              textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-              zIndex: 2,
-            }}
-          >
-            VOLUNTEER
-          </span>
-        </h2>
-      </div>
+        {/* Road Background Image */}
+        <img
+          src="/images/road.png"
+          alt="Green road shape"
+          className="absolute bottom-0 left-0 w-full md:h-auto object-cover"
+          style={{ zIndex: 0 }}
+        />
 
-      {/* --- Main Content Row --- */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center w-full max-w-7xl mt-[4vw] ml-[0vw]">
-      
-        <div className="w-full mt-0">
-          <img
-            src="/images/volunteer.png"
-            alt="Volunteers"
-            className="w-[70vw]"
-          />
+        {/* VOLUNTEER Label */}
+        <div
+          className="absolute top-0 left-0 bg-[#227541] rounded-br-[12vw] flex items-center justify-center"
+          style={{
+            zIndex: 1,
+            height: "10vw",
+            width: "43vw",
+            fontFamily: "'Noto Sans', sans-serif",
+            textAlign: "center",
+          }}
+        >
+          <h2 className="relative text-center font-bold text-white">
+            {/* Stroke/Outline layer */}
+            <span
+              className="absolute inset-0"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: 900,
+                fontSize: "5vw",
+                top: "-2rem",
+                left: "-1vw",
+                color: "transparent",
+                WebkitTextStroke: "1px #ffffff",
+                zIndex: 1,
+              }}
+            >
+              VOLUNTEER
+            </span>
+            {/* Filled text layer */}
+            <span
+              className="relative text-white"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: 900,
+                fontSize: "5vw",
+                textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+                zIndex: 2,
+              }}
+            >
+              VOLUNTEER
+            </span>
+          </h2>
         </div>
 
-        {/* -- Right Side: Text + Button -- */}
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
-          <h3
-            className=""
-            style={{ fontFamily: "'Noto Sans', sans-serif", fontWeight: "400",
-              fontSize: "1.5vw",
-              maxWidth: "100%",
-              margin: "0 auto",  
-            textAlign: "center"
-            }}
-          >
-            Join a community of
-          </h3>
-          <h3
-            className="font-extrabold mt-2"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: "900",
-              fontSize: "5.5vw",
-              margin: "0 auto",
-              paddingTop: "2.25vw",
-              lineHeight: "1rem",
-              textAlign: "center"
-            }}
-          >
-            10,000+
-          </h3>
-          <p
-            className=""
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: "900",
-              fontSize: "5vw",
-              maxWidth: "85%",
-              margin: "0 auto",
-              // paddingLeft: "0vw",
-              paddingTop: "2.5vw",
-              paddingRight: "5vw",
-              lineHeight: "4vw",
-              textAlign: "center"
-  
-            }}
-          >
-            volunteers
-          </p>
-          <p
-            className="-mt-3vw"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: "400", // Normal
-              fontSize: "1.5vw", // Custom font size
-              maxWidth: "46%", // Custom width
-              margin: "0 auto", // Center text
-              padding: "0vw",
-              paddingTop: "0.5vw",
-              textAlign: "center",
-              lineHeight: "2vw",
-              // paddingTop: "-5vw",
-            }}
-          >
-            making a difference in Los Angeles
-          </p>
-          <button
-              className="flex justify-center mt-6 bg-white text-[#194218] right-[9vw] ml-[5vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+        {/* Main Content Row */}
+        <div className="relative z-10 flex flex-col md:flex-row items-center w-full max-w-7xl mt-[4vw] ml-[0vw]">
+          <div className="w-full mt-0">
+            <img
+              src="/images/volunteer.png"
+              alt="Volunteers"
+              className="w-[70vw]"
+            />
+          </div>
+
+          {/* Right Side: Text + Button */}
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
+            <h3
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "400",
+                fontSize: "1.5vw",
+                maxWidth: "100%",
+                margin: "0 auto",
+                textAlign: "center",
+              }}
+            >
+              Join a community of
+            </h3>
+            <h3
+              className="font-extrabold mt-2"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "900",
+                fontSize: "5.5vw",
+                margin: "0 auto",
+                paddingTop: "2.25vw",
+                lineHeight: "1rem",
+                textAlign: "center",
+              }}
+            >
+              10,000+
+            </h3>
+            <p
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "900",
+                fontSize: "5vw",
+                maxWidth: "85%",
+                margin: "0 auto",
+                paddingTop: "2.5vw",
+                paddingRight: "5vw",
+                lineHeight: "4vw",
+                textAlign: "center",
+              }}
+            >
+              volunteers
+            </p>
+            <p
+              className="-mt-3vw"
+              style={{
+                fontFamily: "'Noto Sans', sans-serif",
+                fontWeight: "400",
+                fontSize: "1.5vw",
+                maxWidth: "46%",
+                margin: "0 auto",
+                padding: "0vw",
+                paddingTop: "0.5vw",
+                textAlign: "center",
+                lineHeight: "2vw",
+              }}
+            >
+              making a difference in Los Angeles
+            </p>
+            {/* EXPLORE OPPORTUNITIES Button */}
+            <button
+              onClick={() =>
+                scroller.scrollTo("resources", {
+                  smooth: true,
+                  duration: 500,
+                  offset: -50, // Adjust the offset as needed
+                })
+              }
+              className="flex justify-center mt-6 bg-white text-[#194218] ml-[5vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontSize: "1.5vw",
@@ -286,14 +288,16 @@ export default function Home() {
             >
               EXPLORE OPPORTUNITIES
             </button>
+          </div>
         </div>
-      </div>
-    </section>
-    <section className="bg-[#183917]" style={{ height: "2vw" }}>
-    <ScrollArrow to="resources"  />
-    </section>
+      </section>
+
+      <section className="bg-[#183917]" style={{ height: "2vw" }}>
+        <ScrollArrow to="resources" />
+      </section>
+
       {/* Resources Section */}
-      <section section id="resources">
+      <section id="resources">
         <div
           style={{
             backgroundColor: "#183917",
@@ -309,10 +313,7 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -321,15 +322,15 @@ export default function Home() {
               href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
               rel="stylesheet"
             />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Noto+Sans+Multani&display=swap"
+              rel="stylesheet"
+            />
           </Head>
 
           {/* Header */}
-          <div className="px-8 pt-8 select-none">
-            <div
-              className="heading-container max-w-7xl flex flex-col md:flex-row
-          md:items-baseline
-          gap-6"
-            >
+          <div className="px-8 pt-8 select-none overflow-x-hidden">
+            <div className="heading-container w-[95vw] flex flex-col md:flex-row md:items-baseline gap-6">
               <div className="max-w-2xl">
                 {/* Section Header */}
                 <h2 className="relative text-center">
@@ -348,7 +349,6 @@ export default function Home() {
                   >
                     SEARCH FOR
                   </span>
-
                   {/* Main Filled Layer */}
                   <span
                     className="relative text-white"
@@ -376,10 +376,11 @@ export default function Home() {
                   <div className="search-filter-containers relative flex items-center">
                     <input
                       type="text"
-                      placeholder="Name of Organization"
+                      placeholder="Name of organization"
                       onChange={handleSearch}
                       value={searchInput}
-                      className="rounded-full py-2 px-6"
+                      style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+                      className="rounded-full py-2 px-4"
                     />
                     <FontAwesomeIcon
                       icon={faMagnifyingGlass}
@@ -406,6 +407,7 @@ export default function Home() {
                         endDate={endDate}
                         selectsRange
                         placeholderText="Date"
+                        style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
                         className="rounded-full w-60 h-10 text-center pr-4"
                       />
                       <FontAwesomeIcon
@@ -431,6 +433,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
             {/* Essentials Category */}
             <div className="flex flex-wrap gap-4 mt-0 items-center justify-between">
               <div className="flex items-center gap-4">
@@ -465,7 +468,6 @@ export default function Home() {
                   className="bg-white text-black font-bold py-1.5 px-4 rounded-full mt-3 flex flex-wrap gap-1 items-center"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
-                    position: "flex",
                     alignItems: "center",
                   }}
                 >
@@ -474,12 +476,10 @@ export default function Home() {
                 </button>
               )}
             </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {essentialsResources
-                .slice(0, visibleResources)
-                .map((resource) => (
-                  <VolunteerCard key={resource.id} resource={resource} />
-                ))}
+            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+              {essentialsResources.slice(0, visibleResources).map((resource) => (
+                <VolunteerCard key={resource.id} resource={resource} />
+              ))}
             </div>
 
             {/* Shelter & Support Services Category */}
@@ -499,18 +499,13 @@ export default function Home() {
               <CategoryButtons
                 categories={[
                   "Shelter Assistance",
-                  "Transporation & Delivery Support",
+                  "Transportation & Delivery Support",
                 ]}
-                selectedCategories={
-                  selectedSubCategories["Shelter & Support Services"] || []
-                }
+                selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
                 handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick(
-                    "Shelter & Support Services",
-                    subCategory
-                  )
+                  handleSubCategoryClick("Shelter & Support Services", subCategory)
                 }
-                mainCategory="Shelter"
+                mainCategory="Shelter & Support Services"
               />
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
@@ -520,7 +515,7 @@ export default function Home() {
             </div>
 
             {/* Medical & Health Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center ">
+            <div className="flex flex-wrap gap-4 mt-4 items-center">
               <h2
                 className="text-xl font-bold"
                 style={{
@@ -535,9 +530,7 @@ export default function Home() {
               </h2>
               <CategoryButtons
                 categories={["Medical Aid Support", "Mental Health Support"]}
-                selectedCategories={
-                  selectedSubCategories["Medical & Health"] || []
-                }
+                selectedCategories={selectedSubCategories["Medical & Health"] || []}
                 handleCategoryClick={(subCategory) =>
                   handleSubCategoryClick("Medical & Health", subCategory)
                 }
@@ -550,10 +543,10 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Shelter & Support Services Category */}
+            {/* Animal Support Category */}
             <div className="flex flex-wrap gap-4 mt-4 items-center">
               <h2
-                className="text-xl font-bold"
+                className="text-xl"
                 style={{
                   fontFamily: "'Potta One', normal",
                   fontSize: "50px",
@@ -570,9 +563,7 @@ export default function Home() {
                   "Animal Rescue & Transport",
                   "Pet Supply Distribution",
                 ]}
-                selectedCategories={
-                  selectedSubCategories["Animal Support"] || []
-                }
+                selectedCategories={selectedSubCategories["Animal Support"] || []}
                 handleCategoryClick={(subCategory) =>
                   handleSubCategoryClick("Animal Support", subCategory)
                 }

@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Multani:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+html,
+body {
+  font-family: 'Noto Serif', serif;
+}
+
 
 @tailwind base;
 @tailwind components;
@@ -9,44 +15,64 @@
   --charcoal-transparent: #26272BFA;
   --charcoal-light: #403C44; /* non opaque version */
   --egg: #EDE5DB;
-  --ruby: #E73742;
+  --ruby: #267738;
   --ash: #948F8B;
   --ashy-egg: #DAD2CC;
   --snow: #F2F2F2;
 }
 
+/* Set Noto Sans Display as the default font for the entire site */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans Multani', sans-serif;
+}
+
+
 .markdown-content a {
   @apply text-blue-500 hover:text-blue-700 underline;
 }
 
-.scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+/* WebKit Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 15px; /* Adjust width as needed */
+  height: 8px;
 }
 
-.scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--ruby); /* Scrollbar thumb color */
+::-webkit-scrollbar-track {
+  background: #2f2f2f;
   border-radius: 10px;
-  border: 2px solid transparent; /* Padding around the thumb */
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--snow);
+::-webkit-scrollbar-thumb {
+  background-color: #000000; /* Darker thumb for contrast */
+  border-radius: 5vw; /* Rounded thumb */
 }
 
-.scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker on hover */
 }
 
-::selection{
+.chat-messages::-webkit-scrollbar {
+  width: 5px !important;
+  height: 8px !important;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: #267738 !important;
+  border-radius: 10px !important;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background-color: #555 !important;
+}
+
+::selection {
   background: var(--ruby);
 }
 
-.react-multi-carousel-list{
+.react-multi-carousel-list {
   position: relative !important;
 }
 
@@ -75,11 +101,6 @@ input[type='number'] {
   display: none; /* Chrome, Safari, and Opera */
 }
 
-/* .my-custom-popup .leaflet-popup-content-wrapper {
-  background-color: #fff;
-  border-radius: 12px;
-} */
-
 .my-custom-popup .leaflet-popup-content-wrapper {
   border-radius: 10px;
   width: 20.4vw;
@@ -88,5 +109,5 @@ input[type='number'] {
 }
 
 .my-custom-popup .leaflet-popup-content {
-  transform: translateX(-5.6vw) translateY(-2.2vw);
+  transform: translateX(-7vw) translateY(-4.7vw);
 }

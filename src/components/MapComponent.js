@@ -1,3 +1,4 @@
+// components/MapComponent.jsx
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -5,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ResourceCard from "@/components/ResourceCard";
 import DonationCard from "@/components/DonationCard";
 import VolunteerCard from "@/components/VolunteerCard";
+import { ZoomControl } from "react-leaflet"; // import ZoomControl
 
 import {
   faTshirt,
@@ -31,10 +33,6 @@ import {
   faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 
-// import resources from "@/data/resources";
-// import donations from "@/data/donations";
-// import volunteering from "@/data/volunteering";
-
 // Dynamically import Leaflet components
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -44,24 +42,27 @@ const TileLayer = dynamic(
   () => import("react-leaflet").then((mod) => mod.TileLayer),
   { ssr: false }
 );
-const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), {
-  ssr: false,
-});
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
-  ssr: false,
-});
-const ClusteredMarkers = dynamic(() => import("@/components/ClusteredMarkers"), {
-  ssr: false,
-});
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Popup),
+  { ssr: false }
+);
+const ClusteredMarkers = dynamic(
+  () => import("@/components/ClusteredMarkers"),
+  { ssr: false }
+);
 
 // Leaflet CSS
 import "leaflet/dist/leaflet.css";
 
-// Icon config for each subcategory
+// Icon configuration for each subcategory
 const iconConfig = {
   "Food & Water": { icon: "fa-solid fa-burger", color: "#015BC3" },
   "Clothing & Personal Items": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
-  "Hygiene & Sanitation": { icon: "fa-solid fa-bath ", color: "#015BC3" },
+  "Hygiene & Sanitation": { icon: "fa-solid fa-bath", color: "#015BC3" },
   "Financial Support": { icon: "fa-solid fa-money-bill-wave", color: "#015BC3" },
   "Shelters & Housing Assistance": { icon: "fa-solid fa-home", color: "#4D03CD" },
   "Transportation Assistance": { icon: "fa-solid fa-car-side", color: "#4D03CD" },
@@ -71,7 +72,7 @@ const iconConfig = {
   "Animal Boarding": { icon: "fa-solid fa-dog", color: "#DB5D02" },
   "Veterinary Care & Pet Food": { icon: "fa-solid fa-paw", color: "#DB5D02" },
   "Clothing & Bedding": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
-  "Hygiene & Sanitation Supplies": { icon: "fa-solid fa-bath ", color: "#015BC3" },
+  "Hygiene & Sanitation Supplies": { icon: "fa-solid fa-bath", color: "#015BC3" },
   "Emergency Supplies": { icon: "fa-solid fa-home", color: "#4D03CD" },
   "Medical Supplies": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
   "Pet Supplies": { icon: "fa-solid fa-dog", color: "#DB5D02" },
@@ -113,27 +114,18 @@ function convertTo24Hour(timeStr) {
 // Checks if a location is currently “open”
 function isLocationOpen(location) {
   const now = new Date();
-
-  // A) Date range check
   let startDate = location.start_date ? new Date(location.start_date) : new Date(0);
   let endDate = location.end_date ? new Date(location.end_date) : new Date(9999, 11, 31);
-
   const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
   const endMidnight = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-
   if (todayMidnight < startMidnight) return false;
   if (todayMidnight > endMidnight) return false;
-
-  // B) Hours-of-operation for today's day-of-week
   const dayOfWeek = now.toLocaleString("en-US", { weekday: "long" });
   const todayHours = location.hours_of_operation?.[dayOfWeek];
   if (!todayHours) return false;
-
   const [startTime, endTime] = todayHours.split(" - ");
   if (!startTime || !endTime) return false;
-
-  // Convert times
   const currentTime12h = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
@@ -142,11 +134,10 @@ function isLocationOpen(location) {
   const currentTime24 = convertTo24Hour(currentTime12h);
   const startTime24 = convertTo24Hour(startTime);
   const endTime24 = convertTo24Hour(endTime);
-
   return currentTime24 >= startTime24 && currentTime24 <= endTime24;
 }
 
-export default function MapPage() {
+export default function MapComponent() {
   // -------------- STATE --------------
   const [resourcesData, setResourcesData] = useState([]);
   const [donationsData, setDonationsData] = useState([]);
@@ -165,91 +156,71 @@ export default function MapPage() {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchInputRef = useRef(null);
-
   const mapRef = useRef(null);
   const [fireIcon, setFireIcon] = useState(null);
   const [customCreateIcon, setCustomCreateIcon] = useState(null);
 
-  // Master data
   const dataSources = {
     resources: resourcesData,
     donations: donationsData,
-    volunteering: volunteeringData
+    volunteering: volunteeringData,
   };
-  
   const combinedData = [...resourcesData, ...donationsData, ...volunteeringData];
-
-  // Track which location to center on
   const [currentLocation, setCurrentLocation] = useState(null);
 
   // -------------- EFFECTS --------------
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await fetch("/api/resource-list");
+        const data = await res.json();
+        setResourcesData(data);
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      }
+    };
+    fetchResources();
+  }, []);
 
-  // Fetch Resources
-useEffect(() => {
-  const fetchResources = async () => {
-    try {
-      const res = await fetch("/api/resource-list");
-      const data = await res.json();
-      setResourcesData(data);
-    } catch (error) {
-      console.error("Error fetching resources:", error);
-    }
-  };
-  fetchResources();
-}, []);
+  useEffect(() => {
+    const fetchDonations = async () => {
+      try {
+        const res = await fetch("/api/donate-list");
+        const data = await res.json();
+        const normalizedData = data.map((item) => ({
+          ...item,
+          name: item.organization_name || item.name,
+        }));
+        setDonationsData(normalizedData);
+      } catch (error) {
+        console.error("Error fetching donations:", error);
+      }
+    };
+    fetchDonations();
+  }, []);
 
-// Fetch Donations
-useEffect(() => {
-  const fetchDonations = async () => {
-    try {
-      const res = await fetch("/api/donate-list");
-      const data = await res.json();
+  useEffect(() => {
+    const fetchVolunteering = async () => {
+      try {
+        const res = await fetch("/api/volunteer-list");
+        const data = await res.json();
+        setVolunteeringData(data);
+      } catch (error) {
+        console.error("Error fetching volunteering:", error);
+      }
+    };
+    fetchVolunteering();
+  }, []);
 
-      // Normalize data
-      const normalizedData = data.map((item) => ({
-        ...item,
-        name: item.organization_name || item.name, // Add a fallback for `name`
-      }));
-
-      setDonationsData(normalizedData);
-    } catch (error) {
-      console.error("Error fetching donations:", error);
-    }
-  };
-  fetchDonations();
-}, []);
-
-
-
-// Fetch Volunteer
-useEffect(() => {
-  const fetchVolunteering = async () => {
-    try {
-      const res = await fetch("/api/volunteer-list");
-      const data = await res.json();
-      setVolunteeringData(data);
-    } catch (error) {
-      console.error("Error fetching volunteering:", error);
-    }
-  };
-  fetchVolunteering();
-}, []);
-
-
-  // 1. Load Leaflet + custom icons
   useEffect(() => {
     if (typeof window !== "undefined") {
       const L = require("leaflet");
-
-      // Fix marker paths in Next.js
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
         iconUrl: require("leaflet/dist/images/marker-icon.png"),
         shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
       });
-
-      // Fire icon
       const fire = L.icon({
         iconUrl: "/images/fire.png",
         iconSize: [48, 48],
@@ -257,19 +228,15 @@ useEffect(() => {
         popupAnchor: [0, -32],
       });
       setFireIcon(fire);
-
-      // Create multi-icon function
       const createCustomIcon = (types) => {
         const iconsHTML = types
           .map((type) => {
             const cfg = iconConfig[type] || {};
-            return `<i class="fa ${
-              (cfg.icon || "fa-circle").replace("fa-solid ", "")
-            }" style="color: ${cfg.color || "#000"}; font-size:18px;"></i>`;
+            return `<i class="fa ${(cfg.icon || "fa-circle").replace("fa-solid ", "")}" style="color: ${cfg.color || "#000"}; font-size:18px; margin: 0 2px;"></i>`;
           })
           .join("");
         return L.divIcon({
-          html: `<div style="display:flex;align-items:center;justify-content:center;">${iconsHTML}</div>`,
+          html: `<div style="display:flex; align-items:center; justify-content:center;">${iconsHTML}</div>`,
           className: "custom-div-icon",
           iconSize: [30, 30],
           iconAnchor: [15, 30],
@@ -279,7 +246,6 @@ useEffect(() => {
     }
   }, []);
 
-  // 2. Filter data based on sidebar, subcategories, openNow
   useEffect(() => {
     let data = [];
     if (sidebar === "resources") {
@@ -289,19 +255,14 @@ useEffect(() => {
     } else if (sidebar === "volunteering") {
       data = volunteeringData;
     }
-  
-    // Filter by subcategory
     if (selectedSubcategories.length > 0) {
       data = data.filter((item) =>
         item.types?.some((type) => selectedSubcategories.includes(type))
       );
     }
-  
-    // Filter by "Open Now"
     if (openNow) {
       data = data.filter(isLocationOpen);
     }
-  
     setFilteredData(data);
   }, [
     sidebar,
@@ -311,9 +272,7 @@ useEffect(() => {
     donationsData,
     volunteeringData,
   ]);
-  
 
-  // 3. Fetch wildfires if active
   useEffect(() => {
     if (wildfireActive) {
       const fetchWildfires = async () => {
@@ -332,14 +291,12 @@ useEffect(() => {
     }
   }, [wildfireActive]);
 
-  // 4. Re-center the map if currentLocation changes
   useEffect(() => {
     if (currentLocation && mapRef.current) {
       mapRef.current.setView([currentLocation.lat, currentLocation.lng], 15);
     }
   }, [currentLocation]);
 
-  // 5. Close suggestions if clicking outside
   useEffect(() => {
     const handleClickOutside = (evt) => {
       if (
@@ -353,9 +310,6 @@ useEffect(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // -------------- HANDLERS --------------
-
-  // Toggle the main top-level sidebar category
   const handleButtonClick = (type) => {
     if (type === "open_now") {
       setOpenNow((prev) => !prev);
@@ -364,14 +318,12 @@ useEffect(() => {
     } else if (type === "wildfire") {
       setWildfireActive((prev) => !prev);
     } else if (sidebar === type) {
-      // If user clicks same button again, revert to “resources”
       setSidebar("resources");
       setSelectedSubcategories([]);
       setOpenNow(false);
       setCurrentLocation(null);
       setSelectedResource(null);
     } else {
-      // Switch to new “sidebar”
       setSidebar(type);
       setSelectedSubcategories([]);
       setOpenNow(false);
@@ -380,7 +332,6 @@ useEffect(() => {
     }
   };
 
-  // Toggle a subcategory
   const handleSubcategoryClick = (subcategory) => {
     setSelectedSubcategories((prev) =>
       prev.includes(subcategory)
@@ -391,7 +342,6 @@ useEffect(() => {
     setSelectedResource(null);
   };
 
-  // When a marker is clicked
   const handleMarkerClick = (resource) => {
     setSelectedResource(resource);
     setCurrentLocation({
@@ -401,17 +351,14 @@ useEffect(() => {
       organization_name: resource.organization_name,
     });
   };
-  
-  // Handle search submission
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-
     setIsSearching(true);
     setSearchError(null);
     setSearchResult(null);
     setShowSuggestions(false);
-
     const lowerQuery = searchQuery.toLowerCase();
     const matchedResource = combinedData.find(
       (item) =>
@@ -419,7 +366,6 @@ useEffect(() => {
           item.organization_name.toLowerCase().includes(lowerQuery)) ||
         (item.name && item.name.toLowerCase().includes(lowerQuery))
     );
-
     if (matchedResource) {
       setFilteredData([matchedResource]);
       setSelectedResource(matchedResource);
@@ -438,17 +384,14 @@ useEffect(() => {
     setIsSearching(false);
   };
 
-  // Handle typing in the search input
   const handleInputChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-
     if (!query) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
     }
-
     const lowerQuery = query.toLowerCase();
     const filteredSuggestions = combinedData
       .filter(
@@ -458,18 +401,15 @@ useEffect(() => {
           (item.name && item.name.toLowerCase().includes(lowerQuery))
       )
       .slice(0, 5);
-
     setSuggestions(filteredSuggestions);
     setShowSuggestions(filteredSuggestions.length > 0);
   };
 
-  // User clicks an autocomplete suggestion
   const handleSuggestionClick = (suggestion) => {
     const query = suggestion.organization_name || suggestion.name || "";
     setSearchQuery(query);
     setSuggestions([]);
     setShowSuggestions(false);
-    // Immediately run the search
     handleSearch({ preventDefault: () => {} });
   };
 
@@ -593,7 +533,6 @@ useEffect(() => {
       },
     ],
   };
-  
 
   // -------------- RENDER SIDEBAR --------------
   const renderSidebar = () => {
@@ -602,93 +541,111 @@ useEffect(() => {
     else if (sidebar === "volunteering") sidebarHeading = "Volunteer Options";
   
     return (
-      <aside className="w-[25vw] h-[calc(100vh-80px)] overflow-y-auto bg-white p-6 shadow-xl flex-shrink-0 rounded-tr-2xl rounded-br-2xl">
+      <aside
+        className="w-[25vw] bg-white p-6 shadow-xl flex-shrink-0 rounded-tr-[6vw] rounded-br-[6vw] m-3 h-[93.5vh]"
+        style={{
+          fontFamily: "'Noto Sans Multani', sans-serif",
+          zIndex: 2000,
+          boxShadow: "18px 1px 2px 0 rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <div className="inline-block px-2 py-0 text-black bg-white border-2 border-black rounded-full text-[0.8vw] font-bold shadow-sm mb-1">
           {sidebarHeading}
         </div>
         {categories[sidebar]?.length > 0 ? (
           <ul className="space-y-4">
-            {categories[sidebar].map((category) => (
-              <li key={category.label}>
-                {/* Category label */}
-                <div className="flex items-center gap-3 font-bold text-[1.2vw]">
-  <FontAwesomeIcon icon={category.icon} style={{ color: category.color }} />
-  {category.label}
-</div>
-
-                {/* “Select All” button */}
-              <button
-                className="inline-block px-2 py-0 text-white bg-black rounded-full text-[0.8vw] font-semibold shadow hover:bg-gray-800"
-                onClick={() => {
-                  const subsInThisCat = category.subcategories.map((s) => s.label);
-                  if (sidebar === "donations") {
-                    subsInThisCat.push(`Monetary Donations (${category.label})`);
-                  }
-                  const currentlySelected = subsInThisCat.every((sub) =>
-                    selectedSubcategories.includes(sub)
-                  );
-                  if (currentlySelected) {
-                    setSelectedSubcategories((prev) =>
-                      prev.filter((s) => !subsInThisCat.includes(s))
-                    );
-                  } else {
-                    setSelectedSubcategories((prev) => [
-                      ...new Set([...prev, ...subsInThisCat]),
-                    ]);
-                  }
-                }}
-              >
-                Select All
-              </button>
-
+            {categories[sidebar].map((category) => {
+              // Save parent category color for use in subcategory items.
+              const parentColor = category.color;
+              // Gather subcategory labels for this category.
+              const subsInThisCat = category.subcategories.map((s) => s.label);
+              if (sidebar === "donations") {
+                subsInThisCat.push(`Monetary Donations (${category.label})`);
+              }
   
-                {/* Subcategory list */}
-                <ul className="pl-6 mt-2 space-y-2 ">
-                  {category.subcategories.map((subcategory) => (
-                    <li
-                      key={subcategory.label}
-                      className={`cursor-pointer flex items-center gap-3 ${
-                        selectedSubcategories.includes(subcategory.label)
-                          ? "font-bold text-blue-700"
-                          : ""
-                      }`}
-                      onClick={() => handleSubcategoryClick(subcategory.label)}
-                    >
-                      <FontAwesomeIcon
-                        icon={subcategory.icon}
-                        style={{ color: subcategory.color }} // Use subcategory-specific color
-                      />
-                      {subcategory.label}
-                    </li>
-                  ))}
+              // Check if every subcategory in this category is selected.
+              const currentlySelected = subsInThisCat.every((sub) =>
+                selectedSubcategories.includes(sub)
+              );
   
-                  {/* For “donations,” also show “Monetary Donations” for each category */}
-                  {sidebar === "donations" && (
-                    <li
-                      key={`Monetary Donations (${category.label})`}
-                      className={`cursor-pointer flex items-center gap-3 ${
-                        selectedSubcategories.includes(
-                          `Monetary Donations (${category.label})`
-                        )
-                          ? "font-bold text-blue-700"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        handleSubcategoryClick(`Monetary Donations (${category.label})`)
+              return (
+                <li key={category.label}>
+                  <div className="flex items-center gap-3 font-bold text-[1.2vw]">
+                    <FontAwesomeIcon icon={category.icon} style={{ color: category.color }} />
+                    {category.label}
+                  </div>
+                  <button
+                    className="inline-block px-2 py-[0.2vw] text-white bg-black rounded-full text-[0.75vw] font-semibold shadow hover:bg-gray-800"
+                    style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+                    onClick={() => {
+                      if (currentlySelected) {
+                        // Remove all subcategories if they are currently selected.
+                        setSelectedSubcategories((prev) =>
+                          prev.filter((s) => !subsInThisCat.includes(s))
+                        );
+                      } else {
+                        // Add all subcategories if not all of them are selected.
+                        setSelectedSubcategories((prev) => [
+                          ...new Set([...prev, ...subsInThisCat]),
+                        ]);
                       }
-                    >
-                      <FontAwesomeIcon
-                        icon={faMoneyBillWave}
+                    }}
+                  >
+                    {currentlySelected ? "Deselect All" : "Select All"}
+                  </button>
+                  <ul className="pl-6 mt-2 space-y-2 ">
+                    {category.subcategories.map((subcategory) => (
+                      <li
+                        key={subcategory.label}
+                        className={`cursor-pointer flex items-center gap-3 ${
+                          selectedSubcategories.includes(subcategory.label)
+                            ? "font-bold"
+                            : ""
+                        }`}
                         style={{
-                          color: iconConfig[`Monetary Donations (${category.label})`]?.color,
+                          fontFamily: "'Noto Sans Multani', sans-serif",
+                          color: selectedSubcategories.includes(subcategory.label)
+                            ? parentColor
+                            : undefined,
                         }}
-                      />
-                      <span>Monetary Donations</span>
-                    </li>
-                  )}
-                </ul>
-              </li>
-            ))}
+                        onClick={() => handleSubcategoryClick(subcategory.label)}
+                      >
+                        <FontAwesomeIcon
+                          icon={subcategory.icon}
+                          style={{ color: subcategory.color }}
+                        />
+                        {subcategory.label}
+                      </li>
+                    ))}
+                    {sidebar === "donations" && (
+                      <li
+                        key={`Monetary Donations (${category.label})`}
+                        className={`cursor-pointer flex items-center gap-3 ${
+                          selectedSubcategories.includes(`Monetary Donations (${category.label})`)
+                            ? "font-bold"
+                            : ""
+                        }`}
+                        style={{
+                          fontFamily: "'Noto Sans Multani', sans-serif",
+                          color: selectedSubcategories.includes(`Monetary Donations (${category.label})`)
+                            ? parentColor
+                            : undefined,
+                        }}
+                        onClick={() =>
+                          handleSubcategoryClick(`Monetary Donations (${category.label})`)
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={faMoneyBillWave}
+                          style={{ color: iconConfig[`Monetary Donations (${category.label})`]?.color }}
+                        />
+                        <span>Monetary Donations</span>
+                      </li>
+                    )}
+                  </ul>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p>No options available.</p>
@@ -697,235 +654,210 @@ useEffect(() => {
     );
   };
   
-
+  
   // -------------- MAIN RETURN --------------
   return (
     <div>
       <Head>
         <title>LA Relief - Map</title>
       </Head>
-
-      {/* Main area: sidebar + map */}
-      <div className="flex">
-        {/* Left: Sidebar */}
-        {renderSidebar()}
-
-        {/* Right: Map area */}
-        <div className="flex-grow h-[calc(100vh-80px)]">
-          <MapContainer
-            center={[34.0522, -118.2437]}
-            zoom={11}
-            scrollWheelZoom
-            className="w-full h-full relative"
-            whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      {/* Outer container: relative to position overlay elements */}
+      <div className="relative w-full h-[93.5vh]">
+        {/* Map takes full width and height */}
+        <MapContainer
+          center={[34.0522, -118.2437]}
+          zoom={11}
+          scrollWheelZoom
+          zoomControl={false} // disable default zoom control
+          className="w-full h-full z-0"
+          whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          />
+          {/* Add ZoomControl in top right */}
+          <ZoomControl position="topright" />
+          {customCreateIcon && (
+            <ClusteredMarkers
+              resources={filteredData}
+              createCustomIcon={customCreateIcon}
+              handleMarkerClick={handleMarkerClick}
             />
+          )}
+          {fireIcon &&
+            wildfireActive &&
+            wildfires.map((incident) => {
+              const {
+                UniqueId,
+                Latitude,
+                Longitude,
+                Name,
+                Started,
+                Updated,
+                County,
+                Location,
+                AcresBurned,
+                PercentContained,
+              } = incident;
+              if (!Latitude || !Longitude) return null;
+              return (
+                <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
+                  <Popup>
+                    <div>
+                      <h3 style={{ marginTop: 0 }}>{Name}</h3>
+                      <p>
+                        <strong>Start Date:</strong> {Started}
+                      </p>
+                      <p>
+                        <strong>Last Updated:</strong> {Updated}
+                      </p>
+                      <p>
+                        <strong>County:</strong> {County}
+                      </p>
+                      <p>
+                        <strong>Location:</strong> {Location}
+                      </p>
+                      <p>
+                        <strong>Acres Burned:</strong> {AcresBurned}
+                      </p>
+                      <p>
+                        <strong>Percent Contained:</strong> {PercentContained}
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+        </MapContainer>
 
-            {/* 
-              1) Render your search + toggle buttons 
-                 in an absolutely positioned container 
-                 *inside* the MapContainer 
-            */}
-            <div
-              className="absolute top-4 left-[38vw] transform -translate-x-1/2 z-[1000] 
-                         flex items-center gap-2 p-3 w-[70vw] font-sans"
-              ref={searchInputRef}
-            >
-              {/* Search box */}
-              <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                placeholder="Search for organization"
-                value={searchQuery}
-                onChange={handleInputChange}
-                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                className="w-64 rounded-md border border-gray-300 py-[0.5vw] pl-3 pr-10 focus:outline-none rounded-[13vw] shadow-lg placeholder-gray-500 text-[1vw]"
-                style={{ placeholderColor: "#71767B" }}
-              />
-
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#70757A] text-[1.45vw]"
-                >
-                  {isSearching ? (
-                    <FontAwesomeIcon icon={faSpinner} spin />
-                  ) : searchResult ? (
-                    <FontAwesomeIcon icon={faCheck} />
-                  ) : searchError ? (
-                    <FontAwesomeIcon icon={faTimes} />
-                  ) : (
-                    <FontAwesomeIcon icon={faSearch} />
-                  )}
-                </button>
-
-                {/* Autocomplete suggestions */}
-                {showSuggestions && (
-                  <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
-                    {suggestions.map((item, idx) => (
-                      <li
-                        key={idx}
-                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer text-sm"
-                        onClick={() => handleSuggestionClick(item)}
-                      >
-                        {item.organization_name || item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </form>
-
- {/* The four toggle buttons */}
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    openNow ? "bg-[#027B00] text-white" : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("open_now")}
->
-  <FontAwesomeIcon
-    icon={faClock}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: openNow ? "#FFFFFF" : "#027B00" }}
-  />
-  Open Now
-</button>
-
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    sidebar === "donations"
-      ? "bg-[#2B9FD0] text-white"
-      : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("donations")}
->
-  <FontAwesomeIcon
-    icon={faCircleDollarToSlot}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: sidebar === "donations" ? "#FFFFFF" : "#2B9FD0" }}
-  />
-  Donations Needed
-</button>
-
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    sidebar === "volunteering"
-      ? "bg-[#D55858] text-white"
-      : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("volunteering")}
->
-  <FontAwesomeIcon
-    icon={faHandHoldingHeart}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: sidebar === "volunteering" ? "#FFFFFF" : "#D55858" }}
-  />
-  Volunteer Opportunities
-</button>
-
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    wildfireActive
-      ? "bg-orange-500 text-black"
-      : "bg-[#982525] text-white"
-  }`}
-  onClick={() => handleButtonClick("wildfire")}
->
-  <img
-    src="/images/fire.png"
-    alt="Wildfire"
-    className="w-6 h-6 inline-block mr-2" // Increased size and added gap
-    style={{
-      filter: wildfireActive ? "brightness(0) saturate(100%) hue-rotate(25deg) contrast(150%)" : "none",
-    }}
-  />
-  Wildfire Warning
-</button>
-
-
-
-            </div>
-            {/* end of the absolute container for controls */}
-
-            {/* Clustered resource markers */}
-            {customCreateIcon && (
-              <ClusteredMarkers
-                resources={filteredData}
-                createCustomIcon={customCreateIcon}
-                handleMarkerClick={handleMarkerClick} 
-              />
-            )}
-
-            {/* Wildfire markers */}
-            {fireIcon &&
-              wildfireActive &&
-              wildfires.map((incident) => {
-                const {
-                  UniqueId,
-                  Latitude,
-                  Longitude,
-                  Name,
-                  Started,
-                  Updated,
-                  County,
-                  Location,
-                  AcresBurned,
-                  PercentContained,
-                } = incident;
-                if (!Latitude || !Longitude) return null;
-
-                return (
-                  <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
-                    <Popup>
-                      <div>
-                        <h3 style={{ marginTop: 0 }}>{Name}</h3>
-                        <p>
-                          <strong>Start Date:</strong> {Started}
-                        </p>
-                        <p>
-                          <strong>Last Updated:</strong> {Updated}
-                        </p>
-                        <p>
-                          <strong>County:</strong> {County}
-                        </p>
-                        <p>
-                          <strong>Location:</strong> {Location}
-                        </p>
-                        <p>
-                          <strong>Acres Burned:</strong> {AcresBurned}
-                        </p>
-                        <p>
-                          <strong>Percent Contained:</strong> {PercentContained}
-                        </p>
-                      </div>
-                    </Popup>
-                  </Marker>
-                );
-              })}
-          </MapContainer>
-
-          {/* “Floating” popup for selected resource */}
-          {selectedResource && (
-  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50
-                  bg-white text-black rounded-xl shadow-lg p-4 w-80">
-    {sidebar === "resources" && (
-      <ResourceCard resource={selectedResource} />
-    )}
-    {sidebar === "donations" && (
-  <>
-    {console.log("Selected Resource Passed to DonationCard:", selectedResource)}
-    <DonationCard resource={selectedResource} />
-  </>
-)}
-
-    {sidebar === "volunteering" && (
-      <VolunteerCard resource={selectedResource} />
-    )}
-  </div>
-)}
-
+        {/* Sidebar overlay: positioned above the map */}
+        <div
+        className="absolute z-[3000]"
+        style={{ 
+          top: "-0.8vw", 
+          left: "-1vw",
+        }}
+        >
+        {renderSidebar()}
         </div>
+
+        {/* Controls container (search and buttons) */}
+        <div
+          className="absolute top-2 left-[61vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw]"
+          ref={searchInputRef}
+          style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+        >
+          {/* Search box and buttons (same as before) */}
+          <form onSubmit={handleSearch} className="relative">
+            <input
+              type="text"
+              placeholder="Search for organization"
+              value={searchQuery}
+              onChange={handleInputChange}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+              className="w-64 rounded-md border border-gray-300 py-[0.4vw] pl-3 pr-10 focus:outline-none rounded-[17vw] shadow-lg placeholder-gray-500 text-[1vw]"
+              style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            />
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#70757A] text-[1.2vw]"
+              style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            >
+              {isSearching ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : searchResult ? (
+                <FontAwesomeIcon icon={faCheck} />
+              ) : searchError ? (
+                <FontAwesomeIcon icon={faTimes} />
+              ) : (
+                <FontAwesomeIcon icon={faSearch} />
+              )}
+            </button>
+            {showSuggestions && (
+              <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
+                {suggestions.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer text-sm"
+                    style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+                    onClick={() => handleSuggestionClick(item)}
+                  >
+                    {item.organization_name || item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </form>
+          <button
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+              openNow ? "bg-[#027B00] text-white" : "bg-[#FFFFFF] text-black"
+            }`}
+            style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            onClick={() => handleButtonClick("open_now")}
+          >
+            <FontAwesomeIcon
+              icon={faClock}
+              className="mr-2 text-lg"
+              style={{ color: openNow ? "#FFFFFF" : "#027B00" }}
+            />
+            <span className="inline-block align-middle">Open Now</span>
+          </button>
+          <button
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+              sidebar === "donations" ? "bg-[#2B9FD0] text-white" : "bg-[#FFFFFF] text-black"
+            }`}
+            style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            onClick={() => handleButtonClick("donations")}
+          >
+            <FontAwesomeIcon
+              icon={faCircleDollarToSlot}
+              className="mr-2 text-lg"
+              style={{ color: sidebar === "donations" ? "#FFFFFF" : "#2B9FD0" }}
+            />
+            <span className="inline-block align-middle">Donations Needed</span>
+          </button>
+          <button
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+              sidebar === "volunteering" ? "bg-[#D55858] text-white" : "bg-[#FFFFFF] text-black"
+            }`}
+            style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            onClick={() => handleButtonClick("volunteering")}
+          >
+            <FontAwesomeIcon
+              icon={faHandHoldingHeart}
+              className="mr-2 text-lg"
+              style={{ color: sidebar === "volunteering" ? "#FFFFFF" : "#D55858" }}
+            />
+            <span className="inline-block align-middle">Volunteer Opportunities</span>
+          </button>
+          <button
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+              wildfireActive ? "bg-orange-500 text-black" : "bg-[#982525] text-white"
+            }`}
+            style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            onClick={() => handleButtonClick("wildfire")}
+          >
+            <img
+              src="/images/fire.png"
+              alt="Wildfire"
+              className="w-6 h-6 inline-block mr-2"
+              style={{
+                filter: wildfireActive
+                  ? "brightness(0) saturate(100%) hue-rotate(25deg) contrast(150%)"
+                  : "none",
+              }}
+            />
+            <span className="inline-block align-middle">Wildfire Warning</span>
+          </button>
+        </div>
+        {/* {selectedResource && (
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-white text-black rounded-xl shadow-lg p-4 w-80">
+            {sidebar === "resources" && <ResourceCard resource={selectedResource} />}
+            {sidebar === "donations" && <DonationCard resource={selectedResource} />}
+            {sidebar === "volunteering" && <VolunteerCard resource={selectedResource} />}
+          </div>
+        )} */}
       </div>
     </div>
   );

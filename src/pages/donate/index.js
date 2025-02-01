@@ -137,9 +137,6 @@ export default function Home() {
     endDate
   ).slice(0, visibleResources);
 
-  // if (loading) return <p>Loading donations...</p>;
-  // if (!resources || resources.length === 0)
-  //   return <p>No resources available.</p>;
   return (
     <div className="relative">
       <Head>
@@ -164,209 +161,211 @@ export default function Home() {
       </Head>
 
       <section
-        section
         id="mission"
         className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
       >
         <div>
-        {/* title text =  */}
-        <div
-          className="absolute top-0 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold"
-          style={{
-            zIndex: 0,
-            height: "10vw",
-            width: "30vw",
-            boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
-            fontFamily: "'Noto Sans', sans-serif",
-            textAlign: "center",
-          }}
-        >
-          <h2 className="relative text-center">
-            {/* Stroke/Outline Layer */}
-            <span
-              className="absolute inset-0"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "900",
-                fontSize: "5vw",
-                top: "-2rem",
-                left: "-1rem",
-                color: "transparent",
-                WebkitTextStroke: "1px #ffffff",
-                zIndex: 1,
-              }}
-            >
-              DONATE
-            </span>
-
-            <span
-              className="relative text-white"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "900",
-                fontSize: "5vw",
-                textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-                zIndex: 2,
-              }}
-            >
-              DONATE
-            </span>
-          </h2>
-        </div>
-
-        {/* <section id="resources" className="py-16" style={{ backgroundColor: "#183917" }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8"> */}
-        {/* lighter green square with drop shadow */}
-        {/* right green square */}
-        <div
-          className="absolute top-12 right-0 h-full bg-[#267738] rounded-tl-[13vw] rounded-bl-[13vw]"
-          style={{
-            zIndex: 0,
-            width: "30.5%",
-            height: "90vh",
-            boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
-          }}
-        ></div>
-
-  <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
-    {/* Text Content */}
-    <div className=" w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full ">
-      <div
-        className="relative bg-[#183917] right-[3vw] rounded-[2.5vw] border-[0.2rem] border-white shadow-lg mt-[8vw] py-4 px-0 w-[27vw]"
-        style={{
-          fontFamily: "'Noto Sans', sans-serif",
-          color: "#ffffff",
-          maxWidth: "90%",
-        }}
-      >
-        
-        {/* Circle with Star */}
-        <div
-          className="absolute -top-[3.5vw] left-[13.25vw] transform -translate-x-1/2 bg-white rounded-full w-[5vw] h-[5vw] flex items-center justify-center"
-          style={{
-            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-          }}
-        >
-          <i
-            className="fas fa-star text-[#183917]"
+          {/* Title Text */}
+          <div
+            className="absolute top-0 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold"
             style={{
-              fontSize: "2.25vw",
+              zIndex: 0,
+              height: "10vw",
+              width: "30vw",
+              boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
+              fontFamily: "'Noto Sans', sans-serif",
+              textAlign: "center",
             }}
-          ></i>
-        </div>
+          >
+            <h2 className="relative text-center">
+              {/* Stroke/Outline Layer */}
+              <span
+                className="absolute inset-0"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "5vw",
+                  top: "-2rem",
+                  left: "-1rem",
+                  color: "transparent",
+                  WebkitTextStroke: "1px #ffffff",
+                  zIndex: 1,
+                }}
+              >
+                DONATE
+              </span>
 
-        {/* Text Content */}
-        <p
-          className="mb-2 pt-3"
-          style={{
-            fontFamily: "'Noto Sans', sans-serif",
-            fontWeight: "600", // Semi-bold
-            fontSize: "1.5vw", // Custom font size
-            maxWidth: "50%", // Custom width
-            margin: "0 auto", // Center text
-          }}
-        >
-          Help by donating to any of the
-        </p>
-        <p
-          className=""
-          style={{
-            fontFamily: "'Noto Sans', sans-serif",
-            fontWeight: "900",
-            fontSize: "5vw",
-            margin: "0 auto",
-            paddingTop: "2.25vw",
-            lineHeight: "1rem",
-          }}
-        >
-          100+
-        </p>
-        <p
-          className=""
-          style={{
-            fontFamily: "'Noto Sans', sans-serif",
-            fontWeight: "900",
-            fontSize: "3vw",
-            maxWidth: "85%",
-            margin: "0 auto",
-            paddingTop: "1.25vw",
-            lineHeight: "5vw",
-          }}
-        >
-          organizations
-        </p>
-        <p
-          className=""
-          style={{
-            fontFamily: "'Noto Sans', sans-serif",
-            fontWeight: "600", // Normal
-            fontSize: "1.5vw", // Custom font size
-            maxWidth: "70%", // Custom width
-            margin: "0 auto", // Center text
-            paddingTop: "0vw",
-          }}
-        >
-          supporting Los Angeles through wildfires
-        </p>
-      </div>
-            {/* Button */}
-            <button
-              className="mt-6 bg-white text-[#194218] mr-[6vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontSize: "1.75vw",
-              }}
-            >
-              EXPLORE OPPORTUNITIES
-            </button>
+              <span
+                className="relative text-white"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "5vw",
+                  textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+                  zIndex: 2,
+                }}
+              >
+                DONATE
+              </span>
+            </h2>
           </div>
 
-          {/* Image Content */}
-          <div className="relative h-full right-[15vw] z-1">
-            <div className="relative z-50">
-              <img
-                src="/images/donate.png"
-                alt="Support graphic"
-                className="w-[60vw] h-auto"
-              />
-            </div>
-            {/* Vertical Texts */}
-            <div
-              className="absolute w-[40vw] top-[12vw] left-[18vw] text-green-100 font-extrabold -rotate-90 z-20"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "900",
-                fontSize: "5.5vw",
-                letterSpacing: "normal",
-                color: "#194218",
-                textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
-              }}
-            >
-              GIVE CHANGE
-            </div>
+          {/* Lighter Green Square on Right */}
+          <div
+            className="absolute top-12 right-0 h-full bg-[#267738] rounded-tl-[13vw] rounded-bl-[13vw]"
+            style={{
+              zIndex: 0,
+              width: "30.5%",
+              height: "90vh",
+              boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
+            }}
+          ></div>
 
-            <div
-              className="absolute  w-[40vw] top-[11vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontWeight: "900",
-                fontSize: "5.5vw",
-                letterSpacing: "normal",
-                WebkitTextStroke: "2px #194218",
-                color: "transparent",
-              }}
-            >
-              FOR CHANGE
-            </div>
-          </div>
-        </div>
-          {/* Scroll Arrow Component */}
-              <ScrollArrow to="resources" />
+          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+            {/* Text Content */}
+            <div className="w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full">
+              <div
+                className="relative bg-[#183917] right-[3vw] rounded-[2.5vw] border-[0.2rem] border-white shadow-lg mt-[8vw] py-4 px-0 w-[27vw]"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  color: "#ffffff",
+                  maxWidth: "90%",
+                }}
+              >
+                {/* Circle with Star */}
+                <div
+                  className="absolute -top-[3.5vw] left-[13.25vw] transform -translate-x-1/2 bg-white rounded-full w-[5vw] h-[5vw] flex items-center justify-center"
+                  style={{
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                  }}
+                >
+                  <i
+                    className="fas fa-star text-[#183917]"
+                    style={{
+                      fontSize: "2.25vw",
+                    }}
+                  ></i>
+                </div>
+
+                {/* Text Content */}
+                <p
+                  className="mb-2 pt-3"
+                  style={{
+                    fontFamily: "'Noto Sans', sans-serif",
+                    fontWeight: "600", // Semi-bold
+                    fontSize: "1.5vw", // Custom font size
+                    maxWidth: "50%", // Custom width
+                    margin: "0 auto", // Center text
+                  }}
+                >
+                  Help by donating to any of the
+                </p>
+                <p
+                  className=""
+                  style={{
+                    fontFamily: "'Noto Sans', sans-serif",
+                    fontWeight: "900",
+                    fontSize: "5vw",
+                    margin: "0 auto",
+                    paddingTop: "2.25vw",
+                    lineHeight: "1rem",
+                  }}
+                >
+                  100+
+                </p>
+                <p
+                  className=""
+                  style={{
+                    fontFamily: "'Noto Sans', sans-serif",
+                    fontWeight: "900",
+                    fontSize: "3vw",
+                    maxWidth: "85%",
+                    margin: "0 auto",
+                    paddingTop: "1.25vw",
+                    lineHeight: "5vw",
+                  }}
+                >
+                  organizations
+                </p>
+                <p
+                  className=""
+                  style={{
+                    fontFamily: "'Noto Sans', sans-serif",
+                    fontWeight: "600", // Normal
+                    fontSize: "1.5vw", // Custom font size
+                    maxWidth: "70%", // Custom width
+                    margin: "0 auto", // Center text
+                    paddingTop: "0vw",
+                  }}
+                >
+                  supporting Los Angeles through wildfires
+                </p>
               </div>
+              {/* EXPLORE OPPORTUNITIES Button */}
+              <button
+                onClick={() =>
+                  scroller.scrollTo("resources", {
+                    smooth: true,
+                    duration: 500,
+                    offset: -50, // Adjust this offset if needed
+                  })
+                }
+                className="mt-6 bg-white text-[#194218] mr-[6vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontSize: "1.75vw",
+                }}
+              >
+                EXPLORE OPPORTUNITIES
+              </button>
+            </div>
+
+            {/* Image Content - Support Image */}
+            <div className="relative h-full right-[15vw] z-1">
+              <div className="relative z-50">
+                <img
+                  src="/images/donate.png"
+                  alt="Support graphic"
+                  className="w-[60vw] h-auto"
+                />
+              </div>
+              {/* Vertical Texts */}
+              <div
+                className="absolute w-[40vw] top-[14vw] left-[18vw] text-green-100 font-extrabold -rotate-90 z-20"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "5.5vw",
+                  letterSpacing: "normal",
+                  color: "#194218",
+                  textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
+                }}
+              >
+                GIVE CHANGE
+              </div>
+
+              <div
+                className="absolute  w-[40vw] top-[13vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "5.5vw",
+                  letterSpacing: "normal",
+                  WebkitTextStroke: "2px #194218",
+                  color: "transparent",
+                }}
+              >
+                FOR CHANGE
+              </div>
+            </div>
+          </div>
+          {/* Scroll Arrow Component */}
+          <ScrollArrow to="resources" />
+        </div>
       </section>
 
       {/* Resources Section */}
-      <section section id="resources">
+      <section id="resources">
         <div
           style={{
             backgroundColor: "#183917",
@@ -382,10 +381,7 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -397,11 +393,9 @@ export default function Home() {
           </Head>
 
           {/* Header */}
-          <div className="px-8 pt-8 select-none">
+          <div className="px-8 pt-8 select-none overflow-x-hidden">
             <div
-              className="heading-container max-w-7xl flex flex-col md:flex-row
-          md:items-baseline
-          gap-6"
+              className="heading-container max-w-7xl flex flex-col md:flex-row md:items-baseline gap-6"
             >
               <div className="max-w-2xl">
                 {/* Section Header */}
@@ -449,10 +443,10 @@ export default function Home() {
                   <div className="search-filter-containers relative flex items-center">
                     <input
                       type="text"
-                      placeholder="Name of Organization"
+                      placeholder="Name of organization"
                       onChange={handleSearch}
                       value={searchInput}
-                      className="rounded-full py-2 px-6"
+                      className="rounded-full py-2 px-4"
                     />
                     <FontAwesomeIcon
                       icon={faMagnifyingGlass}
@@ -525,7 +519,6 @@ export default function Home() {
                     "Clothing & Bedding",
                     "Hygiene & Sanitation Supplies",
                     "Monetary Donations (Essentials)",
-                    ,
                   ]}
                   selectedCategories={selectedSubCategories["Essentials"] || []}
                   handleCategoryClick={(subCategory) =>
@@ -550,11 +543,9 @@ export default function Home() {
               )}
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {essentialsResources
-                .slice(0, visibleResources)
-                .map((resource) => (
-                  <DonationCard key={resource.id} resource={resource} />
-                ))}
+              {essentialsResources.slice(0, visibleResources).map((resource) => (
+                <DonationCard key={resource.id} resource={resource} />
+              ))}
             </div>
 
             {/* Shelter & Support Services Category */}
@@ -576,14 +567,9 @@ export default function Home() {
                   "Emergency Supplies",
                   "Monetary Donations (Shelter & Support Services)",
                 ]}
-                selectedCategories={
-                  selectedSubCategories["Shelter & Support Services"] || []
-                }
+                selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
                 handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick(
-                    "Shelter & Support Services",
-                    subCategory
-                  )
+                  handleSubCategoryClick("Shelter & Support Services", subCategory)
                 }
                 mainCategory="Shelters"
               />
@@ -613,9 +599,7 @@ export default function Home() {
                   "Medical Supplies",
                   "Monetary Donations (Medical & Health)",
                 ]}
-                selectedCategories={
-                  selectedSubCategories["Medical & Health"] || []
-                }
+                selectedCategories={selectedSubCategories["Medical & Health"] || []}
                 handleCategoryClick={(subCategory) =>
                   handleSubCategoryClick("Medical & Health", subCategory)
                 }
@@ -628,7 +612,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Shelter & Support Services Category */}
+            {/* Animal Support Category */}
             <div className="flex flex-wrap gap-4 mt-4 items-center">
               <h2
                 className="text-xl font-bold"
@@ -647,9 +631,7 @@ export default function Home() {
                   "Pet Supplies",
                   "Monetary Donations (Animal Support)",
                 ]}
-                selectedCategories={
-                  selectedSubCategories["Animal Support"] || []
-                }
+                selectedCategories={selectedSubCategories["Animal Support"] || []}
                 handleCategoryClick={(subCategory) =>
                   handleSubCategoryClick("Animal Support", subCategory)
                 }

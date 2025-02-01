@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense, startTransition} from "react";
 import Head from "next/head";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import dynamic from 'next/dynamic';
 import ScrollArrow from "@/components/ScrollArrow";
 import ResourceCard from "@/components/ResourceCard";
 import Dropdown from "@/components/Dropdown";
@@ -22,6 +23,11 @@ import {
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "../components/filter";
+import { motion, useInView } from "framer-motion";
+const MissionSection = lazy(() => import("@/components/MissionSection"));
+const SupportSection = lazy(() => import("@/components/SupportSection"));
+const MapComponent = dynamic(() => import('@/components/MapComponent'), { ssr: false });
+
 
 export default function Home() {
   const [resources, setResources] = useState([]);
@@ -70,20 +76,23 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log("Filtered resources:", filterResources);
-
     const fetchResources = async () => {
       try {
         const response = await fetch("/api/resource-list");
         const data = await response.json();
-        setResources(data);
+
+        startTransition(() => {
+          setResources(data);
+          setLoading(false);
+        });
       } catch (error) {
         console.error("Error fetching resources:", error);
-      } finally {
-        setLoading(false);
+        startTransition(() => {
+          setLoading(false);
+        });
       }
     };
-  
+
     fetchResources();
   }, []);
   
@@ -99,9 +108,6 @@ export default function Home() {
     ).slice(0, visibleResources);
   };
   
-  
-  
-
   const handleShowMore = () => {
     setVisibleResources((prevVisibleResources) => prevVisibleResources + 12);
   };
@@ -153,284 +159,135 @@ export default function Home() {
     };
 	
   return (
-    <div className="relative">
-      <Head>
-        <title>LA Relief - Discover Aid Near You</title>
-        <meta
-          name="description"
-          content="Find aid and resources near you for emergencies and support."
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
-          rel="stylesheet"
-        />
-        
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400&family=Noto+Sans:wght@400;800&display=swap" rel="stylesheet"></link>
-		<link
-		  href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
-		  rel="stylesheet"
-		/>
-      </Head>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="relative">
+        <Head>
+          <title>LA Relief - Discover Aid Near You</title>
+          <meta
+            name="description"
+            content="Find aid and resources near you for emergencies and support."
+          />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
+            rel="stylesheet"
+          />
 
-      {/* Hero Section */}
-      <div id="hero" className="absolute inset-0 bg-cover bg-center h-screen z-0"
-        style={{
-          backgroundImage: "url('/images/image.jpg')",
-        }}
-      > <div className="absolute inset-0 bg-black opacity-40 z-0"></div></div>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400&family=Noto+Sans:wght@400;800&display=swap"
+            rel="stylesheet"
+          ></link>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
 
-      {/* Navigation Bar */}
-      <NavBar />
-
-      {/* Landing Section */}
-      <div
-        className="flex flex-col justify-center items-center text-center text-white relative z-10"
-        style={{ height: "calc(100vh - 4.15rem)" }} // Adjust for navbar height
-      >
-        <h1
-		className="text-6xl md:text-8xl mb-9"
-		style={{
-			fontFamily: "'Tilt Warp', sans-serif",
-			textShadow: "0px 11.36px 11.36px rgba(0, 0, 0, 0.15)",
-		}}
-		>
-		Discover Aid Near You
-		</h1>
-
-        <Link
-			to="map"
-			className="flex justify-center items-center border border-white text-white hover:text-black hover:bg-white transition-all duration-300 cursor-pointer"
-			style={{
-				fontFamily: "'Noto Sans', sans-serif",
-				fontSize: "24px",
-				fontWeight: "bold",
-				borderRadius: "22px",
-				padding: "10px 22px",
-				borderWidth: "2px",
-			}}
-			spy={true}
-			smooth={true}
-			duration={500}
-			>
-			EXPLORE RESOURCES
-		</Link>
-		<div
-  className="absolute bottom-8 w-full flex justify-center items-center"
->
-	{/* Scroll Arrow Component */}
-      <ScrollArrow to="mission" />
-    </div>
-  </div>
-
-      {/* Mission Section */}
-<section section id="mission" className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden">
-  <div>
-{/* lighter green square with drop shadow */}
-<div
-  className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
-  style={{
-	zIndex: 0,
-	width: "30.5%",
-	boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)"
-  }}>
-    
-  </div>
-
-<div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
-  {/* Text Content */}
-  <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
-	{/* Title */}
-	<h2
-  className="mb-6"
-  style={{
-    fontFamily: "'Noto Sans', sans-serif",
-    fontWeight: "900",
-    fontSize: "94px",
-    lineHeight: "1.1",
-    whiteSpace: "nowrap",
-    textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-  }}
->
-  OUR MISSION
-</h2>
-
-	{/* Paragraph */}
-	<p
-	  className="text-lg md:text-xl mb-8 leading-relaxed"
-	  style={{
-		fontFamily: "'Noto Sans', sans-serif",
-		fontWeight: "400",
-		fontSize: "22px",
-	  }}
-	>
-	  Our mission is to stand with communities affected by the Los Angeles
-	  wildfires. We’re here to make it easier to find the resources,
-	  support, and opportunities needed to recover and rebuild. Whether
-	  it’s through donations, volunteering, or simply offering a helping
-	  hand, we believe in the power of coming together to make a real
-	  difference.
-	</p>
-
-	{/* Buttons */}
-	<div className="flex gap-4">
-
-	<button
-  className="bg-white text-[#183917] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
-  style={{
-    fontFamily: "'Noto Sans', sans-serif",
-    fontSize: "20px",
-  }}
-  onClick={() =>
-    scroller.scrollTo("map", {
-      smooth: true,
-      duration: 500,
-      offset: -72, // Adjust based on navbar height
-    })
-  }
->
-  EXPLORE RESOURCES
-</button>
-
-<button
-  className="bg-transparent border-2 border-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-green-900 transition-all duration-300"
-  style={{
-    fontFamily: "'Noto Sans', sans-serif",
-    fontSize: "20px",
-  }}
->
-  GET SUPPORT
-</button>
-	</div>
-  </div>
-
-  {/* Image Content */}
-  <div className="md:w-[55%] relative h-full pl-16">
-	<div className="relative z-10">
-	  <img
-		src="/images/mission-graphic.png"
-		alt="Support graphic"
-		className="w-[73%] h-auto"
-	  />
-	</div>
-	{/* Vertical Texts */}
-	<div
-  className="absolute top-1/2 transform -translate-y-1/2 right-[-6.20rem] text-green-100 font-extrabold -rotate-90 z-20"
-  style={{
-    fontFamily: "'Noto Sans', sans-serif",
-    fontWeight: "900",
-    fontSize: "102px",
-    letterSpacing: "normal",
-    color: "#ffffff",
-    textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
-  }}
->
-  SUPPORT
-</div>
-
-	<div
-	  className="absolute top-1/2 transform -translate-y-1/2 right-[-11.75rem] text-green-100 font-extrabold -rotate-90 z-20"
-	  style={{
-		fontFamily: "'Noto Sans', sans-serif",
-		fontWeight: "900",
-		fontSize: "102px",
-		letterSpacing: "normal",
-		WebkitTextStroke: "1px #ffffff",
-		color: "transparent",
-	  }}
-	>
-	  SUPPORT
-	</div>
-  </div>
-</div>
-<ScrollArrow to="map" />
-</div>
-</section>
-
-{/* Map Section */}
-<section section id="map" className="text-black py-16" style={{ backgroundColor: "#267738" }}>
-  <div className="max-w-7xl mx-auto px-4 md:px-8">
-    {/* Section Header */}
-    <h2
-      className="text-center relative z-20 flex justify-center items-center gap-2"
-      style={{
-        fontFamily: "'Noto Sans', sans-serif",
-        fontWeight: "900",
-        fontSize: "94px",
-        color: "white",
-        textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
-      }}
-    >
-      MAP
-      {/* Info Icon */}
-      <span className="relative group">
-        <i className="fas fa-circle-info text-lg cursor-pointer text-white"></i>
-        <span
-          className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-max px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          style={{ whiteSpace: "nowrap" }}
+       {/* Hero Section */}
+       <div
+          id="hero"
+          className="absolute inset-0 bg-cover bg-center h-screen z-0"
+          style={{
+            backgroundImage: "url('/images/image.jpg')",
+          }}
         >
-          This is the map and it tells you what to do
-        </span>
-      </span>
-    </h2>
+          {" "}
+          <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
+        </div>
 
-    {/* Map Content */}
-    <div className="relative">
-      
-      {/* Sidebar */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/4 bg-green-900 text-white p-4">
-        <h3 className="text-lg font-bold mb-4">Options</h3>
-        <ul className="space-y-3">
-          <li>
-            <h4 className="font-semibold">Essentials</h4>
-            <ul className="pl-4">
-              <li>Food & Water</li>
-              <li>Clothing & Personal Items</li>
-              <li>Hygiene & Sanitation</li>
-              <li>Financial Support</li>
-            </ul>
-          </li>
-          <li>
-            <h4 className="font-semibold">Shelter & Support Services</h4>
-            <ul className="pl-4">
-              <li>Shelters & Housing Assistance</li>
-              <li>Transportation Assistance</li>
-              <li>Legal Aid</li>
-            </ul>
-          </li>
-          <li>
-            <h4 className="font-semibold">Medical & Health</h4>
-            <ul className="pl-4">
-              <li>Medical Aid & First Aid</li>
-              <li>Mental Health Support</li>
-            </ul>
-          </li>
-          <li>
-            <h4 className="font-semibold">Animal Support</h4>
-            <ul className="pl-4">
-              <li>Animal Boarding</li>
-              <li>Veterinary Care & Pet Food</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+        {/* Navigation Bar */}
+        <NavBar />
 
-      {/* Map */}
-      <div className="ml-1/4">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d423286.27420444146!2d-118.69193090298795!3d34.02016130663307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c7b96e0e5b7d%3A0x70ef1cfdf7b09ad4!2sLos%20Angeles%2C%20CA!5e0!3m2!1sen!2sus!4v1613951903575!5m2!1sen!2sus"
-          width="100%"
-          height="600"
-          className="border-0 w-full"
-          allowFullScreen=""
-          loading="lazy"
-        ></iframe>
-      </div>
-	{/* Scroll Arrow Component */}
-      <ScrollArrow to="resources" />
-    </div>
-  </div>
-</section>
+        {/* Landing Section */}
+        <div
+          className="flex flex-col justify-center items-center text-center text-white relative z-10"
+          style={{ height: "calc(100vh - 4.15rem)" }} // Adjust for navbar height
+        >
+          <h1
+            className="text-6xl md:text-8xl mb-9"
+            style={{
+              fontFamily: "'Tilt Warp', sans-serif",
+              textShadow: "0px 11.36px 11.36px rgba(0, 0, 0, 0.15)",
+            }}
+          >
+            Discover Aid Near You
+          </h1>
+
+          <Link
+            to="map"
+            className="flex justify-center items-center border border-white text-white hover:text-black hover:bg-white transition-all duration-300 cursor-pointer"
+            style={{
+              fontFamily: "'Noto Sans Multani', sans-serif",
+              fontSize: "24px",
+              fontWeight: "bold",
+              borderRadius: "22px",
+              padding: "10px 22px",
+              borderWidth: "2px",
+            }}
+            spy={true}
+            smooth={true}
+            duration={500}
+          >
+            EXPLORE RESOURCES
+          </Link>
+          <div className="absolute bottom-8 w-full flex justify-center items-center">
+            {/* Scroll Arrow Component */}
+            <ScrollArrow to="mission" />
+          </div>
+        </div>
+
+        {/* Mission Section */}
+        <MissionSection />
+
+
+ {/* Map Section */}
+ <section
+        id="map"
+        className="w-full pt-16 pb-6 overflow-x-hidden"
+        style={{ backgroundColor: "#267738" }}
+      >
+        {/* Use a full-width container instead of limiting max-width */}
+        {/* <div className="w-full"> */}
+          {/* Section Header */}
+          <h2
+            className="text-center relative z-20 flex justify-center items-center gap-2 mb-8"
+            style={{
+              fontFamily: "'Noto Sans', sans-serif",
+              fontWeight: "900",
+              fontSize: "94px",
+              color: "white",
+              textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            MAP
+            {/* Info Icon */}
+            <span className="relative group">
+              <i className="fas fa-circle-info text-lg cursor-pointer text-white"></i>
+              <span
+                className="absolute left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                Search Filter
+Easily find the support you need with our customizable filters. Use the top bar to view organizations currently open, seeking donations, or in need of volunteers. You can also select multiple filters to refine your search.
+Google Map
+Locate help near you using our interactive map. Search by your current location or use the search bar to find specific areas. Click on a place box to access detailed information about the organization.
+              </span>
+            </span>
+          </h2>
+
+          {/* Map Content */}
+          <div className="relative w-full">
+            {/* Render the MapComponent so that it fills the width */}
+            <MapComponent />
+            <ScrollArrow to="support"  />
+          </div>
+          {/* Scroll Arrow Component */}
+            {/* <ScrollArrow to="resources" /> */}
+        {/* </div> */}
+      </section>
 
 {/* Resources Section */}
 <section id="resources">
@@ -447,7 +304,7 @@ export default function Home() {
       {/* Header */}
       <div className="px-8 pt-8 select-none">
         <div
-          className="heading-container max-w-7xl flex flex-col md:flex-row
+          className="heading-container w-full flex flex-col md:flex-row
           md:items-baseline
           gap-6"
         >
@@ -497,10 +354,10 @@ export default function Home() {
               <div className="search-filter-containers relative flex items-center">
                 <input
                   type="text"
-                  placeholder="Name of Organization"
+                  placeholder="Name of organization"
                   onChange={handleSearch}
                   value={searchInput}
-                  className="rounded-full py-2 px-6"
+                  className="rounded-full py-2 px-4"
                 />
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass}
@@ -713,92 +570,8 @@ export default function Home() {
     <ScrollArrow to="support"  />
     </section>
 
-{/* Support Section */}
-      <section id="support" className="bg-[#267738] min-h-screen flex items-center pb-20">
-      <div className="bg-[#267738]">
-  <div className="w-[100vw] px-4 md:px-10 flex flex-col lg:flex-row">
-    {/* Text Content */}
-    <div className="flex flex-col justify-center items-start lg:w-1/2 text-white text-left">
-      <div className="flex flex-col justify-center items-start h-full mx-auto">
-        <h2 className="text-5xl md:text-6xl font-bold mb-4 w-[400px]">
-          <span className="text-[5.5rem]" style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 400 }}>Be the hope</span>
-          <br />
-          <span
-            className="text-white text-[6rem]"
-            style={{ fontFamily: "'Noto Sans', sans-serif", fontWeight: 800 }}
-          >
-            SOMEONE NEEDS
-          </span>
-        </h2>
-
-        <p
-          className="text-[1.65rem] mb-8 w-[550px]"
-          style={{ fontFamily: "'Noto Sans', sans-serif" }}
-        >
-          The Los Angeles community needs your help to provide essentials, shelter,
-          medical care, and support for animals affected by the wildfires. Offer
-          your time or resources to support those in need!
-        </p>
-        <div className="flex flex-col gap-4">
-          <button
-            className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: 800,
-              fontSize: "1.8rem",
-            }}
-          >
-            <span className="flex-grow text-left">VOLUNTEER</span>
-            <FontAwesomeIcon icon={faCaretRight} />
-          </button>
-          <button
-            className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
-            style={{
-              fontFamily: "'Noto Sans', sans-serif",
-              fontWeight: 800,
-              fontSize: "1.8rem",
-            }}
-          >
-            <span className="flex-grow text-left">DONATE</span>
-            <FontAwesomeIcon icon={faCaretRight} />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {/* Graphic Content Group, right side */}
-    <div className="flex justify-center items-center lg:w-1/2">
-      <div className="relative w-full flex justify-center">
-        {/* Background SUPPORT text */}
-        <div
-          className="absolute inset-0 flex flex-col justify-center items-center z-0 text-[#184822] mr-10"
-          style={{
-            fontFamily: "'Noto Sans', sans-serif",
-            fontWeight: 800,
-            lineHeight: "0.88",
-            fontSize: "12rem",
-            letterSpacing: "-0.5rem",
-          }}
-        >
-          <span>SUPPORT</span>
-          <span>SUPPORT</span>
-          <span>SUPPORT</span>
-          <span>SUPPORT</span>
-        </div>
-
-        {/* Globe Image */}
-        <img
-          src="/images/globe.png"
-          alt="Earth Graphic"
-          className="relative z-10 w-[45.25vw] mt-[9.5rem] ml-[3rem] mr-10"
-        />
-      </div>
-    </div>
-  </div>
-    {/* Scroll Arrow Component */}
-<ScrollArrow to="faq" />
-</div>
-</section>
+  {/* Support Section */}
+  <SupportSection />
 
 {/* FAQ Section */}
 <section id="faq" className="bg-[#183917] py-10">
@@ -869,5 +642,6 @@ export default function Home() {
   </div>
 </section>
     </div>
+    </Suspense>
   );
 }

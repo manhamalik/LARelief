@@ -96,12 +96,13 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
   icon={createCustomIcon(resource.types)}
   eventHandlers={{ click: () => handleMarkerClick(resource) }}
 >
-<Popup 
-offset={[0, -20]}            // moves the popup up 20px
-    className="my-custom-popup">
+  <Popup className="my-custom-popup">
     <ResourceCard resource={resource} />
   </Popup>
 </Marker>
+
+
+
           ));
         }
       })}

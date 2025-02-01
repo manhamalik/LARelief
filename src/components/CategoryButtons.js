@@ -19,7 +19,7 @@ import {
 
 // Mapping categories to icons with colors
 const categoryIcons = {
-  //essential categories
+  // essential categories
   "Food & Water": { icon: faBurger, color: "#015BC3" },
   "Clothing & Personal Items": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation": { icon: faBath, color: "#015BC3" },
@@ -31,17 +31,17 @@ const categoryIcons = {
   "Mental Health Support": { icon: faPeopleGroup, color: "#CC0000" },
   "Animal Boarding": { icon: faDog, color: "#CF5700" },
   "Veterinary Care & Pet Food": { icon: faPaw, color: "#CF5700" },
-  //volunteer categories
+  // volunteer categories
   "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
   "Food & Water Distribution": { icon: faBurger, color: "#015BC3" },
   "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
   "Shelter Assistance": { icon: faHouse, color: "#4D03CD" },
-  "Transporation & Delivery Support": { icon: faCarSide, color: "#4D03CD" },
+  "Transportation & Delivery Support": { icon: faCarSide, color: "#4D03CD" },
   "Medical Aid Support": { icon: faBriefcaseMedical, color: "#CC0000" },
   "Animal Shelter Assistance": { icon: faDog, color: "#CF5700" },
   "Animal Rescue & Transport": { icon: faPaw, color: "#CF5700" },
   "Pet Supply Distribution": { icon: faBowlFood, color: "#CF5700" },
-  //donate categories
+  // donate categories
   "Food & Water": { icon: faBurger, color: "#015BC3" },
   "Clothing & Bedding": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
@@ -63,7 +63,6 @@ const categoryIcons = {
   },
 };
 
-// CategoryButtons component
 const CategoryButtons = ({
   categories,
   selectedCategories = [],
@@ -85,7 +84,7 @@ const CategoryButtons = ({
             backgroundColor: selectedCategories.includes(category)
               ? categoryIcons[category].color
               : "white",
-            fontFamily: "'noto sans', sans-serif",
+            fontFamily: "'Noto Sans Multani', sans-serif",
             fontWeight: "700",
             color: "black",
           }}
@@ -105,6 +104,7 @@ const CategoryButtons = ({
           <span
             style={{
               color: selectedCategories.includes(category) ? "white" : "black",
+              fontFamily: "'Noto Sans Multani', sans-serif",
             }}
           >
             {category}
