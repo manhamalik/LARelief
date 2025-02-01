@@ -9,12 +9,12 @@ import {
   faHouse,
   faBus,
   faGavel,
-  faBriefCaseMedical,
+  faKitMedical,
   faUsers,
   faDog,
   faPaw,
-  faCarSide,
-  faBowlFood,
+  faCar,
+  faBowlRice,
   faCalendar,
   faClock,
   faBoxOpen,
@@ -23,17 +23,17 @@ import {
 
 // Mapping categories to icons with colors
 const categoryIcons = {
-  "Food & Water": { icon: faBurger, color: "#015BC3" },
-  "Clothing & Personal Items": { icon: faShirt, color: "#015BC3" },
-  "Hygiene & Sanitation": { icon: faBath, color: "#015BC3" },
-  "Financial Assistance": { icon: faMoneyBill, color: "#015BC3" },
-  "Shelters & Housing Assistance": { icon: faHouse, color: "#4D03CD" },
-  "Transportation Assistance": { icon: faCarSide, color: "#4D03CD" },
-  "Legal Aid": { icon: faGavel, color: "#4D03CD" },
-  "Medical Aid & First Aid": { icon: faBriefCaseMedical, color: "#CC0000" },
+  //volunteer categories
+  "Food & Water Distribution": { icon: faBurger, color: "#015BC3" },
+  "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
+  "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
+  "Shelter Assistance": { icon: faHouse, color: "#4D03CD" },
+  "Transporation & Delivery Support": { icon: faCar, color: "#4D03CD" },
+  "Medical Aid Support": { icon: faKitMedical, color: "#CC0000" },
   "Mental Health Support": { icon: faUsers, color: "#CC0000" },
-  "Animal Boarding": { icon: faDog, color: "#CF5700" },
-  "Veterinary Care & Pet Food": { icon: faPaw, color: "#CF5700" },
+  "Animal Shelter Assistance": { icon: faDog, color: "#CF5700" },
+  "Animal Rescue & Transport": { icon: faPaw, color: "#CF5700" },
+  "Pet Supply Distribution": { icon: faBowlRice, color: "#CF5700" },
 };
 
 const getCurrentDayHours = (hoursOfOperation) => {
@@ -103,7 +103,7 @@ const VolunteerSearch = ({ resource }) => {
       key={id}
       className="outerContainer"
       style={{
-        fontFamily: "'Noto Sans Multani', sans-serif",
+        fontFamily: "'Noto Sans Multani', sans-serif", // Updated font here
         position: "relative",
         left: "15%",
       }}
@@ -119,7 +119,9 @@ const VolunteerSearch = ({ resource }) => {
         <div
           className="cardContainer"
           style={{
-            backgroundImage: `url(${carousel_images?.[0] || "default-image.jpg"})`,
+            backgroundImage: `url(${
+              carousel_images?.[0] || "default-image.jpg"
+            })`,
           }}
         >
           {/* Resource Card Content */}
@@ -175,13 +177,8 @@ const VolunteerSearch = ({ resource }) => {
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
-                <h2
-                  className="resourceName"
-                  style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
-                >
-                  {name}
-                </h2>
-                <p style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>{address}</p>
+                <h2 className="resourceName">{name}</h2>
+                <p>{address}</p>
               </div>
             </div>
             <div className="cardBottom">
@@ -200,7 +197,6 @@ const VolunteerSearch = ({ resource }) => {
                     color: "#6C727D",
                     marginLeft: "7px",
                     fontSize: "1rem",
-                    fontFamily: "'Noto Sans Multani', sans-serif",
                   }}
                 >
                   {displayDate}
@@ -214,6 +210,7 @@ const VolunteerSearch = ({ resource }) => {
                     color: "#2B5CBA",
                     width: "1.5rem",
                     height: "1.5rem",
+                    marginLeft: "12px",
                   }}
                 />
                 <span
@@ -221,27 +218,22 @@ const VolunteerSearch = ({ resource }) => {
                     color: "#6C727D",
                     marginLeft: "7px",
                     fontSize: "1rem",
-                    fontFamily: "'Noto Sans Multani', sans-serif",
                   }}
                 >
                   {currentDayHours}
                 </span>
               </div>
             </div>
-            <div
-              className="timeContainer"
-              style={{ marginTop: "10px", fontFamily: "'Noto Sans Multani', sans-serif" }}
-            >
+            <div className="timeContainer" style={{ marginTop: "10px" }}>
               <FontAwesomeIcon
                 icon={faLaptop}
                 className="icon"
-                style={{ color: "black", width: "1.3rem" }}
+                style={{ color: "000000", width: "1.3rem" }}
               />
               <span
                 style={{
                   marginLeft: "6px",
                   color: "#6C727D",
-                  fontFamily: "'Noto Sans Multani', sans-serif",
                 }}
               >
                 {FormSignUpRequired}
@@ -270,6 +262,7 @@ const VolunteerSearch = ({ resource }) => {
           transition: transform 0.2s ease-out;
           transform: scale(0.9);
         }
+
         .cardContainer:hover {
           transform: scale(0.91);
           cursor: pointer;
@@ -284,20 +277,17 @@ const VolunteerSearch = ({ resource }) => {
         }
         .cardBottom {
           display: flex;
-          justify-content: space-between;
         }
         .resourceName {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           font-weight: bold;
-          font-family: "'Noto Sans Multani', sans-serif";
         }
         .timeContainer {
           display: flex;
           align-items: center;
           font-size: 1rem;
-          font-family: "'Noto Sans Multani', sans-serif";
         }
         .icon {
           font-size: 1.5rem !important;
@@ -306,7 +296,6 @@ const VolunteerSearch = ({ resource }) => {
           color: #6c727d;
           margin: 0;
           font-size: 1rem;
-          font-family: "'Noto Sans Multani', sans-serif";
         }
       `}</style>
     </div>

@@ -275,7 +275,7 @@ export default function Contact() {
                     placeholder="Name*"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white"
+                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white placeholder-white"
                   />
                   <input
                     type="email"
@@ -283,7 +283,7 @@ export default function Contact() {
                     placeholder="Email Address*"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white"
+                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white placeholder-white"
                   />
                   <input
                     type="text"
@@ -291,14 +291,14 @@ export default function Contact() {
                     placeholder="Subject*"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white"
+                    className="w-full p-3 mb-4 text-base rounded-xl bg-black text-white border-2 border-white placeholder-white"
                   />
                   <textarea
                     name="message"
                     placeholder="Message*"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full p-3 min-h-[200px] mb-4 text-base rounded-xl bg-black text-white border-2 border-white"
+                    className="w-full p-3 min-h-[200px] mb-4 text-base rounded-xl bg-black text-white border-2 border-white placeholder-white"
                   ></textarea>
 
                   {/* Invisible reCAPTCHA */}
