@@ -175,22 +175,16 @@ export default function Contact() {
                 }}
               >
                 <p>
-                  <strong>Welcome to LARelief!</strong> <br /> Whether you're here to share
-                  ideas, offer support, or ask for help, we're ready to connect and support you
+                  <strong>Welcome to LARelief!</strong> <br /> Whether you&apos;re here to share
+                  ideas, offer support, or ask for help, we&apos;re ready to connect and support you
                   every step of the way. <br />
                   Use the fields below to send us a message directly, or feel free to email us
                   at{" "}
-                  <a
-                    href="mailto:contact.larelief@gmail.com"
-                    className="text-blue-400 underline"
-                  >
+                  <a href="mailto:contact.larelief@gmail.com" className="text-blue-400 underline">
                     contact.larelief@gmail.com
                   </a>
                   . You can also follow and message us on Instagram at{" "}
-                  <a
-                    href="https://www.instagram.com/la_relief/"
-                    className="text-blue-400 underline"
-                  >
+                  <a href="https://www.instagram.com/la_relief/" className="text-blue-400 underline">
                     @larelief
                   </a>
                   <br />
@@ -202,11 +196,10 @@ export default function Contact() {
                   <br />
                   <br />
                   Looking ahead, we are committed to expanding our impact, ensuring that no one
-                  is left behind during tough times.{" "}
-                  Fueled by compassion and the collective spirit of people like you, we aim to
-                  build a stronger, more resilient community together.
+                  is left behind during tough times. Fueled by compassion &apos; and the
+                  collective spirit of people like you, we aim to build a stronger, more
+                  resilient community together.
                 </p>
-
               </motion.div>
             </div>
 
