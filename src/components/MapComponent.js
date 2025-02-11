@@ -273,11 +273,13 @@ export default function MapComponent() {
     volunteeringData,
   ]);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+
   useEffect(() => {
     if (wildfireActive) {
       const fetchWildfires = async () => {
         try {
-          const response = await fetch("/api/wildfires");
+          const response = await fetch(`${API_BASE_URL}/api/wildfires`);
           const data = await response.json();
           setWildfires(data);
         } catch (err) {
