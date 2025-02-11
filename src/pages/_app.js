@@ -40,11 +40,10 @@ library.add(
   faEnvelopeCircleCheck
 );
 
-// const saira = Saira({ subsets: ["latin"] });
 const notoSansMultani = Noto_Sans_Multani({
   subsets: ["latin"],
   weight: ["400"],
-}); // Import Noto Sans Multani
+});
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -98,7 +97,8 @@ export default function App({ Component, pageProps }) {
         }
       `}</style>
       <main>
-        {router.pathname !== "/" && <NavBar />}
+        {/* Always render NavBar */}
+        <NavBar />
         {isMounted && (
           <Toaster
             position="bottom-left"

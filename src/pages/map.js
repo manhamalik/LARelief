@@ -702,7 +702,7 @@ useEffect(() => {
   return (
     <div>
       <Head>
-        <title>LA Relief - Map</title>
+        <title>LA Relief</title>
       </Head>
 
       {/* Main area: sidebar + map */}

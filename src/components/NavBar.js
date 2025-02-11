@@ -56,7 +56,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
   return (
     <nav
       style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
-      className={`sticky top-0 z-[9999] py-4 md:px-4 text-white transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[9999] py-4 md:px-4 text-white transition-all duration-300 ${
         isHomePage && isScrolled ? "bg-black" : initialBackgroundColor
       }`}
     >
