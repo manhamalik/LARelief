@@ -174,7 +174,7 @@ export default function Home() {
       <div id="hero" className="relative h-screen w-full">
         {/* Background Image */}
         <Image
-          src="/images/image.jpg"
+          src="/images/imagenew.jpg"
           alt="Background Image"
           fill
           style={{ objectFit: "cover" }}
