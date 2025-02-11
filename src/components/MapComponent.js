@@ -277,21 +277,28 @@ export default function MapComponent() {
 
   useEffect(() => {
     if (wildfireActive) {
-      const fetchWildfires = async () => {
-        try {
-          const response = await fetch(`${API_BASE_URL}/api/wildfires`);
-          const data = await response.json();
-          setWildfires(data);
-        } catch (err) {
-          console.error("Failed to fetch wildfire data:", err);
-          setWildfires([]);
-        }
-      };
-      fetchWildfires();
+        const fetchWildfires = async () => {
+            try {
+                console.log("🔥 Fetching wildfires from API..."); // ✅ Log before fetch
+                const response = await fetch(`${API_BASE_URL}/api/wildfires`);
+                
+                console.log("🔥 Response status:", response.status); // ✅ Log HTTP status
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+                const data = await response.json();
+                console.log("🔥 Wildfire Data:", data); // ✅ Log received data
+                
+                setWildfires(data);
+            } catch (err) {
+                console.error("🔥❌ API Fetch Error:", err);
+                setWildfires([]);
+            }
+        };
+        fetchWildfires();
     } else {
-      setWildfires([]);
+        setWildfires([]);
     }
-  }, [wildfireActive]);
+}, [wildfireActive]);
 
   useEffect(() => {
     if (currentLocation && mapRef.current) {
@@ -690,6 +697,7 @@ export default function MapComponent() {
           {fireIcon &&
             wildfireActive &&
             wildfires.map((incident) => {
+              console.log("🔥 Attempting to render marker:", incident); // ✅ Debugging log
               const {
                 UniqueId,
                 Latitude,
@@ -702,7 +710,10 @@ export default function MapComponent() {
                 AcresBurned,
                 PercentContained,
               } = incident;
-              if (!Latitude || !Longitude) return null;
+              if (!incident.Latitude || !incident.Longitude) {
+                console.warn("🔥❌ Skipping wildfire due to missing Lat/Lng:", incident);
+                return null;
+              }
               return (
                 <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
                   <Popup>

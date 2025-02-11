@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.larelief.api.controllers"}) // ✅ Ensures Spring Boot scans controllers
+// Ensure that both your controllers and config packages are scanned.
+@ComponentScan(basePackages = {"com.larelief.api.controllers", "com.larelief.api.config"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
