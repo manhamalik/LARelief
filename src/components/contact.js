@@ -175,18 +175,18 @@ export default function Contact() {
                 }}
               >
                 <p>
-                  <strong>Welcome to LARelief!</strong> <br /> Whether you're
-                  here to share ideas, offer support, or ask for help, we're
-                  ready to connect and support you every step of the way. <br />
-                  Use the fields below to send us a message directly, or feel
-                  free to email us at{" "}
+                  <strong>Welcome to LARelief!</strong> <br /> Whether you're here to share
+                  ideas, offer support, or ask for help, we're ready to connect and support you
+                  every step of the way. <br />
+                  Use the fields below to send us a message directly, or feel free to email us
+                  at{" "}
                   <a
                     href="mailto:contact.larelief@gmail.com"
                     className="text-blue-400 underline"
                   >
                     contact.larelief@gmail.com
                   </a>
-                  . You can also follow and message us on instagram at{" "}
+                  . You can also follow and message us on Instagram at{" "}
                   <a
                     href="https://www.instagram.com/la_relief/"
                     className="text-blue-400 underline"
@@ -195,18 +195,18 @@ export default function Contact() {
                   </a>
                   <br />
                   <br />
-                  <strong>A Little About Us</strong> <br /> LARelief was founded
-                  in response to the devastating fires that impacted Los Angeles
-                  on January 17, 2025. Our mission is to provide essential
-                  resources and support, helping the community recover and
-                  thrive.
+                  <strong>A Little About Us</strong> <br /> LARelief was founded in response to
+                  the devastating fires that impacted Los Angeles on January 17, 2025. Our
+                  mission is to provide essential resources and support, helping the community
+                  recover and thrive.
                   <br />
                   <br />
-                  Looking ahead, we are committed to expanding our impact,
-                  ensuring that no one is left behind during tough times. Fueled
-                  by compassion and the collective spirit of people like you, we
-                  aim to build a stronger, more resilient community together.
+                  Looking ahead, we are committed to expanding our impact, ensuring that no one
+                  is left behind during tough times.{" "}
+                  Fueled by compassion and the collective spirit of people like you, we aim to
+                  build a stronger, more resilient community together.
                 </p>
+
               </motion.div>
             </div>
 
