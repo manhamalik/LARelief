@@ -667,7 +667,7 @@ export default function MapComponent() {
         <MapContainer
           center={[34.0522, -118.2437]}
           zoom={11}
-          scrollWheelZoom
+          scrollWheelZoom={false}
           zoomControl={false} // disable default zoom control
           className="w-full h-full z-0"
           whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
