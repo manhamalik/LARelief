@@ -744,7 +744,7 @@ export default function MapComponent() {
 
         {/* Controls container (search and buttons) */}
         <div
-          className="absolute top-2 left-[61vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw]"
+          className="absolute top-2 left-[61vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw] rounded-3xl"
           ref={searchInputRef}
           style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
         >
@@ -756,7 +756,7 @@ export default function MapComponent() {
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-              className="w-64 rounded-md border border-gray-300 py-[0.4vw] pl-3 pr-10 focus:outline-none rounded-3xl shadow-lg placeholder-gray-500 text-[1vw]"
+              className="w-64 rounded-md border border-gray-300 py-[0.4vw] pl-3 pr-10 focus:outline-none rounded-[20vw] shadow-lg placeholder-gray-500 text-[1vw]"
               style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
             />
             <button

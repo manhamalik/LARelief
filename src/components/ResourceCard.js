@@ -43,7 +43,7 @@ const getCurrentDayHours = (hoursOfOperation) => {
   ];
   const todayIndex = new Date().getDay();
   const today = daysOfWeek[todayIndex];
-  return hoursOfOperation?.[today] || "Hours N/A";
+  return hoursOfOperation?.[today] || "Not Open";
 };
 
 const formatDate = (date) => {
@@ -68,25 +68,10 @@ const ResourceCard = ({ resource }) => {
     types,
   } = resource;
 
-  const displayDate = (() => {
-    const start = new Date(start_date);
-    const end = new Date(end_date);
-    if (end_date) {
-      if (start.getFullYear() === end.getFullYear()) {
-        return `${start.toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-        })} - ${end.toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        })}`;
-      } else {
-        return `${formatDate(start_date)} - ${formatDate(end_date)}`;
-      }
-    }
-    return formatDate(start_date);
-  })();
+  // Updated display logic: If end_date exists, display it with the "Until" label.
+  const displayDate = end_date
+    ? `Until ${formatDate(end_date)}`
+    : formatDate(start_date);
 
   const currentDayHours = getCurrentDayHours(hours_of_operation);
 
@@ -167,10 +152,15 @@ const ResourceCard = ({ resource }) => {
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
-                <h2 className="resourceName" style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>
+                <h2
+                  className="resourceName"
+                  style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+                >
                   {name}
                 </h2>
-                <p style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>{address}</p>
+                <p style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}>
+                  {address}
+                </p>
               </div>
             </div>
             <div className="cardBottom">

@@ -54,7 +54,7 @@ const getCurrentDayHours = (hoursOfOperation) => {
   ];
   const todayIndex = new Date().getDay();
   const today = daysOfWeek[todayIndex];
-  return hoursOfOperation?.[today] || "Hours N/A";
+  return hoursOfOperation?.[today] || "Not Open";
 };
 
 const formatDate = (date) => {
