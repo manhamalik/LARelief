@@ -250,19 +250,18 @@ export default function Home() {
               className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-left rounded-lg"
               style={{ width: "40vw" }}
             >
-              <p>Search Filter:</p>
+              <p>Filters:</p>
               <p className="mb-2 font-semibold">
                 Easily find the support you need with our customizable filters.
                 Use the top bar to view organizations currently open, seeking
-                donations, or in need of volunteers. You can also select multiple
-                filters to refine your search.
+                donations, or in need of volunteers. As well as currently wildfires 
+                and air quality in different areas. You can also select multiple
+                filters to refine your search. 
               </p>
-              <p>Google Map:</p>
+              <p>Map:</p>
               <p className="font-semibold">
-                Locate help near you using our interactive map. Search by your
-                current location or use the search bar to find specific areas.
-                Click on a place box to access detailed information about the
-                organization.
+                Locate help near you using our interactive map. Use the search bar to find specific organizations.
+                Click on a place box to access detailed information about the organization.
               </p>
             </span>
           </span>
