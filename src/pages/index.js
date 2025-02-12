@@ -270,7 +270,7 @@ export default function Home() {
 
         <div className="relative w-full">
           <MapComponent />
-          <ScrollArrow to="support" />
+          <ScrollArrow to="resources" />
         </div>
       </section>
 

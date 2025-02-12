@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ResourceCard from "@/components/ResourceCard";
 import DonationCard from "@/components/DonationCard";
 import VolunteerCard from "@/components/VolunteerCard";
-import { ZoomControl } from "react-leaflet"; // import ZoomControl
+import { ZoomControl } from "react-leaflet";
 
 import {
   faTshirt,
@@ -52,6 +52,11 @@ const Popup = dynamic(
 );
 const ClusteredMarkers = dynamic(
   () => import("@/components/ClusteredMarkers"),
+  { ssr: false }
+);
+// Dynamically import Polygon for air quality overlays
+const Polygon = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Polygon),
   { ssr: false }
 );
 
@@ -159,6 +164,9 @@ export default function MapComponent() {
   const mapRef = useRef(null);
   const [fireIcon, setFireIcon] = useState(null);
   const [customCreateIcon, setCustomCreateIcon] = useState(null);
+  // New state for Air Quality overlay
+  const [airQualityActive, setAirQualityActive] = useState(false);
+  const [airQualityData, setAirQualityData] = useState([]);
 
   const dataSources = {
     resources: resourcesData,
@@ -264,41 +272,53 @@ export default function MapComponent() {
       data = data.filter(isLocationOpen);
     }
     setFilteredData(data);
-  }, [
-    sidebar,
-    selectedSubcategories,
-    openNow,
-    resourcesData,
-    donationsData,
-    volunteeringData,
-  ]);
+  }, [sidebar, selectedSubcategories, openNow, resourcesData, donationsData, volunteeringData]);
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   useEffect(() => {
     if (wildfireActive) {
-        const fetchWildfires = async () => {
-            try {
-                console.log("🔥 Fetching wildfires from API..."); // ✅ Log before fetch
-                const response = await fetch(`${API_BASE_URL}/api/wildfires`);
-                
-                console.log("🔥 Response status:", response.status); // ✅ Log HTTP status
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-                const data = await response.json();
-                console.log("🔥 Wildfire Data:", data); // ✅ Log received data
-                
-                setWildfires(data);
-            } catch (err) {
-                console.error("🔥❌ API Fetch Error:", err);
-                setWildfires([]);
-            }
-        };
-        fetchWildfires();
+      const fetchWildfires = async () => {
+        try {
+          console.log("🔥 Fetching wildfires from API...");
+          const response = await fetch(`${API_BASE_URL}/api/wildfires`);
+          console.log("🔥 Response status:", response.status);
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          const data = await response.json();
+          console.log("🔥 Wildfire Data:", data);
+          setWildfires(data);
+        } catch (err) {
+          console.error("🔥❌ API Fetch Error:", err);
+          setWildfires([]);
+        }
+      };
+      fetchWildfires();
     } else {
-        setWildfires([]);
+      setWildfires([]);
     }
-}, [wildfireActive]);
+  }, [wildfireActive]);
+
+  // New effect: Fetch district air quality data when Air Quality is toggled on
+  useEffect(() => {
+    if (airQualityActive) {
+      const fetchAirQualityDistricts = async () => {
+        try {
+          console.log("🌬️ Fetching district air quality data from API...");
+          const response = await fetch(`${API_BASE_URL}/api/airquality/districts`);
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          const data = await response.json();
+          console.log("🌬️ District Air Quality Data:", data);
+          setAirQualityData(data);
+        } catch (err) {
+          console.error("🌬️❌ District Air Quality API Fetch Error:", err);
+          setAirQualityData([]);
+        }
+      };
+      fetchAirQualityDistricts();
+    } else {
+      setAirQualityData([]);
+    }
+  }, [airQualityActive]);
 
   useEffect(() => {
     if (currentLocation && mapRef.current) {
@@ -308,10 +328,7 @@ export default function MapComponent() {
 
   useEffect(() => {
     const handleClickOutside = (evt) => {
-      if (
-        searchInputRef.current &&
-        !searchInputRef.current.contains(evt.target)
-      ) {
+      if (searchInputRef.current && !searchInputRef.current.contains(evt.target)) {
         setShowSuggestions(false);
       }
     };
@@ -548,10 +565,10 @@ export default function MapComponent() {
     let sidebarHeading = "Resource Options";
     if (sidebar === "donations") sidebarHeading = "Donation Options";
     else if (sidebar === "volunteering") sidebarHeading = "Volunteer Options";
-  
+
     return (
       <aside
-        className="w-[25vw] bg-white p-6 shadow-xl flex-shrink-0 rounded-tr-[6vw] rounded-br-[6vw] m-3 h-[93.5vh]"
+        className="w-[23.75vw] bg-white p-6 shadow-xl flex-shrink-0 rounded-tr-[6vw] rounded-br-[6vw] m-3 min-h-screen"
         style={{
           fontFamily: "'Noto Sans Multani', sans-serif",
           zIndex: 2000,
@@ -564,19 +581,14 @@ export default function MapComponent() {
         {categories[sidebar]?.length > 0 ? (
           <ul className="space-y-4">
             {categories[sidebar].map((category) => {
-              // Save parent category color for use in subcategory items.
               const parentColor = category.color;
-              // Gather subcategory labels for this category.
               const subsInThisCat = category.subcategories.map((s) => s.label);
               if (sidebar === "donations") {
                 subsInThisCat.push(`Monetary Donations (${category.label})`);
               }
-  
-              // Check if every subcategory in this category is selected.
               const currentlySelected = subsInThisCat.every((sub) =>
                 selectedSubcategories.includes(sub)
               );
-  
               return (
                 <li key={category.label}>
                   <div className="flex items-center gap-3 font-bold text-[1.2vw]">
@@ -588,12 +600,10 @@ export default function MapComponent() {
                     style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
                     onClick={() => {
                       if (currentlySelected) {
-                        // Remove all subcategories if they are currently selected.
                         setSelectedSubcategories((prev) =>
                           prev.filter((s) => !subsInThisCat.includes(s))
                         );
                       } else {
-                        // Add all subcategories if not all of them are selected.
                         setSelectedSubcategories((prev) => [
                           ...new Set([...prev, ...subsInThisCat]),
                         ]);
@@ -607,9 +617,7 @@ export default function MapComponent() {
                       <li
                         key={subcategory.label}
                         className={`cursor-pointer flex items-center gap-3 ${
-                          selectedSubcategories.includes(subcategory.label)
-                            ? "font-bold"
-                            : ""
+                          selectedSubcategories.includes(subcategory.label) ? "font-bold" : ""
                         }`}
                         style={{
                           fontFamily: "'Noto Sans Multani', sans-serif",
@@ -662,30 +670,23 @@ export default function MapComponent() {
       </aside>
     );
   };
-  
-  
+
   // -------------- MAIN RETURN --------------
   return (
     <div>
-      <Head>
-        <title>LA Relief - Map</title>
-      </Head>
-      {/* Outer container: relative to position overlay elements */}
-      <div className="relative w-full h-[93.5vh]">
-        {/* Map takes full width and height */}
+      <div className="relative w-full"> {/* h-[93.5vh] */}
         <MapContainer
           center={[34.0522, -118.2437]}
           zoom={11}
           scrollWheelZoom={false}
-          zoomControl={false} // disable default zoom control
-          className="w-full h-full z-0"
+          zoomControl={false}
+          className="w-full min-h-screen z-0"
           whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           />
-          {/* Add ZoomControl in top right */}
           <ZoomControl position="topright" />
           {customCreateIcon && (
             <ClusteredMarkers
@@ -697,7 +698,7 @@ export default function MapComponent() {
           {fireIcon &&
             wildfireActive &&
             wildfires.map((incident) => {
-              console.log("🔥 Attempting to render marker:", incident); // ✅ Debugging log
+              console.log("🔥 Attempting to render marker:", incident);
               const {
                 UniqueId,
                 Latitude,
@@ -742,26 +743,63 @@ export default function MapComponent() {
                 </Marker>
               );
             })}
+          {/* Render district boundaries when Air Quality is toggled on */}
+          {airQualityActive &&
+            airQualityData.map((district, index) => {
+              const aqi = district.aqi;
+              const fillColor =
+                aqi <= 2
+                  ? "#00e400"
+                  : aqi === 3
+                  ? "#ff7e00"
+                  : aqi === 4
+                  ? "#ff0000"
+                  : aqi >= 5
+                  ? "#8f3f97"
+                  : "#000000";
+              return (
+                <Polygon
+                  key={`air-quality-district-${index}`}
+                  positions={district.polygon.map((coord) => [coord[0], coord[1]])}
+                  pathOptions={{ color: fillColor, fillColor: fillColor, fillOpacity: 0.5 }}
+                >
+                  <Popup>
+                    <div>
+                      <strong>{district.name}</strong>
+                      <br />
+                      {aqi === -1
+                        ? "Data not available"
+                        : `AQI: ${aqi} - ${
+                            aqi <= 2
+                              ? "Good to Moderate"
+                              : aqi === 3
+                              ? "Unhealthy for Sensitive Groups"
+                              : aqi === 4
+                              ? "Unhealthy"
+                              : "Very Unhealthy to Hazardous"
+                          }`}
+                    </div>
+                  </Popup>
+                </Polygon>
+              );
+            })}
         </MapContainer>
 
-        {/* Sidebar overlay: positioned above the map */}
         <div
-        className="absolute z-[3000]"
-        style={{ 
-          top: "-0.8vw", 
-          left: "-1vw",
-        }}
+          className="absolute z-[3000]"
+          style={{
+            top: "-0.8vw",
+            left: "-1vw",
+          }}
         >
-        {renderSidebar()}
+          {renderSidebar()}
         </div>
 
-        {/* Controls container (search and buttons) */}
         <div
-          className="absolute top-2 left-[61vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw] rounded-3xl"
+          className="absolute top-2 left-[59vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw] rounded-3xl"
           ref={searchInputRef}
           style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
         >
-          {/* Search box and buttons (same as before) */}
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
@@ -769,7 +807,7 @@ export default function MapComponent() {
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-              className="w-64 rounded-md border border-gray-300 py-[0.4vw] pl-3 pr-10 focus:outline-none rounded-[20vw] shadow-lg placeholder-gray-500 text-[1vw]"
+              className="w-62 border border-gray-300 py-[0.4vw] pl-3 pr-10 focus:outline-none rounded-[20vw] shadow-lg placeholder-gray-500 text-[1vw]"
               style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
             />
             <button
@@ -803,7 +841,7 @@ export default function MapComponent() {
             )}
           </form>
           <button
-            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               openNow ? "bg-[#027B00] text-white" : "bg-[#FFFFFF] text-black"
             }`}
             style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
@@ -817,7 +855,7 @@ export default function MapComponent() {
             <span className="inline-block align-middle">Open Now</span>
           </button>
           <button
-            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               sidebar === "donations" ? "bg-[#2B9FD0] text-white" : "bg-[#FFFFFF] text-black"
             }`}
             style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
@@ -831,7 +869,7 @@ export default function MapComponent() {
             <span className="inline-block align-middle">Donations Needed</span>
           </button>
           <button
-            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               sidebar === "volunteering" ? "bg-[#D55858] text-white" : "bg-[#FFFFFF] text-black"
             }`}
             style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
@@ -845,7 +883,7 @@ export default function MapComponent() {
             <span className="inline-block align-middle">Volunteer Opportunities</span>
           </button>
           <button
-            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+            className={`flex items-center px-2 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap min-w-[10.65vw] ${
               wildfireActive ? "bg-orange-500 text-black" : "bg-[#982525] text-white"
             }`}
             style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
@@ -863,14 +901,23 @@ export default function MapComponent() {
             />
             <span className="inline-block align-middle">Wildfire Warning</span>
           </button>
+          {/* Air Quality Button */}
+          <button
+            className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap min-w-[8.75vw] ${
+              airQualityActive ? "bg-[#8cc1ffff] text-black" : "bg-[#154985ff] text-white"
+            }`}
+            style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+            onClick={() => setAirQualityActive((prev) => !prev)}
+            title="Air Quality: Green = Good to Moderate, Orange = Unhealthy for Sensitive Groups, Red = Unhealthy, Purple = Very Unhealthy to Hazardous"
+          >
+            <img
+              src="/images/air.png"
+              alt="Air Quality"
+              className="w-6 h-6 inline-block mr-2"
+            />
+            <span className="inline-block align-middle">Air Quality</span>
+          </button>
         </div>
-        {/* {selectedResource && (
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-white text-black rounded-xl shadow-lg p-4 w-80">
-            {sidebar === "resources" && <ResourceCard resource={selectedResource} />}
-            {sidebar === "donations" && <DonationCard resource={selectedResource} />}
-            {sidebar === "volunteering" && <VolunteerCard resource={selectedResource} />}
-          </div>
-        )} */}
       </div>
     </div>
   );
