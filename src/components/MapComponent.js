@@ -1,13 +1,8 @@
 // components/MapComponent.jsx
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ResourceCard from "@/components/ResourceCard";
-import DonationCard from "@/components/DonationCard";
-import VolunteerCard from "@/components/VolunteerCard";
 import { ZoomControl } from "react-leaflet";
-
 import {
   faTshirt,
   faMoneyBillWave,
@@ -29,11 +24,12 @@ import {
   faClock,
   faCircleDollarToSlot,
   faHandHoldingHeart,
-  faFire,
   faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Dynamically import Leaflet components
+import "leaflet/dist/leaflet.css";
+
+// Dynamically import Leaflet components (necessary for Next.js SSR)
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false }
@@ -50,20 +46,18 @@ const Popup = dynamic(
   () => import("react-leaflet").then((mod) => mod.Popup),
   { ssr: false }
 );
-const ClusteredMarkers = dynamic(
-  () => import("@/components/ClusteredMarkers"),
-  { ssr: false }
-);
-// Dynamically import Polygon for air quality overlays
 const Polygon = dynamic(
   () => import("react-leaflet").then((mod) => mod.Polygon),
   { ssr: false }
 );
+const ClusteredMarkers = dynamic(
+  () => import("@/components/ClusteredMarkers"),
+  { ssr: false }
+);
 
-// Leaflet CSS
-import "leaflet/dist/leaflet.css";
-
-// Icon configuration for each subcategory
+// -------------------------------------
+// CONFIG
+// -------------------------------------
 const iconConfig = {
   "Food & Water": { icon: "fa-solid fa-burger", color: "#015BC3" },
   "Clothing & Personal Items": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
@@ -105,7 +99,9 @@ const iconConfig = {
   "Pet Supply Distribution": { icon: "fa-solid fa-bowl-food", color: "#DB5D02" },
 };
 
-// Utility for converting 12-hour to 24-hour time
+// -------------------------------------
+// TIME UTILS
+// -------------------------------------
 function convertTo24Hour(timeStr) {
   if (!timeStr) return null;
   const [time, ampm] = timeStr.split(" ");
@@ -116,21 +112,25 @@ function convertTo24Hour(timeStr) {
   return `${hour.toString().padStart(2, "0")}:${minute.padStart(2, "0")}`;
 }
 
-// Checks if a location is currently “open”
 function isLocationOpen(location) {
   const now = new Date();
-  let startDate = location.start_date ? new Date(location.start_date) : new Date(0);
-  let endDate = location.end_date ? new Date(location.end_date) : new Date(9999, 11, 31);
+  const startDate = location.start_date ? new Date(location.start_date) : new Date(0);
+  const endDate = location.end_date ? new Date(location.end_date) : new Date(9999, 11, 31);
+
   const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
   const endMidnight = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
   if (todayMidnight < startMidnight) return false;
   if (todayMidnight > endMidnight) return false;
+
   const dayOfWeek = now.toLocaleString("en-US", { weekday: "long" });
   const todayHours = location.hours_of_operation?.[dayOfWeek];
   if (!todayHours) return false;
+
   const [startTime, endTime] = todayHours.split(" - ");
   if (!startTime || !endTime) return false;
+
   const currentTime12h = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
@@ -139,11 +139,15 @@ function isLocationOpen(location) {
   const currentTime24 = convertTo24Hour(currentTime12h);
   const startTime24 = convertTo24Hour(startTime);
   const endTime24 = convertTo24Hour(endTime);
+
   return currentTime24 >= startTime24 && currentTime24 <= endTime24;
 }
 
+// -------------------------------------
+// MAIN COMPONENT
+// -------------------------------------
 export default function MapComponent() {
-  // -------------- STATE --------------
+  // ----------------- STATE -----------------
   const [resourcesData, setResourcesData] = useState([]);
   const [donationsData, setDonationsData] = useState([]);
   const [volunteeringData, setVolunteeringData] = useState([]);
@@ -160,23 +164,26 @@ export default function MapComponent() {
   const [searchError, setSearchError] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchInputRef = useRef(null);
+
   const mapRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  // Icons
   const [fireIcon, setFireIcon] = useState(null);
   const [customCreateIcon, setCustomCreateIcon] = useState(null);
-  // New state for Air Quality overlay
+
+  // Air Quality
   const [airQualityActive, setAirQualityActive] = useState(false);
   const [airQualityData, setAirQualityData] = useState([]);
 
-  const dataSources = {
-    resources: resourcesData,
-    donations: donationsData,
-    volunteering: volunteeringData,
-  };
-  const combinedData = [...resourcesData, ...donationsData, ...volunteeringData];
+  // For centering on a selected marker
   const [currentLocation, setCurrentLocation] = useState(null);
 
-  // -------------- EFFECTS --------------
+  // ----------------- DATA LOADS -----------------
+  // Adjust if your Next.js route is different
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+
+  // Resources
   useEffect(() => {
     const fetchResources = async () => {
       try {
@@ -190,11 +197,13 @@ export default function MapComponent() {
     fetchResources();
   }, []);
 
+  // Donations
   useEffect(() => {
     const fetchDonations = async () => {
       try {
         const res = await fetch("/api/donate-list");
         const data = await res.json();
+        // unify name
         const normalizedData = data.map((item) => ({
           ...item,
           name: item.organization_name || item.name,
@@ -207,6 +216,7 @@ export default function MapComponent() {
     fetchDonations();
   }, []);
 
+  // Volunteering
   useEffect(() => {
     const fetchVolunteering = async () => {
       try {
@@ -220,6 +230,7 @@ export default function MapComponent() {
     fetchVolunteering();
   }, []);
 
+  // Leaflet icon setup (once on mount)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const L = require("leaflet");
@@ -229,6 +240,8 @@ export default function MapComponent() {
         iconUrl: require("leaflet/dist/images/marker-icon.png"),
         shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
       });
+
+      // Fire icon for wildfires
       const fire = L.icon({
         iconUrl: "/images/fire.png",
         iconSize: [48, 48],
@@ -236,11 +249,15 @@ export default function MapComponent() {
         popupAnchor: [0, -32],
       });
       setFireIcon(fire);
+
+      // For resource clustering
       const createCustomIcon = (types) => {
         const iconsHTML = types
           .map((type) => {
             const cfg = iconConfig[type] || {};
-            return `<i class="fa ${(cfg.icon || "fa-circle").replace("fa-solid ", "")}" style="color: ${cfg.color || "#000"}; font-size:18px; margin: 0 2px;"></i>`;
+            return `<i class="fa ${
+              (cfg.icon || "fa-circle").replace("fa-solid ", "")
+            }" style="color: ${cfg.color || "#000"}; font-size:18px; margin: 0 2px;"></i>`;
           })
           .join("");
         return L.divIcon({
@@ -254,6 +271,7 @@ export default function MapComponent() {
     }
   }, []);
 
+  // Filter data for markers
   useEffect(() => {
     let data = [];
     if (sidebar === "resources") {
@@ -263,6 +281,7 @@ export default function MapComponent() {
     } else if (sidebar === "volunteering") {
       data = volunteeringData;
     }
+
     if (selectedSubcategories.length > 0) {
       data = data.filter((item) =>
         item.types?.some((type) => selectedSubcategories.includes(type))
@@ -274,15 +293,13 @@ export default function MapComponent() {
     setFilteredData(data);
   }, [sidebar, selectedSubcategories, openNow, resourcesData, donationsData, volunteeringData]);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-
+  // Wildfire toggle
   useEffect(() => {
     if (wildfireActive) {
       const fetchWildfires = async () => {
         try {
           console.log("🔥 Fetching wildfires from API...");
           const response = await fetch(`${API_BASE_URL}/api/wildfires`);
-          console.log("🔥 Response status:", response.status);
           if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
           const data = await response.json();
           console.log("🔥 Wildfire Data:", data);
@@ -298,34 +315,36 @@ export default function MapComponent() {
     }
   }, [wildfireActive]);
 
-  // New effect: Fetch district air quality data when Air Quality is toggled on
+  // Air Quality toggle (Neighborhood-based)
   useEffect(() => {
     if (airQualityActive) {
-      const fetchAirQualityDistricts = async () => {
+      const fetchAirQualityNeighborhoods = async () => {
         try {
-          console.log("🌬️ Fetching district air quality data from API...");
-          const response = await fetch(`${API_BASE_URL}/api/airquality/districts`);
+          console.log("🌬️ Fetching neighborhood air quality data...");
+          const response = await fetch(`${API_BASE_URL}/api/airquality/neighborhoods`);
           if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
           const data = await response.json();
-          console.log("🌬️ District Air Quality Data:", data);
+          console.log("🌬️ Neighborhood Air Quality Data:", data);
           setAirQualityData(data);
         } catch (err) {
-          console.error("🌬️❌ District Air Quality API Fetch Error:", err);
+          console.error("🌬️❌ Neighborhood Air Quality API Fetch Error:", err);
           setAirQualityData([]);
         }
       };
-      fetchAirQualityDistricts();
+      fetchAirQualityNeighborhoods();
     } else {
       setAirQualityData([]);
     }
   }, [airQualityActive]);
 
+  // Re-center map if user selects a marker
   useEffect(() => {
     if (currentLocation && mapRef.current) {
       mapRef.current.setView([currentLocation.lat, currentLocation.lng], 15);
     }
   }, [currentLocation]);
 
+  // Hide suggestions on outside click
   useEffect(() => {
     const handleClickOutside = (evt) => {
       if (searchInputRef.current && !searchInputRef.current.contains(evt.target)) {
@@ -336,6 +355,7 @@ export default function MapComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ----------------- HANDLERS -----------------
   const handleButtonClick = (type) => {
     if (type === "open_now") {
       setOpenNow((prev) => !prev);
@@ -344,6 +364,7 @@ export default function MapComponent() {
     } else if (type === "wildfire") {
       setWildfireActive((prev) => !prev);
     } else if (sidebar === type) {
+      // Toggle back to resources if clicked the same button
       setSidebar("resources");
       setSelectedSubcategories([]);
       setOpenNow(false);
@@ -378,6 +399,9 @@ export default function MapComponent() {
     });
   };
 
+  // Searching
+  const combinedData = [...resourcesData, ...donationsData, ...volunteeringData];
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -385,6 +409,7 @@ export default function MapComponent() {
     setSearchError(null);
     setSearchResult(null);
     setShowSuggestions(false);
+
     const lowerQuery = searchQuery.toLowerCase();
     const matchedResource = combinedData.find(
       (item) =>
@@ -392,6 +417,7 @@ export default function MapComponent() {
           item.organization_name.toLowerCase().includes(lowerQuery)) ||
         (item.name && item.name.toLowerCase().includes(lowerQuery))
     );
+
     if (matchedResource) {
       setFilteredData([matchedResource]);
       setSelectedResource(matchedResource);
@@ -413,11 +439,13 @@ export default function MapComponent() {
   const handleInputChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
+
     if (!query) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
     }
+
     const lowerQuery = query.toLowerCase();
     const filteredSuggestions = combinedData
       .filter(
@@ -427,6 +455,7 @@ export default function MapComponent() {
           (item.name && item.name.toLowerCase().includes(lowerQuery))
       )
       .slice(0, 5);
+
     setSuggestions(filteredSuggestions);
     setShowSuggestions(filteredSuggestions.length > 0);
   };
@@ -439,7 +468,7 @@ export default function MapComponent() {
     handleSearch({ preventDefault: () => {} });
   };
 
-  // -------------- CATEGORY DEFINITIONS --------------
+  // ----------------- SIDEBAR -----------------
   const categories = {
     resources: [
       {
@@ -560,7 +589,6 @@ export default function MapComponent() {
     ],
   };
 
-  // -------------- RENDER SIDEBAR --------------
   const renderSidebar = () => {
     let sidebarHeading = "Resource Options";
     if (sidebar === "donations") sidebarHeading = "Donation Options";
@@ -589,6 +617,7 @@ export default function MapComponent() {
               const currentlySelected = subsInThisCat.every((sub) =>
                 selectedSubcategories.includes(sub)
               );
+
               return (
                 <li key={category.label}>
                   <div className="flex items-center gap-3 font-bold text-[1.2vw]">
@@ -612,7 +641,7 @@ export default function MapComponent() {
                   >
                     {currentlySelected ? "Deselect All" : "Select All"}
                   </button>
-                  <ul className="pl-6 mt-2 space-y-2 ">
+                  <ul className="pl-6 mt-2 space-y-2">
                     {category.subcategories.map((subcategory) => (
                       <li
                         key={subcategory.label}
@@ -644,7 +673,9 @@ export default function MapComponent() {
                         }`}
                         style={{
                           fontFamily: "'Noto Sans Multani', sans-serif",
-                          color: selectedSubcategories.includes(`Monetary Donations (${category.label})`)
+                          color: selectedSubcategories.includes(
+                            `Monetary Donations (${category.label})`
+                          )
                             ? parentColor
                             : undefined,
                         }}
@@ -654,7 +685,11 @@ export default function MapComponent() {
                       >
                         <FontAwesomeIcon
                           icon={faMoneyBillWave}
-                          style={{ color: iconConfig[`Monetary Donations (${category.label})`]?.color }}
+                          style={{
+                            color:
+                              iconConfig[`Monetary Donations (${category.label})`]?.color ||
+                              parentColor,
+                          }}
                         />
                         <span>Monetary Donations</span>
                       </li>
@@ -671,10 +706,10 @@ export default function MapComponent() {
     );
   };
 
-  // -------------- MAIN RETURN --------------
+  // ----------------- RENDER -----------------
   return (
     <div>
-      <div className="relative w-full"> {/* h-[93.5vh] */}
+      <div className="relative w-full">
         <MapContainer
           center={[34.0522, -118.2437]}
           zoom={11}
@@ -685,9 +720,11 @@ export default function MapComponent() {
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution='&copy; OpenStreetMap'
           />
           <ZoomControl position="topright" />
+
+          {/* Clustered Markers (resources, donations, volunteering) */}
           {customCreateIcon && (
             <ClusteredMarkers
               resources={filteredData}
@@ -695,10 +732,11 @@ export default function MapComponent() {
               handleMarkerClick={handleMarkerClick}
             />
           )}
+
+          {/* Wildfire markers */}
           {fireIcon &&
             wildfireActive &&
             wildfires.map((incident) => {
-              console.log("🔥 Attempting to render marker:", incident);
               const {
                 UniqueId,
                 Latitude,
@@ -711,10 +749,8 @@ export default function MapComponent() {
                 AcresBurned,
                 PercentContained,
               } = incident;
-              if (!incident.Latitude || !incident.Longitude) {
-                console.warn("🔥❌ Skipping wildfire due to missing Lat/Lng:", incident);
-                return null;
-              }
+              if (!Latitude || !Longitude) return null;
+
               return (
                 <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
                   <Popup>
@@ -743,48 +779,86 @@ export default function MapComponent() {
                 </Marker>
               );
             })}
-          {/* Render district boundaries when Air Quality is toggled on */}
+
+          {/* Neighborhood Air Quality Polygons */}
           {airQualityActive &&
-            airQualityData.map((district, index) => {
-              const aqi = district.aqi;
-              const fillColor =
-                aqi <= 2
-                  ? "#00e400"
-                  : aqi === 3
-                  ? "#ff7e00"
-                  : aqi === 4
-                  ? "#ff0000"
-                  : aqi >= 5
-                  ? "#8f3f97"
-                  : "#000000";
-              return (
-                <Polygon
-                  key={`air-quality-district-${index}`}
-                  positions={district.polygon.map((coord) => [coord[0], coord[1]])}
-                  pathOptions={{ color: fillColor, fillColor: fillColor, fillOpacity: 0.5 }}
-                >
-                  <Popup>
-                    <div>
-                      <strong>{district.name}</strong>
+            airQualityData.map((feature, index) => {
+              if (!feature.geometry) return null;
+
+              // Assign color based on AQI
+              let fillColor = "#000000";
+              switch (feature.aqi) {
+                case 1:
+                case 2:
+                  fillColor = "#00e400"; // Good/Moderate
+                  break;
+                case 3:
+                  fillColor = "#ff7e00"; // Unhealthy for sensitive
+                  break;
+                case 4:
+                  fillColor = "#ff0000"; // Unhealthy
+                  break;
+                case 5:
+                  fillColor = "#8f3f97"; // Very Unhealthy/Hazardous
+                  break;
+                default:
+                  fillColor = "#000000"; // No data (-1)
+              }
+
+              // Helper to swap [lng, lat] -> [lat, lng]
+              const toLatLngs = (ring) => ring.map(([lng, lat]) => [lat, lng]);
+
+              // Render Polygon vs MultiPolygon
+              if (feature.geometry.type === "Polygon") {
+                // geometry.coordinates is an array of rings
+                const rings = feature.geometry.coordinates; // [ [ [lng,lat], ... ], [ ... ] ...]
+                return (
+                  <Polygon
+                    key={index}
+                    positions={rings.map((ring) => toLatLngs(ring))}
+                    pathOptions={{
+                      color: fillColor,
+                      fillColor: fillColor,
+                      fillOpacity: 0.4,
+                    }}
+                  >
+                    <Popup>
+                      <strong>{feature.name}</strong>
                       <br />
-                      {aqi === -1
-                        ? "Data not available"
-                        : `AQI: ${aqi} - ${
-                            aqi <= 2
-                              ? "Good to Moderate"
-                              : aqi === 3
-                              ? "Unhealthy for Sensitive Groups"
-                              : aqi === 4
-                              ? "Unhealthy"
-                              : "Very Unhealthy to Hazardous"
-                          }`}
-                    </div>
-                  </Popup>
-                </Polygon>
-              );
+                      {feature.aqi === -1
+                        ? "No data"
+                        : `AQI: ${feature.aqi}`}
+                    </Popup>
+                  </Polygon>
+                );
+              } else if (feature.geometry.type === "MultiPolygon") {
+                // geometry.coordinates is an array of polygons
+                const multi = feature.geometry.coordinates; // [ [ [ [lng, lat], ... ] ], [ [ ... ] ] ...]
+                return multi.map((poly, idx2) => (
+                  <Polygon
+                    key={`${index}-${idx2}`}
+                    positions={poly.map((ring) => toLatLngs(ring))}
+                    pathOptions={{
+                      color: fillColor,
+                      fillColor: fillColor,
+                      fillOpacity: 0.4,
+                    }}
+                  >
+                    <Popup>
+                      <strong>{feature.name}</strong>
+                      <br />
+                      {feature.aqi === -1
+                        ? "No data"
+                        : `AQI: ${feature.aqi}`}
+                    </Popup>
+                  </Polygon>
+                ));
+              }
+              return null;
             })}
         </MapContainer>
 
+        {/* SIDEBAR */}
         <div
           className="absolute z-[3000]"
           style={{
@@ -795,11 +869,13 @@ export default function MapComponent() {
           {renderSidebar()}
         </div>
 
+        {/* TOP BAR (Search, toggles, etc.) */}
         <div
           className="absolute top-2 left-[59vw] transform -translate-x-1/2 z-[1000] flex items-center gap-2 p-3 w-[70vw] rounded-3xl"
           ref={searchInputRef}
           style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
         >
+          {/* Search Box */}
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
@@ -840,6 +916,8 @@ export default function MapComponent() {
               </ul>
             )}
           </form>
+
+          {/* Open Now Toggle */}
           <button
             className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               openNow ? "bg-[#027B00] text-white" : "bg-[#FFFFFF] text-black"
@@ -854,6 +932,8 @@ export default function MapComponent() {
             />
             <span className="inline-block align-middle">Open Now</span>
           </button>
+
+          {/* Donations Toggle */}
           <button
             className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               sidebar === "donations" ? "bg-[#2B9FD0] text-white" : "bg-[#FFFFFF] text-black"
@@ -868,6 +948,8 @@ export default function MapComponent() {
             />
             <span className="inline-block align-middle">Donations Needed</span>
           </button>
+
+          {/* Volunteering Toggle */}
           <button
             className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap ${
               sidebar === "volunteering" ? "bg-[#D55858] text-white" : "bg-[#FFFFFF] text-black"
@@ -882,6 +964,8 @@ export default function MapComponent() {
             />
             <span className="inline-block align-middle">Volunteer Opportunities</span>
           </button>
+
+          {/* Wildfire Toggle */}
           <button
             className={`flex items-center px-2 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap min-w-[10.65vw] ${
               wildfireActive ? "bg-orange-500 text-black" : "bg-[#982525] text-white"
@@ -901,14 +985,15 @@ export default function MapComponent() {
             />
             <span className="inline-block align-middle">Wildfire Warning</span>
           </button>
-          {/* Air Quality Button */}
+
+          {/* Air Quality Toggle */}
           <button
             className={`flex items-center px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold whitespace-nowrap min-w-[8.75vw] ${
               airQualityActive ? "bg-[#8cc1ffff] text-black" : "bg-[#154985ff] text-white"
             }`}
             style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
             onClick={() => setAirQualityActive((prev) => !prev)}
-            title="Air Quality: Green = Good to Moderate, Orange = Unhealthy for Sensitive Groups, Red = Unhealthy, Purple = Very Unhealthy to Hazardous"
+            title="Air Quality: Green=Good/Moderate, Orange=Unhealthy (Sensitive), Red=Unhealthy, Purple=Very Unhealthy/Hazardous"
           >
             <img
               src="/images/air.png"
