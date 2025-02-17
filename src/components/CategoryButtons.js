@@ -15,11 +15,12 @@ import {
   faBoxOpen,
   faBowlFood,
   faCar,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapping categories to icons with colors
 const categoryIcons = {
-  // essential categories
+  // resource categories
   "Food & Water": { icon: faBurger, color: "#015BC3" },
   "Clothing & Personal Items": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation": { icon: faBath, color: "#015BC3" },
@@ -32,9 +33,9 @@ const categoryIcons = {
   "Animal Boarding": { icon: faDog, color: "#CF5700" },
   "Veterinary Care & Pet Food": { icon: faPaw, color: "#CF5700" },
   // volunteer categories
-  "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
   "Food & Water Distribution": { icon: faBurger, color: "#015BC3" },
   "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
+  "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
   "Shelter Assistance": { icon: faHouse, color: "#4D03CD" },
   "Transportation & Delivery Support": { icon: faCarSide, color: "#4D03CD" },
   "Medical Aid Support": { icon: faBriefcaseMedical, color: "#CC0000" },
@@ -42,25 +43,15 @@ const categoryIcons = {
   "Animal Rescue & Transport": { icon: faPaw, color: "#CF5700" },
   "Pet Supply Distribution": { icon: faBowlFood, color: "#CF5700" },
   // donate categories
-  "Food & Water": { icon: faBurger, color: "#015BC3" },
   "Clothing & Bedding": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
   "Monetary Donations (Essentials)": { icon: faMoneyBillWave, color: "#015BC3" },
   "Emergency Supplies": { icon: faHouse, color: "#4D03CD" },
-  "Monetary Donations (Shelter & Support Services)": {
-    icon: faMoneyBillWave,
-    color: "#4D03CD",
-  },
+  "Monetary Donations (Shelter & Support Services)": {icon: faMoneyBillWave, color: "#4D03CD" },
   "Medical Supplies": { icon: faBriefcaseMedical, color: "#CC0000" },
-  "Monetary Donations (Medical & Health)": {
-    icon: faMoneyBillWave,
-    color: "#CC0000",
-  },
+  "Monetary Donations (Medical & Health)": { icon: faMoneyBillWave, color: "#CC0000" },
   "Pet Supplies": { icon: faPaw, color: "#CF5700" },
-  "Monetary Donations (Animal Support)": {
-    icon: faMoneyBillWave,
-    color: "#CF5700",
-  },
+  "Monetary Donations (Animal Support)": { icon: faMoneyBillWave, color: "#CF5700" },
 };
 
 const CategoryButtons = ({

@@ -7,16 +7,11 @@ import {
   faBath,
   faMoneyBillWave,
   faHouse,
-  faBus,
-  faGavel,
   faCalendar,
   faClock,
-  faKitMedical,
-  faPerson,
-  faDog,
   faPaw,
-  faUsers,
   faLaptop,
+  faBriefcaseMedical,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapping categories to icons with colors
@@ -26,20 +21,11 @@ const categoryIcons = {
   "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
   "Monetary Donations (Essentials)": { icon: faMoneyBillWave, color: "#015BC3" },
   "Emergency Supplies": { icon: faHouse, color: "#4D03CD" },
-  "Monetary Donations (Shelter & Support Services)": {
-    icon: faMoneyBillWave,
-    color: "#4D03CD",
-  },
-  "Medical Supplies": { icon: faKitMedical, color: "#CC0000" },
-  "Monetary Donations (Medical & Health)": {
-    icon: faMoneyBillWave,
-    color: "#CC0000",
-  },
+  "Monetary Donations (Shelter & Support Services)": {icon: faMoneyBillWave, color: "#4D03CD" },
+  "Medical Supplies": { icon: faBriefcaseMedical, color: "#CC0000" },
+  "Monetary Donations (Medical & Health)": { icon: faMoneyBillWave, color: "#CC0000" },
   "Pet Supplies": { icon: faPaw, color: "#CF5700" },
-  "Monetary Donations (Animal Support)": {
-    icon: faMoneyBillWave,
-    color: "#CF5700",
-  },
+  "Monetary Donations (Animal Support)": { icon: faMoneyBillWave, color: "#CF5700" },
 };
 
 const getCurrentDayHours = (hoursOfOperation) => {

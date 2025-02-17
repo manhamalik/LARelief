@@ -4,21 +4,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBurger,
   faShirt,
-  faBath,
-  faMoneyBill,
+  faBoxOpen,
   faHouse,
-  faBus,
-  faGavel,
-  faKitMedical,
   faUsers,
   faDog,
   faPaw,
-  faCar,
-  faBowlRice,
+  faCarSide,
   faCalendar,
   faClock,
-  faBoxOpen,
   faLaptop,
+  faBriefcaseMedical,
+  faBowlFood,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapping categories to icons with colors
@@ -28,12 +24,12 @@ const categoryIcons = {
   "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
   "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
   "Shelter Assistance": { icon: faHouse, color: "#4D03CD" },
-  "Transporation & Delivery Support": { icon: faCar, color: "#4D03CD" },
-  "Medical Aid Support": { icon: faKitMedical, color: "#CC0000" },
+  "Transportation & Delivery Support": { icon: faCarSide, color: "#4D03CD" },
+  "Medical Aid Support": { icon: faBriefcaseMedical, color: "#CC0000" },
   "Mental Health Support": { icon: faUsers, color: "#CC0000" },
   "Animal Shelter Assistance": { icon: faDog, color: "#CF5700" },
   "Animal Rescue & Transport": { icon: faPaw, color: "#CF5700" },
-  "Pet Supply Distribution": { icon: faBowlRice, color: "#CF5700" },
+  "Pet Supply Distribution": { icon: faBowlFood, color: "#CF5700" },
 };
 
 const getCurrentDayHours = (hoursOfOperation) => {
@@ -97,6 +93,8 @@ const VolunteerSearch = ({ resource }) => {
   const currentDayHours = getCurrentDayHours(hours_of_operation);
   const FormSignUpRequired =
     link_to_volunteer === true ? "Form Sign-Up Required" : "No Form Required";
+
+    console.log("Resource types:", types);
 
   return (
     <div
