@@ -1,12 +1,11 @@
 import NavBar from "@/components/NavBar";
 import "@/styles/globals.css";
-import { Saira, Noto_Sans_Multani } from "next/font/google"; // Import Noto Sans Multani
+import { Noto_Sans_Multani } from "next/font/google"; // Import Noto Sans Multani
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
-import { log } from "@/util/logger";
 import "web-streams-polyfill";
 import { config, library } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";

@@ -18,6 +18,7 @@ import {
   faCalendar,
   faCalendarAlt,
   faChevronDown,
+  faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
@@ -36,21 +37,32 @@ export default function Home() {
   const [endDate, setEndDate] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
-  const [visibleResources, setVisibleResources] = useState(4);
+
+  // Default visible count per category.
+  const defaultVisible = 4;
+  const [visibleCounts, setVisibleCounts] = useState({
+    Essentials: defaultVisible,
+    "Shelter & Support Services": defaultVisible,
+    "Medical & Health": defaultVisible,
+    "Animal Support": defaultVisible,
+  });
 
   const handleSearch = (e) => {
     setSearchInput(e.target.value);
   };
 
+  // When a main category is clicked (used in CategoryButtons)
   const handleCategoryClick = (category) => {
     setSelectedCategories((prevSelectedCategories) =>
       prevSelectedCategories.includes(category)
         ? prevSelectedCategories.filter((c) => c !== category)
         : [...prevSelectedCategories, category]
     );
-    setVisibleResources(4);
+    // Reset visible count for this category
+    setVisibleCounts((prev) => ({ ...prev, [category]: defaultVisible }));
   };
 
+  // When a subcategory is toggled for a given main category
   const handleSubCategoryClick = (mainCategory, subCategory) => {
     setSelectedSubCategories((prevSelectedSubCategories) => {
       const subCategoriesForCategory = prevSelectedSubCategories[mainCategory] || [];
@@ -62,7 +74,8 @@ export default function Home() {
         [mainCategory]: updatedSubCategories,
       };
     });
-    setVisibleResources(4);
+    // Reset visible count for the affected main category
+    setVisibleCounts((prev) => ({ ...prev, [mainCategory]: defaultVisible }));
   };
 
   const clearDateSelection = () => {
@@ -89,59 +102,55 @@ export default function Home() {
     fetchResources();
   }, []);
 
-  const filterResourcesByCategory = (mainCategory) => {
-    if (!resources || resources.length === 0) return [];
-    return filterResources(
-      resources,
-      mainCategory,
-      selectedSubCategories[mainCategory] || [],
-      searchInput,
-      startDate,
-      endDate
-    ).slice(0, visibleResources);
+  // Functions to show more or less for a given category.
+  const handleShowMore = (category) => {
+    setVisibleCounts((prev) => ({ ...prev, [category]: prev[category] + 12 }));
   };
 
-  const handleShowMore = () => {
-    setVisibleResources((prevVisibleResources) => prevVisibleResources + 12);
+  const handleShowLess = (category) => {
+    setVisibleCounts((prev) => ({ ...prev, [category]: defaultVisible }));
   };
 
-  const numberOfRows = Math.ceil(visibleResources / 4);
-
-  const essentialsResources = filterResources(
+  // Create full filtered arrays per category and then slice using the corresponding visibleCounts.
+  const filteredEssentials = filterResources(
     resources,
     "Essentials",
     selectedSubCategories["Essentials"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
+  );
+  const essentialsResources = filteredEssentials.slice(0, visibleCounts["Essentials"]);
 
-  const shelterResources = filterResources(
+  const filteredShelter = filterResources(
     resources,
     "Shelter & Support Services",
     selectedSubCategories["Shelter & Support Services"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
+  );
+  const shelterResources = filteredShelter.slice(0, visibleCounts["Shelter & Support Services"]);
 
-  const medicalResources = filterResources(
+  const filteredMedical = filterResources(
     resources,
     "Medical & Health",
     selectedSubCategories["Medical & Health"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
+  );
+  const medicalResources = filteredMedical.slice(0, visibleCounts["Medical & Health"]);
 
-  const animalResources = filterResources(
+  const filteredAnimal = filterResources(
     resources,
     "Animal Support",
     selectedSubCategories["Animal Support"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
+  );
+  const animalResources = filteredAnimal.slice(0, visibleCounts["Animal Support"]);
 
   const deduplicateResources = (resources) => {
     return Array.from(new Map(resources.map((r) => [r.id, r])).values());
@@ -222,7 +231,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Mission Section wrapped in its own Suspense boundary (no fallback) */}
+      {/* Mission Section wrapped in its own Suspense boundary */}
       <Suspense fallback={null}>
         <MissionSection />
       </Suspense>
@@ -256,7 +265,7 @@ export default function Home() {
                 Use the top bar to view organizations currently open, seeking
                 donations, or in need of volunteers. As well as currently wildfires 
                 and air quality in different areas. You can also select multiple
-                filters to refine your search. 
+                filters to refine your search.
               </p>
               <p>Map:</p>
               <p className="font-semibold">
@@ -384,7 +393,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Essentials Category */}
+            {/* --- Essentials Category --- */}
             <div className="flex flex-wrap gap-4 mt-0 items-center justify-between">
               <div className="flex items-center gap-4">
                 <h2
@@ -413,28 +422,36 @@ export default function Home() {
                   mainCategory="Essentials"
                 />
               </div>
-              {visibleResources < essentialsResources.length && (
-                <button
-                  onClick={handleShowMore}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full mt-3 flex flex-wrap gap-1 items-center"
-                  style={{
-                    fontFamily: "'Noto Sans', sans-serif",
-                    position: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                  <span>Show More</span>
-                </button>
-              )}
+              <div className="flex gap-2 mt-3">
+                {visibleCounts["Essentials"] < filteredEssentials.length && (
+                  <button
+                    onClick={() => handleShowMore("Essentials")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleCounts["Essentials"] > defaultVisible && (
+                  <button
+                    onClick={() => handleShowLess("Essentials")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {essentialsResources.slice(0, visibleResources).map((resource) => (
+              {essentialsResources.map((resource) => (
                 <ResourceCard key={resource.id} resource={resource} />
               ))}
             </div>
 
-            {/* Shelter & Support Services Category */}
+            {/* --- Shelter & Support Services Category --- */}
             <div className="flex flex-wrap gap-4 mt-4 items-center">
               <h2
                 className="text-xl font-bold"
@@ -461,14 +478,37 @@ export default function Home() {
                 mainCategory="Shelter & Support Services"
               />
             </div>
+            <div className="flex gap-2 mt-3">
+              {visibleCounts["Shelter & Support Services"] < filteredShelter.length && (
+                <button
+                  onClick={() => handleShowMore("Shelter & Support Services")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                  <span>Show More</span>
+                </button>
+              )}
+              {visibleCounts["Shelter & Support Services"] > defaultVisible && (
+                <button
+                  onClick={() => handleShowLess("Shelter & Support Services")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                  <span>Show Less</span>
+                </button>
+              )}
+            </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {shelterResources.slice(0, visibleResources).map((resource) => (
+              {shelterResources.map((resource) => (
                 <ResourceCard key={resource.id} resource={resource} />
               ))}
             </div>
 
-            {/* Medical & Health Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center">
+          {/* --- Medical & Health Category --- */}
+          <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
+            <div className="flex items-center gap-4">
               <h2
                 className="text-xl font-bold"
                 style={{
@@ -490,14 +530,38 @@ export default function Home() {
                 mainCategory="Medical & Health"
               />
             </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {medicalResources.slice(0, visibleResources).map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
+            <div className="flex gap-2">
+              {visibleCounts["Medical & Health"] < filteredMedical.length && (
+                <button
+                  onClick={() => handleShowMore("Medical & Health")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                  <span>Show More</span>
+                </button>
+              )}
+              {visibleCounts["Medical & Health"] > defaultVisible && (
+                <button
+                  onClick={() => handleShowLess("Medical & Health")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                  <span>Show Less</span>
+                </button>
+              )}
             </div>
+          </div>
+          <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+            {medicalResources.map((resource) => (
+              <ResourceCard key={resource.id} resource={resource} />
+            ))}
+          </div>
 
-            {/* Animal Support Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center">
+          {/* --- Animal Support Category --- */}
+          <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
+            <div className="flex items-center gap-4">
               <h2
                 className="text-xl font-bold"
                 style={{
@@ -519,20 +583,34 @@ export default function Home() {
                 mainCategory="Animal Support"
               />
             </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {animalResources.slice(0, visibleResources).map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
+            <div className="flex gap-2">
+              {visibleCounts["Animal Support"] < filteredAnimal.length && (
+                <button
+                  onClick={() => handleShowMore("Animal Support")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                  <span>Show More</span>
+                </button>
+              )}
+              {visibleCounts["Animal Support"] > defaultVisible && (
+                <button
+                  onClick={() => handleShowLess("Animal Support")}
+                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                >
+                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                  <span>Show Less</span>
+                </button>
+              )}
             </div>
-
-            {numberOfRows > 3 && numberOfRows % 2 === 1 && (
-              <button
-                onClick={handleShowMore}
-                className="bg-blue-500 text-white font-bold py-2 px-6 rounded-full mt-4 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faArrowDown} size="2x" />
-              </button>
-            )}
+          </div>
+          <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+            {animalResources.map((resource) => (
+              <ResourceCard key={resource.id} resource={resource} />
+            ))}
+          </div>
           </div>
         </div>
       </section>
@@ -541,7 +619,7 @@ export default function Home() {
         <ScrollArrow to="support" />
       </section>
 
-      {/* Support Section wrapped in its own Suspense boundary (no fallback) */}
+      {/* Support Section wrapped in its own Suspense boundary */}
       <Suspense fallback={null}>
         <SupportSection />
       </Suspense>
