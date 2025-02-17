@@ -133,7 +133,7 @@ const ResourceCard = ({ resource }) => {
   let operatingText;
   if (operatingStatus.status === "open") {
     // If currently open, show closing time
-    operatingText = <>Open until {operatingStatus.closeTime}</>;
+    operatingText = <>Open <span style={{ color: "forestgreen" }}>until {operatingStatus.closeTime}</span></>;
   } else if (operatingStatus.status === "closed") {
     // If closed, show next opening time with the time (and day) in forest green
     if (

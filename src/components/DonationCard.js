@@ -157,7 +157,7 @@ const DonateCard = ({ resource }) => {
   let operatingText = null;
 
   if (operatingStatus.status === "open") {
-    operatingText = <>Open until {operatingStatus.closeTime}</>;
+    operatingText = <>Open <span style={{ color: "forestgreen" }}>until {operatingStatus.closeTime}</span></>;
   } else if (operatingStatus.status === "closed") {
     const todayName = new Date().toLocaleString("en-US", { weekday: "long" });
     if (operatingStatus.nextOpenDay === todayName) {
