@@ -9,12 +9,12 @@ import {
   faHouse,
   faCarSide,
   faGavel,
-  faCalendar,
-  faClock,
   faBriefcaseMedical,
   faPeopleGroup,
   faDog,
   faPaw,
+  faDoorOpen,   // door open icon
+  faDoorClosed, // door closed icon (ensure this icon is available)
 } from "@fortawesome/free-solid-svg-icons";
 
 const categoryIcons = {
@@ -31,7 +31,8 @@ const categoryIcons = {
   "Veterinary Care & Pet Food": { icon: faPaw, color: "#CF5700" },
 };
 
-const getCurrentDayHours = (hoursOfOperation) => {
+// Helper function to determine operating status
+const getOperatingStatus = (hoursOfOperation) => {
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -41,15 +42,73 @@ const getCurrentDayHours = (hoursOfOperation) => {
     "Friday",
     "Saturday",
   ];
-  const todayIndex = new Date().getDay();
-  const today = daysOfWeek[todayIndex];
-  return hoursOfOperation?.[today] || "Not Open";
-};
+  const now = new Date();
+  const todayIndex = now.getDay();
+  const todayName = daysOfWeek[todayIndex];
+  const todaysHours = hoursOfOperation?.[todayName];
 
-const formatDate = (date) => {
-  if (!date) return null;
-  const options = { year: "numeric", month: "short", day: "2-digit" };
-  return new Date(date).toLocaleDateString("en-US", options);
+  // Helper to parse a time string (e.g., "9:00 AM") into a Date object (using today's date)
+  const parseTime = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+    const date = new Date(now);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
+  // If today's hours are not available or say "Not Open", look ahead for the next open day
+  if (!todaysHours || todaysHours === "Not Open") {
+    for (let i = 1; i < 7; i++) {
+      const nextDayIndex = (todayIndex + i) % 7;
+      const nextDayName = daysOfWeek[nextDayIndex];
+      const nextDayHours = hoursOfOperation?.[nextDayName];
+      if (nextDayHours && nextDayHours !== "Not Open") {
+        const [openStr] = nextDayHours.split(" - ");
+        return {
+          status: "closed",
+          nextOpenDay: nextDayName,
+          nextOpenTime: openStr,
+        };
+      }
+    }
+    // If no open day is found, return null values.
+    return { status: "closed", nextOpenDay: null, nextOpenTime: null };
+  }
+
+  // If we have valid hours for today, assume format "open - close"
+  const [openStr, closeStr] = todaysHours.split(" - ");
+  const openTime = parseTime(openStr);
+  const closeTime = parseTime(closeStr);
+
+  if (now < openTime) {
+    // It's before today's opening time
+    return {
+      status: "closed",
+      nextOpenDay: todayName,
+      nextOpenTime: openStr,
+    };
+  } else if (now >= openTime && now < closeTime) {
+    // Currently open
+    return { status: "open", closeTime: closeStr };
+  } else {
+    // Today’s hours have passed. Look for the next day that is open.
+    for (let i = 1; i < 7; i++) {
+      const nextDayIndex = (todayIndex + i) % 7;
+      const nextDayName = daysOfWeek[nextDayIndex];
+      const nextDayHours = hoursOfOperation?.[nextDayName];
+      if (nextDayHours && nextDayHours !== "Not Open") {
+        const [nextOpenStr] = nextDayHours.split(" - ");
+        return {
+          status: "closed",
+          nextOpenDay: nextDayName,
+          nextOpenTime: nextOpenStr,
+        };
+      }
+    }
+    return { status: "closed", nextOpenDay: null, nextOpenTime: null };
+  }
 };
 
 const ResourceCard = ({ resource }) => {
@@ -66,14 +125,44 @@ const ResourceCard = ({ resource }) => {
     carousel_images,
     organization_image,
     types,
+    slug,
   } = resource;
 
-  // Updated display logic: If end_date exists, display it with the "Until" label.
-  const displayDate = end_date
-    ? `Until ${formatDate(end_date)}`
-    : formatDate(start_date);
+  // Determine the operating status
+  const operatingStatus = getOperatingStatus(hours_of_operation);
+  let operatingText;
+  if (operatingStatus.status === "open") {
+    // If currently open, show closing time
+    operatingText = <>Open until {operatingStatus.closeTime}</>;
+  } else if (operatingStatus.status === "closed") {
+    // If closed, show next opening time with the time (and day) in forest green
+    if (
+      operatingStatus.nextOpenDay ===
+      new Date().toLocaleString("en-US", { weekday: "long" })
+    ) {
+      operatingText = (
+        <>
+          Opens at{" "}
+          <span style={{ color: "forestgreen" }}>
+            {operatingStatus.nextOpenTime}
+          </span>
+        </>
+      );
+    } else {
+      operatingText = (
+        <>
+          Opens at{" "}
+          <span style={{ color: "forestgreen" }}>
+            {operatingStatus.nextOpenTime} on {operatingStatus.nextOpenDay}
+          </span>
+        </>
+      );
+    }
+  }
 
-  const currentDayHours = getCurrentDayHours(hours_of_operation);
+  // Choose icon based on operating status
+  const doorIcon =
+    operatingStatus.status === "open" ? faDoorOpen : faDoorClosed;
 
   return (
     <div
@@ -86,7 +175,7 @@ const ResourceCard = ({ resource }) => {
       }}
     >
       <Link
-        href={`${resource.slug}`}
+        href={`${slug}`}
         style={{
           textDecoration: "inherit",
           color: "inherit",
@@ -99,7 +188,7 @@ const ResourceCard = ({ resource }) => {
             backgroundImage: `url(${carousel_images?.[0] || "default-image.jpg"})`,
           }}
         >
-          {/* Resource Card Content */}
+          {/* Top Section with Organization Logo and Category Icons */}
           <div className="boxStroke">
             <div
               className="organization-logo flex"
@@ -164,48 +253,26 @@ const ResourceCard = ({ resource }) => {
               </div>
             </div>
             <div className="cardBottom">
-              <div className="timeContainer">
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  className="icon"
-                  style={{
-                    color: "forestgreen",
-                    width: "1.5rem",
-                    height: "1.5rem",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "#6C727D",
-                    marginLeft: "7px",
-                    fontSize: "1rem",
-                    fontFamily: "'Noto Sans Multani', sans-serif",
-                  }}
-                >
-                  {displayDate}
-                </span>
-              </div>
-              <div className="timeContainer">
-                <FontAwesomeIcon
-                  icon={faClock}
-                  className="icon"
-                  style={{
-                    color: "#2B5CBA",
-                    width: "1.5rem",
-                    height: "1.5rem",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "#6C727D",
-                    marginLeft: "7px",
-                    fontSize: "1rem",
-                    fontFamily: "'Noto Sans Multani', sans-serif",
-                  }}
-                >
-                  {currentDayHours}
-                </span>
-              </div>
+              <FontAwesomeIcon
+                icon={doorIcon}
+                className="icon"
+                style={{
+                  color:
+                    operatingStatus.status === "open" ? "forestgreen" : "#201A1A",
+                  width: "1.5rem",
+                  height: "1.5rem",
+                }}
+              />
+              <span
+                style={{
+                  color: "#6C727D",
+                  marginLeft: "7px",
+                  fontSize: "1rem",
+                  fontFamily: "'Noto Sans Multani', sans-serif",
+                }}
+              >
+                {operatingText}
+              </span>
             </div>
           </div>
         </div>
@@ -244,18 +311,13 @@ const ResourceCard = ({ resource }) => {
         }
         .cardBottom {
           display: flex;
-          justify-content: space-between;
+          align-items: center;
         }
         .resourceName {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           font-weight: bold;
-        }
-        .timeContainer {
-          display: flex;
-          align-items: center;
-          font-size: 1rem;
         }
         .icon {
           font-size: 1.5rem !important;

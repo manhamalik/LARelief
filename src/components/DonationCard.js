@@ -7,11 +7,12 @@ import {
   faBath,
   faMoneyBillWave,
   faHouse,
-  faCalendar,
-  faClock,
+  faBriefcaseMedical,
   faPaw,
   faLaptop,
-  faBriefcaseMedical,
+  faDoorOpen,
+  faDoorClosed,
+  faUser, // imported for in-person donation icon
 } from "@fortawesome/free-solid-svg-icons";
 
 // Mapping categories to icons with colors
@@ -28,7 +29,27 @@ const categoryIcons = {
   "Monetary Donations (Animal Support)": { icon: faMoneyBillWave, color: "#CF5700" },
 };
 
-const getCurrentDayHours = (hoursOfOperation) => {
+// Safely parse a time string (e.g. "9:00 AM") into a Date object
+function parseTime(timeStr, referenceDate) {
+  // If timeStr is missing or not in the "HH:MM AM/PM" format, return null
+  if (!timeStr || !timeStr.includes(" ")) {
+    return null;
+  }
+
+  const [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  // Convert 12-hour format to 24-hour format
+  if (modifier === "PM" && hours !== 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+
+  const date = new Date(referenceDate);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+}
+
+// Helper function to determine operating status
+const getOperatingStatus = (hoursOfOperation) => {
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -38,55 +59,142 @@ const getCurrentDayHours = (hoursOfOperation) => {
     "Friday",
     "Saturday",
   ];
-  const todayIndex = new Date().getDay();
-  const today = daysOfWeek[todayIndex];
-  return hoursOfOperation?.[today] || "Not Open";
+  const now = new Date();
+  const todayIndex = now.getDay();
+  const todayName = daysOfWeek[todayIndex];
+  const todaysHours = hoursOfOperation?.[todayName];
+
+  // If today's hours are missing, "Not Open", or do not contain " - ", look ahead
+  if (
+    !todaysHours ||
+    todaysHours === "Not Open" ||
+    !todaysHours.includes(" - ")
+  ) {
+    for (let i = 1; i < 7; i++) {
+      const nextDayIndex = (todayIndex + i) % 7;
+      const nextDayName = daysOfWeek[nextDayIndex];
+      const nextDayHours = hoursOfOperation?.[nextDayName];
+
+      // Found a future day that has valid hours
+      if (
+        nextDayHours &&
+        nextDayHours !== "Not Open" &&
+        nextDayHours.includes(" - ")
+      ) {
+        const [openStr] = nextDayHours.split(" - ");
+        return {
+          status: "closed",
+          nextOpenDay: nextDayName,
+          nextOpenTime: openStr,
+        };
+      }
+    }
+    // If no open day is found, return closed with no next open day/time
+    return { status: "closed", nextOpenDay: null, nextOpenTime: null };
+  }
+
+  // We have valid hours for today in the format "9:00 AM - 5:00 PM"
+  const [openStr, closeStr] = todaysHours.split(" - ");
+  const openTime = parseTime(openStr, now);
+  const closeTime = parseTime(closeStr, now);
+
+  // If either parseTime returned null, treat as closed
+  if (!openTime || !closeTime) {
+    return { status: "closed", nextOpenDay: null, nextOpenTime: null };
+  }
+
+  if (now < openTime) {
+    // Before today's opening time
+    return {
+      status: "closed",
+      nextOpenDay: todayName,
+      nextOpenTime: openStr,
+    };
+  } else if (now >= openTime && now < closeTime) {
+    // Currently open
+    return { status: "open", closeTime: closeStr };
+  } else {
+    // After today's closing time, look ahead for next open day
+    for (let i = 1; i < 7; i++) {
+      const nextDayIndex = (todayIndex + i) % 7;
+      const nextDayName = daysOfWeek[nextDayIndex];
+      const nextDayHours = hoursOfOperation?.[nextDayName];
+
+      if (
+        nextDayHours &&
+        nextDayHours !== "Not Open" &&
+        nextDayHours.includes(" - ")
+      ) {
+        const [nextOpenStr] = nextDayHours.split(" - ");
+        return {
+          status: "closed",
+          nextOpenDay: nextDayName,
+          nextOpenTime: nextOpenStr,
+        };
+      }
+    }
+    return { status: "closed", nextOpenDay: null, nextOpenTime: null };
+  }
 };
 
-const formatDate = (date) => {
-  if (!date) return null;
-  const options = { year: "numeric", month: "short", day: "2-digit" };
-  return new Date(date).toLocaleDateString("en-US", options);
-};
-
-const ResourceCard = ({ resource }) => {
+const DonateCard = ({ resource }) => {
   if (!resource) return null; // Do not render if no data is passed
 
   const {
     id,
     organization_name,
     address,
-    start_date,
-    end_date,
     hours_of_operation,
     carousel_images,
     organization_image,
     types,
     online_donation_available,
+    slug,
   } = resource;
 
-  const displayDate = (() => {
-    const start = new Date(start_date);
-    const end = new Date(end_date);
+  // Determine operating status for displaying open/closed information
+  const operatingStatus = getOperatingStatus(hours_of_operation);
+  let operatingText = null;
 
-    if (end_date) {
-      if (start.getFullYear() === end.getFullYear()) {
-        return `${start.toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-        })} - ${end.toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        })}`;
-      } else {
-        return `${formatDate(start_date)} - ${formatDate(end_date)}`;
-      }
+  if (operatingStatus.status === "open") {
+    operatingText = <>Open until {operatingStatus.closeTime}</>;
+  } else if (operatingStatus.status === "closed") {
+    const todayName = new Date().toLocaleString("en-US", { weekday: "long" });
+    if (operatingStatus.nextOpenDay === todayName) {
+      operatingText = (
+        <>
+          Opens at{" "}
+          <span style={{ color: "forestgreen" }}>
+            {operatingStatus.nextOpenTime}
+          </span>
+        </>
+      );
+    } else if (operatingStatus.nextOpenDay) {
+      operatingText = (
+        <>
+          Opens at{" "}
+          <span style={{ color: "forestgreen" }}>
+            {operatingStatus.nextOpenTime} on {operatingStatus.nextOpenDay}
+          </span>
+        </>
+      );
+    } else {
+      // Means there's no upcoming open day
+      operatingText = "Currently Closed";
     }
-    return formatDate(start_date);
-  })();
+  }
 
-  const currentDayHours = getCurrentDayHours(hours_of_operation);
+  // Choose door icon and color based on status
+  const doorIcon =
+    operatingStatus.status === "open" ? faDoorOpen : faDoorClosed;
+  const doorColor =
+    operatingStatus.status === "open" ? "forestgreen" : "#444444";
+
+  // For donation method icon: show laptop if online donation is available,
+  // otherwise show a person icon for in-person donation.
+  const donationIcon = online_donation_available ? faLaptop : faUser;
+  const donationIconColor = "#2B5CBA"; // Adjust this color if needed
+
   const onlineAvailable =
     online_donation_available === true
       ? "Online Donation Available"
@@ -97,13 +205,13 @@ const ResourceCard = ({ resource }) => {
       key={id}
       className="outerContainer"
       style={{
-        fontFamily: "'Noto Sans Multani', sans-serif", // Updated font family
+        fontFamily: "'Noto Sans Multani', sans-serif",
         position: "relative",
         left: "15%",
       }}
     >
       <Link
-        href={`/donate/${resource.slug}`}
+        href={`/donate/${slug}`}
         style={{
           textDecoration: "inherit",
           color: "inherit",
@@ -118,7 +226,7 @@ const ResourceCard = ({ resource }) => {
             })`,
           }}
         >
-          {/* Resource Card Content */}
+          {/* Card Top: Organization Logo and Category Icons */}
           <div className="boxStroke">
             <div
               className="organization-logo flex"
@@ -168,6 +276,8 @@ const ResourceCard = ({ resource }) => {
                 ))}
             </div>
           </div>
+
+          {/* Card Content */}
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
@@ -176,52 +286,33 @@ const ResourceCard = ({ resource }) => {
               </div>
             </div>
             <div className="cardBottom">
-              <div className="timeContainer">
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  className="icon"
-                  style={{
-                    color: "forestgreen",
-                    width: "1.5rem",
-                    height: "1.5rem",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "#6C727D",
-                    marginLeft: "7px",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {displayDate}
-                </span>
-              </div>
-              <div className="timeContainer">
-                <FontAwesomeIcon
-                  icon={faClock}
-                  className="icon"
-                  style={{
-                    color: "#2B5CBA",
-                    width: "1.5rem",
-                    height: "1.5rem",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "#6C727D",
-                    marginLeft: "7px",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {currentDayHours}
-                </span>
-              </div>
+              <FontAwesomeIcon
+                icon={doorIcon}
+                className="icon"
+                style={{
+                  color: doorColor,
+                  width: "1.5rem",
+                  height: "1.5rem",
+                }}
+              />
+              <span
+                style={{
+                  color: "#6C727D",
+                  marginLeft: "7px",
+                  fontSize: "1rem",
+                }}
+              >
+                {operatingText}
+              </span>
             </div>
             <div className="timeContainer" style={{ marginTop: "10px" }}>
               <FontAwesomeIcon
-                icon={faLaptop}
+                icon={donationIcon}
                 className="icon"
-                style={{ color: "000000", width: "1.3rem" }}
+                style={{
+                  color: donationIconColor,
+                  width: "1.3rem",
+                }}
               />
               <span
                 style={{
@@ -235,6 +326,8 @@ const ResourceCard = ({ resource }) => {
           </div>
         </div>
       </Link>
+
+      {/* Styles */}
       <style jsx>{`
         .outerContainer {
           width: 400px;
@@ -269,7 +362,8 @@ const ResourceCard = ({ resource }) => {
         }
         .cardBottom {
           display: flex;
-          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
         }
         .resourceName {
           white-space: nowrap;
@@ -295,4 +389,4 @@ const ResourceCard = ({ resource }) => {
   );
 };
 
-export default ResourceCard;
+export default DonateCard;

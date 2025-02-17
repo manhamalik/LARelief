@@ -375,7 +375,10 @@ export default function Home() {
         >
           <Head>
             <title>LA Relief - Discover Aid Near You</title>
-            <meta name="description" content="Find aid and resources near you for emergencies and support." />
+            <meta
+              name="description"
+              content="Find aid and resources near you for emergencies and support."
+            />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
@@ -548,32 +551,38 @@ export default function Home() {
               ))}
             </div>
 
-           {/* Shelter & Support Services Category */}
-           <div className="flex flex-wrap gap-4 mt-4 items-center">
-              <h2
-                className="text-xl font-bold"
-                style={{
-                  fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
-                  color: "#ffffff",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              >
-                Shelter & Support Services
-              </h2>
-              <CategoryButtons
-                categories={[
-                  "Emergency Supplies",
-                  "Monetary Donations (Shelter & Support Services)",
-                ]}
-                selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Shelter & Support Services", subCategory)
-                }
-                mainCategory="Shelters"
-              />
-              <div className="w-full flex justify-end gap-2">
+            {/* Shelter & Support Services Category */}
+            <div className="flex flex-wrap items-center justify-between mt-4 gap-4">
+              {/* Left: Title & Category Buttons */}
+              <div className="flex items-center gap-4 flex-grow">
+                <h2
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Potta One', normal",
+                    fontSize: "50px",
+                    color: "#ffffff",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  Shelter & Support Services
+                </h2>
+                <CategoryButtons
+                  categories={[
+                    "Emergency Supplies",
+                    "Monetary Donations (Shelter & Support Services)",
+                  ]}
+                  selectedCategories={
+                    selectedSubCategories["Shelter & Support Services"] || []
+                  }
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick("Shelter & Support Services", subCategory)
+                  }
+                  mainCategory="Shelters"
+                />
+              </div>
+              {/* Right: Show More/Less Buttons */}
+              <div className="flex gap-2">
                 {visibleShelter < filteredShelter.length && (
                   <button
                     onClick={handleShowMoreShelter}
