@@ -8,11 +8,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   faMagnifyingGlass,
-  faArrowDown,
-  faCalendar,
   faCalendarAlt,
   faChevronDown,
-  faLaptop,
+  faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
@@ -27,37 +25,43 @@ export default function Home() {
   const [endDate, setEndDate] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
-  const [visibleResources, setVisibleResources] = useState(4);
+
+  // Separate visible counts for each category
+  const [visibleEssentials, setVisibleEssentials] = useState(4);
+  const [visibleShelter, setVisibleShelter] = useState(4);
+  const [visibleMedical, setVisibleMedical] = useState(4);
+  const [visibleAnimal, setVisibleAnimal] = useState(4);
 
   const handleSearch = (e) => {
     setSearchInput(e.target.value);
   };
 
   const handleCategoryClick = (category) => {
-    setSelectedCategories((prevSelectedCategories) =>
-      prevSelectedCategories.includes(category)
-        ? prevSelectedCategories.filter((c) => c !== category)
-        : [...prevSelectedCategories, category]
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
     );
-    setVisibleResources(4); // Reset visible resources to initial value
+    // Reset all visible counts when filters change
+    setVisibleEssentials(4);
+    setVisibleShelter(4);
+    setVisibleMedical(4);
+    setVisibleAnimal(4);
   };
 
   const handleSubCategoryClick = (mainCategory, subCategory) => {
-    setSelectedSubCategories((prevSelectedSubCategories) => {
-      const subCategoriesForCategory =
-        prevSelectedSubCategories[mainCategory] || [];
-      const updatedSubCategories = subCategoriesForCategory.includes(
-        subCategory
-      )
-        ? subCategoriesForCategory.filter((sc) => sc !== subCategory) // Remove if clicked again
-        : [...subCategoriesForCategory, subCategory]; // Add if not already selected
-      return {
-        ...prevSelectedSubCategories,
-        [mainCategory]: updatedSubCategories,
-      };
+    setSelectedSubCategories((prev) => {
+      const subCats = prev[mainCategory] || [];
+      const updated = subCats.includes(subCategory)
+        ? subCats.filter((sc) => sc !== subCategory)
+        : [...subCats, subCategory];
+      return { ...prev, [mainCategory]: updated };
     });
-
-    setVisibleResources(4); // Reset visible resources to initial value
+    // Reset all visible counts when filters change
+    setVisibleEssentials(4);
+    setVisibleShelter(4);
+    setVisibleMedical(4);
+    setVisibleAnimal(4);
   };
 
   const clearDateSelection = () => {
@@ -66,8 +70,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log("Filtered resources:", filterResources);
-
     const fetchResources = async () => {
       try {
         const response = await fetch(`/api/donate-list`);
@@ -79,63 +81,71 @@ export default function Home() {
         setLoading(false);
       }
     };
-
     fetchResources();
   }, []);
 
-  const filterResourcesByCategory = (mainCategory) => {
-    if (!resources || resources.length === 0) return [];
-    return filterResources(
-      resources,
-      mainCategory,
-      selectedSubCategories[mainCategory] || [],
-      searchInput,
-      startDate,
-      endDate
-    ).slice(0, visibleResources);
+  // Handlers for each category’s show more/less
+  const handleShowMoreEssentials = () => {
+    setVisibleEssentials((prev) => prev + 12);
+  };
+  const handleShowLessEssentials = () => {
+    setVisibleEssentials(4);
   };
 
-  const handleShowMore = () => {
-    setVisibleResources((prevVisibleResources) => prevVisibleResources + 12);
+  const handleShowMoreShelter = () => {
+    setVisibleShelter((prev) => prev + 12);
+  };
+  const handleShowLessShelter = () => {
+    setVisibleShelter(4);
   };
 
-  const numberOfRows = Math.ceil(visibleResources / 4);
+  const handleShowMoreMedical = () => {
+    setVisibleMedical((prev) => prev + 12);
+  };
+  const handleShowLessMedical = () => {
+    setVisibleMedical(4);
+  };
 
-  const essentialsResources = filterResources(
+  const handleShowMoreAnimal = () => {
+    setVisibleAnimal((prev) => prev + 12);
+  };
+  const handleShowLessAnimal = () => {
+    setVisibleAnimal(4);
+  };
+
+  // Compute full filtered arrays for each category (without slicing)
+  const filteredEssentials = filterResources(
     resources,
     "Essentials",
     selectedSubCategories["Essentials"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
-
-  const shelterResources = filterResources(
+  );
+  const filteredShelter = filterResources(
     resources,
     "Shelter & Support Services",
     selectedSubCategories["Shelter & Support Services"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
-
-  const medicalResources = filterResources(
+  );
+  const filteredMedical = filterResources(
     resources,
     "Medical & Health",
     selectedSubCategories["Medical & Health"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
-
-  const animalResources = filterResources(
+  );
+  const filteredAnimal = filterResources(
     resources,
     "Animal Support",
     selectedSubCategories["Animal Support"] || [],
     searchInput,
     startDate,
     endDate
-  ).slice(0, visibleResources);
+  );
 
   return (
     <div className="relative">
@@ -160,6 +170,7 @@ export default function Home() {
         />
       </Head>
 
+      {/* Mission Section */}
       <section
         id="mission"
         className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
@@ -178,7 +189,6 @@ export default function Home() {
             }}
           >
             <h2 className="relative text-center">
-              {/* Stroke/Outline Layer */}
               <span
                 className="absolute inset-0"
                 style={{
@@ -194,7 +204,6 @@ export default function Home() {
               >
                 DONATE
               </span>
-
               <span
                 className="relative text-white"
                 style={{
@@ -235,33 +244,27 @@ export default function Home() {
                 {/* Circle with Star */}
                 <div
                   className="absolute -top-[3.5vw] left-[13.25vw] transform -translate-x-1/2 bg-white rounded-full w-[5vw] h-[5vw] flex items-center justify-center"
-                  style={{
-                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                  }}
+                  style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
                 >
                   <i
                     className="fas fa-star text-[#183917]"
-                    style={{
-                      fontSize: "2.25vw",
-                    }}
+                    style={{ fontSize: "2.25vw" }}
                   ></i>
                 </div>
-
                 {/* Text Content */}
                 <p
                   className="mb-2 pt-3"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
-                    fontWeight: "600", // Semi-bold
-                    fontSize: "1.5vw", // Custom font size
-                    maxWidth: "50%", // Custom width
-                    margin: "0 auto", // Center text
+                    fontWeight: "600",
+                    fontSize: "1.5vw",
+                    maxWidth: "50%",
+                    margin: "0 auto",
                   }}
                 >
                   Help by donating to any of the
                 </p>
                 <p
-                  className=""
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -274,7 +277,6 @@ export default function Home() {
                   100+
                 </p>
                 <p
-                  className=""
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -288,13 +290,12 @@ export default function Home() {
                   organizations
                 </p>
                 <p
-                  className=""
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
-                    fontWeight: "600", // Normal
-                    fontSize: "1.5vw", // Custom font size
-                    maxWidth: "70%", // Custom width
-                    margin: "0 auto", // Center text
+                    fontWeight: "600",
+                    fontSize: "1.5vw",
+                    maxWidth: "70%",
+                    margin: "0 auto",
                     paddingTop: "0vw",
                   }}
                 >
@@ -307,7 +308,7 @@ export default function Home() {
                   scroller.scrollTo("resources", {
                     smooth: true,
                     duration: 500,
-                    offset: -50, // Adjust this offset if needed
+                    offset: -50,
                   })
                 }
                 className="mt-6 bg-white text-[#194218] mr-[6vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
@@ -336,21 +337,18 @@ export default function Home() {
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
                   fontSize: "5.5vw",
-                  letterSpacing: "normal",
                   color: "#194218",
                   textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
                 }}
               >
                 GIVE CHANGE
               </div>
-
               <div
-                className="absolute  w-[40vw] top-[13vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
+                className="absolute w-[40vw] top-[13vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
                   fontSize: "5.5vw",
-                  letterSpacing: "normal",
                   WebkitTextStroke: "2px #194218",
                   color: "transparent",
                 }}
@@ -377,10 +375,7 @@ export default function Home() {
         >
           <Head>
             <title>LA Relief - Discover Aid Near You</title>
-            <meta
-              name="description"
-              content="Find aid and resources near you for emergencies and support."
-            />
+            <meta name="description" content="Find aid and resources near you for emergencies and support." />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
@@ -392,11 +387,8 @@ export default function Home() {
             />
           </Head>
 
-          {/* Header */}
           <div className="px-8 pt-8 select-none overflow-x-hidden">
-            <div
-              className="heading-container max-w-7xl flex flex-col md:flex-row md:items-baseline gap-6"
-            >
+            <div className="heading-container max-w-7xl flex flex-col md:flex-row md:items-baseline gap-6">
               <div className="max-w-2xl">
                 {/* Section Header */}
                 <h2 className="relative text-center">
@@ -415,7 +407,6 @@ export default function Home() {
                   >
                     SEARCH FOR
                   </span>
-
                   {/* Main Filled Layer */}
                   <span
                     className="relative text-white"
@@ -498,8 +489,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
             {/* Essentials Category */}
-            <div className="flex flex-wrap gap-4 mt-0 items-center justify-between">
+            <div className="flex items-center justify-between w-full mt-4">
               <div className="flex items-center gap-4">
                 <h2
                   className="text-xl font-bold"
@@ -527,29 +519,37 @@ export default function Home() {
                   mainCategory="Essentials"
                 />
               </div>
-              {visibleResources < essentialsResources.length && (
-                <button
-                  onClick={handleShowMore}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full mt-3 flex flex-wrap gap-1 items-center"
-                  style={{
-                    fontFamily: "'Noto Sans', sans-serif",
-                    position: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                  <span>Show More</span>
-                </button>
-              )}
+              <div className="flex gap-2">
+                {visibleEssentials < filteredEssentials.length && (
+                  <button
+                    onClick={handleShowMoreEssentials}
+                    className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleEssentials > 4 && (
+                  <button
+                    onClick={handleShowLessEssentials}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {essentialsResources.slice(0, visibleResources).map((resource) => (
+              {filteredEssentials.slice(0, visibleEssentials).map((resource) => (
                 <DonationCard key={resource.id} resource={resource} />
               ))}
             </div>
 
-            {/* Shelter & Support Services Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center">
+           {/* Shelter & Support Services Category */}
+           <div className="flex flex-wrap gap-4 mt-4 items-center">
               <h2
                 className="text-xl font-bold"
                 style={{
@@ -573,85 +573,146 @@ export default function Home() {
                 }
                 mainCategory="Shelters"
               />
+              <div className="w-full flex justify-end gap-2">
+                {visibleShelter < filteredShelter.length && (
+                  <button
+                    onClick={handleShowMoreShelter}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleShelter > 4 && (
+                  <button
+                    onClick={handleShowLessShelter}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {shelterResources.slice(0, visibleResources).map((resource) => (
+              {filteredShelter.slice(0, visibleShelter).map((resource) => (
                 <DonationCard key={resource.id} resource={resource} />
               ))}
             </div>
 
             {/* Medical & Health Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center ">
-              <h2
-                className="text-xl font-bold"
-                style={{
-                  fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
-                  color: "#ffffff",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              >
-                Medical & Health
-              </h2>
-              <CategoryButtons
-                categories={[
-                  "Medical Supplies",
-                  "Monetary Donations (Medical & Health)",
-                ]}
-                selectedCategories={selectedSubCategories["Medical & Health"] || []}
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Medical & Health", subCategory)
-                }
-                mainCategory="Medical & Health"
-              />
+            <div className="flex items-center justify-between w-full mt-4">
+              <div className="flex items-center gap-4">
+                <h2
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Potta One', normal",
+                    fontSize: "50px",
+                    color: "#ffffff",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  Medical & Health
+                </h2>
+                <CategoryButtons
+                  categories={[
+                    "Medical Supplies",
+                    "Monetary Donations (Medical & Health)",
+                  ]}
+                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick("Medical & Health", subCategory)
+                  }
+                  mainCategory="Medical & Health"
+                />
+              </div>
+              <div className="flex gap-2">
+                {visibleMedical < filteredMedical.length && (
+                  <button
+                    onClick={handleShowMoreMedical}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleMedical > 4 && (
+                  <button
+                    onClick={handleShowLessMedical}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {medicalResources.slice(0, visibleResources).map((resource) => (
+              {filteredMedical.slice(0, visibleMedical).map((resource) => (
                 <DonationCard key={resource.id} resource={resource} />
               ))}
             </div>
 
             {/* Animal Support Category */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center">
-              <h2
-                className="text-xl font-bold"
-                style={{
-                  fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
-                  color: "#ffffff",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              >
-                Animal Support
-              </h2>
-              <CategoryButtons
-                categories={[
-                  "Pet Supplies",
-                  "Monetary Donations (Animal Support)",
-                ]}
-                selectedCategories={selectedSubCategories["Animal Support"] || []}
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Animal Support", subCategory)
-                }
-                mainCategory="Animal Support"
-              />
+            <div className="flex items-center justify-between w-full mt-4">
+              <div className="flex items-center gap-4">
+                <h2
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Potta One', normal",
+                    fontSize: "50px",
+                    color: "#ffffff",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  Animal Support
+                </h2>
+                <CategoryButtons
+                  categories={[
+                    "Pet Supplies",
+                    "Monetary Donations (Animal Support)",
+                  ]}
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick("Animal Support", subCategory)
+                  }
+                  mainCategory="Animal Support"
+                />
+              </div>
+              <div className="flex gap-2">
+                {visibleAnimal < filteredAnimal.length && (
+                  <button
+                    onClick={handleShowMoreAnimal}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleAnimal > 4 && (
+                  <button
+                    onClick={handleShowLessAnimal}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {animalResources.slice(0, visibleResources).map((resource) => (
+              {filteredAnimal.slice(0, visibleAnimal).map((resource) => (
                 <DonationCard key={resource.id} resource={resource} />
               ))}
             </div>
-
-            {numberOfRows > 3 && numberOfRows % 2 === 1 && (
-              <button
-                onClick={handleShowMore}
-                className="bg-blue-500 text-white font-bold py-2 px-6 rounded-full mt-4 flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faArrowDown} size="2x" />
-              </button>
-            )}
           </div>
         </div>
       </section>
