@@ -88,6 +88,8 @@ export default function App({ Component, pageProps }) {
     setIsMounted(true);
   }, []);
 
+  const isHomePage = router.pathname === "/";
+
   return (
     <>
       <style jsx global>{`
@@ -95,7 +97,7 @@ export default function App({ Component, pageProps }) {
           font-family: ${notoSansMultani.style.fontFamily}, sans-serif;
         }
       `}</style>
-      <main>
+      <main style={{ paddingTop: isHomePage ? "0" : "60px" }}>
         {/* Always render NavBar */}
         <NavBar />
         {isMounted && (
