@@ -734,51 +734,57 @@ export default function MapComponent() {
           )}
 
           {/* Wildfire markers */}
-          {fireIcon &&
-            wildfireActive &&
-            wildfires.map((incident) => {
-              const {
-                UniqueId,
-                Latitude,
-                Longitude,
-                Name,
-                Started,
-                Updated,
-                County,
-                Location,
-                AcresBurned,
-                PercentContained,
-              } = incident;
-              if (!Latitude || !Longitude) return null;
+{fireIcon &&
+  wildfireActive &&
+  wildfires
+    .filter((incident) => 
+      incident.Name && incident.Name.toLowerCase().includes("fire")
+    )
+    .map((incident) => {
+      const {
+        UniqueId,
+        Latitude,
+        Longitude,
+        Name,
+        Started,
+        Updated,
+        County,
+        Location,
+        AcresBurned,
+        PercentContained,
+      } = incident;
 
-              return (
-                <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
-                  <Popup>
-                    <div>
-                      <h3 style={{ marginTop: 0 }}>{Name}</h3>
-                      <p>
-                        <strong>Start Date:</strong> {Started}
-                      </p>
-                      <p>
-                        <strong>Last Updated:</strong> {Updated}
-                      </p>
-                      <p>
-                        <strong>County:</strong> {County}
-                      </p>
-                      <p>
-                        <strong>Location:</strong> {Location}
-                      </p>
-                      <p>
-                        <strong>Acres Burned:</strong> {AcresBurned}
-                      </p>
-                      <p>
-                        <strong>Percent Contained:</strong> {PercentContained}
-                      </p>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
+      // Skip if missing coords
+      if (!Latitude || !Longitude) return null;
+
+      return (
+        <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
+          <Popup>
+            <div>
+              <h3 style={{ marginTop: 0 }}>{Name}</h3>
+              <p>
+                <strong>Start Date:</strong> {Started}
+              </p>
+              <p>
+                <strong>Last Updated:</strong> {Updated}
+              </p>
+              <p>
+                <strong>County:</strong> {County}
+              </p>
+              <p>
+                <strong>Location:</strong> {Location}
+              </p>
+              <p>
+                <strong>Acres Burned:</strong> {AcresBurned}
+              </p>
+              <p>
+                <strong>Percent Contained:</strong> {PercentContained}
+              </p>
+            </div>
+          </Popup>
+        </Marker>
+      );
+    })}
 
           {/* Neighborhood Air Quality Polygons */}
           {airQualityActive &&
