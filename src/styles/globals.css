@@ -106,5 +106,26 @@ input[type='number'] {
 }
 .my-custom-popup .leaflet-popup-content {
   transform: translateX(-5vw) translateY(-2.3vw);
-  /* transition: transform 0.2s ease-in-out; */
+}
+
+.my-custom-popup .leaflet-popup-close-button {
+  position: absolute !important;
+  top: 40px !important;
+  right: 1px !important;
+  width: 25px !important;
+  height: 25px !important;
+  font-size: 18px !important;
+  background: grey !important;
+  color: #403C44 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  text-align: center !important;
+  line-height: 25px !important;
+  cursor: pointer !important;
+  z-index: 9999 !important;
+}
+
+.my-custom-popup .leaflet-popup-close-button:hover {
+  background: #f5f5f5 !important;
+  color: black !important;
 }

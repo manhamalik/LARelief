@@ -106,7 +106,7 @@ const ClusteredMarkers = ({ resources, createCustomIcon, handleMarkerClick }) =>
                     fontSize: "13px",
                   }}
                 >
-                  <strong>{cluster.resources.length} Opportunities</strong>
+                  <strong>{cluster.resources.length} Opportunities 🚀</strong>
                   <ul>
                     {cluster.resources.slice(0, 10).map((resource) => (
                       <li key={resource.name}>{resource.name}</li>

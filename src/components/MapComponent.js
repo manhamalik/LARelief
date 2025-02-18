@@ -1032,7 +1032,7 @@ export default function MapComponent() {
 
         {/* AQI Legend */}
         {airQualityActive && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-white px-4 py-2 rounded shadow-md w-[28vw]">
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-[9995] bg-white px-4 py-2 rounded shadow-md w-[28vw]">
             {/* Centered Title (bolded) */}
             <div className="text-center text-base font-bold mb-2">Air Quality</div>
 
