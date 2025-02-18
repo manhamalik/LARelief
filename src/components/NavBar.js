@@ -27,6 +27,13 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
     }
   };
 
+  // Handler for clicking the Wildfire Guide button (outside the dropdown options)
+  const handleWildfireGuideClick = (e) => {
+    // Prevent the click from propagating if a dropdown option is clicked
+    e.preventDefault();
+    router.push("/wildfireguide");
+  };
+
   useEffect(() => {
     const handleRouteChange = () => setIsOpen(false);
     router.events.on("routeChangeStart", handleRouteChange);
@@ -115,6 +122,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
               onMouseLeave={() => setIsWildfireDropdownOpen(false)}
             >
               <button
+                onClick={handleWildfireGuideClick}
                 className={`flex items-center space-x-2 px-3 py-1 bg-transparent border border-gray-300 hover:bg-white hover:bg-opacity-30 focus:outline-none transition ease-in-out duration-300 ${
                   isWildfireDropdownOpen ? "rounded-t-md" : "rounded-md"
                 }`}
@@ -137,6 +145,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   />
                 </svg>
               </button>
+
               <div
                 className={`absolute ${
                   isWildfireDropdownOpen ? "block" : "hidden"
@@ -145,7 +154,8 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                 <ul className="bg-transparent">
                   <li>
                     <Link
-                      href="/wildfire-guide/wildfire-readiness"
+                      href="wildfireguide#wildfire-readiness"
+                      onClick={(e) => e.stopPropagation()}
                       className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Wildfire Readiness
@@ -153,7 +163,8 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   </li>
                   <li className="border-t border-gray-300">
                     <Link
-                      href="/wildfire-guide/wildfire-monitoring"
+                      href="wildfireguide#wildfire-monitoring"
+                      onClick={(e) => e.stopPropagation()}
                       className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Wildfire Monitoring
@@ -161,7 +172,8 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   </li>
                   <li className="border-t border-gray-300">
                     <Link
-                      href="/wildfire-guide/post-fire-recovery"
+                      href="wildfireguide#post-fire-recovery"
+                      onClick={(e) => e.stopPropagation()}
                       className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Post-Fire Recovery

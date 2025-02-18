@@ -283,19 +283,17 @@ export default function Home() {
               className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-left rounded-lg"
               style={{ width: "40vw" }}
             >
-              <p>Filters:</p>
-              <p className="mb-2 font-semibold">
-                Easily find the support you need with our customizable filters.
-                Use the top bar to view organizations currently open, seeking
-                donations, or in need of volunteers. As well as currently
-                wildfires and air quality in different areas. You can also
-                select multiple filters to refine your search.
+              <p className="mt-2 font-semibold">
+                Welcome to our interactive map!{" "}
               </p>
-              <p>Map:</p>
-              <p className="font-semibold">
-                Locate help near you using our interactive map. Use the search
-                bar to find specific organizations. Click on a place box to
-                access detailed information about the organization.
+              <p className="mb-2 font-medium">
+                Explore to find resources, donation options, or volunteer
+                opportunities. Use the top buttons to toggle features like
+                &apos;Open Now&apos;, wildfire alerts, and air quality overlays,
+                and search for organizations using the search bar. Click on any
+                marker to get detailed information, and check the legend for air
+                quality details. This tool is designed to help you quickly find
+                the support you need!
               </p>
             </span>
           </span>
