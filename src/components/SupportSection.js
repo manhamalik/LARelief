@@ -45,6 +45,7 @@ const SupportSection = () => {
             <div className="flex flex-col justify-center items-start h-full mx-auto">
               <h2 className="text-5xl md:text-6xl font-bold mb-4 w-[400px]">
                 <span
+                  data-no-translate="true"
                   className="text-[5.5rem]"
                   style={{
                     fontFamily: "'Dancing Script', cursive",
@@ -55,6 +56,7 @@ const SupportSection = () => {
                 </span>
                 <br />
                 <span
+                  data-no-translate="true"
                   className="text-white text-[6rem]"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
@@ -125,6 +127,7 @@ const SupportSection = () => {
                 }}
               >
                 <motion.span
+                  data-no-translate="true"
                   initial={{ y: 200, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.2, ease: "easeOut" }}
@@ -132,6 +135,7 @@ const SupportSection = () => {
                   SUPPORT
                 </motion.span>
                 <motion.span
+                  data-no-translate="true"
                   initial={{ y: 210, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.2, ease: "easeOut" }}
@@ -139,6 +143,7 @@ const SupportSection = () => {
                   SUPPORT
                 </motion.span>
                 <motion.span
+                  data-no-translate="true"
                   initial={{ y: 220, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.2, ease: "easeOut" }}
@@ -146,6 +151,7 @@ const SupportSection = () => {
                   SUPPORT
                 </motion.span>
                 <motion.span
+                  data-no-translate="true"
                   initial={{ y: 230, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.2, ease: "easeOut" }}

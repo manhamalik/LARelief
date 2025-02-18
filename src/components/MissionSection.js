@@ -79,7 +79,12 @@ const MissionSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              Our mission is to stand with communities affected by the Los Angeles wildfires. We’re here to make it easier to find the resources, support, and opportunities needed to recover and rebuild. Whether it’s through donations, volunteering, or simply offering a helping hand, we believe in the power of coming together to make a real difference.
+              Our mission is to stand with communities affected by the Los
+              Angeles wildfires. We’re here to make it easier to find the
+              resources, support, and opportunities needed to recover and
+              rebuild. Whether it’s through donations, volunteering, or simply
+              offering a helping hand, we believe in the power of coming
+              together to make a real difference.
             </motion.p>
 
             {/* Buttons */}
@@ -135,6 +140,7 @@ const MissionSection = () => {
             </motion.div>
             {/* Vertical Texts */}
             <motion.div
+              data-no-translate="true"
               className="absolute top-[16vw] transform -translate-y-[14vw] right-[-3rem] text-green-100 font-extrabold z-20"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -152,6 +158,7 @@ const MissionSection = () => {
             </motion.div>
 
             <motion.div
+              data-no-translate="true"
               className="absolute top-[16vw] transform -translate-y-[16vw] right-[-8.7rem] text-green-100 font-extrabold z-10"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",

@@ -151,7 +151,10 @@ export default function Home() {
     <div className="relative">
       <Head>
         <title>LA Relief - Discover Aid Near You</title>
-        <meta name="description" content="Find aid and resources near you for emergencies and support." />
+        <meta
+          name="description"
+          content="Find aid and resources near you for emergencies and support."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* Original fonts */}
         <link
@@ -194,6 +197,7 @@ export default function Home() {
         >
           <h2 className="relative text-center font-bold text-white">
             <span
+              data-no-translate="true"
               className="absolute inset-0"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -209,6 +213,7 @@ export default function Home() {
               VOLUNTEER
             </span>
             <span
+              data-no-translate="true"
               className="relative text-white"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -234,8 +239,12 @@ export default function Home() {
           </div>
 
           {/* Right Side: Text + Button */}
-          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
+          <div
+            data-no-translate="true"
+            className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4"
+          >
             <h3
+              data-no-translate="true"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "400",
@@ -248,6 +257,7 @@ export default function Home() {
               Join a community of
             </h3>
             <h3
+              data-no-translate="true"
               className="font-extrabold mt-2"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -262,6 +272,7 @@ export default function Home() {
               10,000+
             </h3>
             <p
+              data-no-translate="true"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
@@ -277,6 +288,7 @@ export default function Home() {
               volunteers
             </p>
             <p
+              data-no-translate="true"
               className="-mt-3vw"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -294,6 +306,7 @@ export default function Home() {
             </p>
             {/* EXPLORE OPPORTUNITIES Button */}
             <button
+              data-no-translate="true"
               onClick={() =>
                 scroller.scrollTo("resources", {
                   smooth: true,
@@ -330,8 +343,14 @@ export default function Home() {
         >
           <Head>
             <title>LA Relief - Discover Aid Near You</title>
-            <meta name="description" content="Find aid and resources near you for emergencies and support." />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="description"
+              content="Find aid and resources near you for emergencies and support."
+            />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -425,7 +444,9 @@ export default function Home() {
                         endDate={endDate}
                         selectsRange
                         placeholderText="Date"
-                        style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
+                        style={{
+                          fontFamily: "'Noto Sans Multani', sans-serif",
+                        }}
                         className="rounded-full w-60 h-10 text-center pr-4"
                       />
                       <FontAwesomeIcon
@@ -504,9 +525,11 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredEssentials.slice(0, visibleEssentials).map((resource) => (
-                <VolunteerCard key={resource.id} resource={resource} />
-              ))}
+              {filteredEssentials
+                .slice(0, visibleEssentials)
+                .map((resource) => (
+                  <VolunteerCard key={resource.id} resource={resource} />
+                ))}
             </div>
 
             {/* Shelter & Support Services Category */}
@@ -533,7 +556,10 @@ export default function Home() {
                     selectedSubCategories["Shelter & Support Services"] || []
                   }
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick("Shelter & Support Services", subCategory)
+                    handleSubCategoryClick(
+                      "Shelter & Support Services",
+                      subCategory
+                    )
                   }
                   mainCategory="Shelter & Support Services"
                 />
@@ -584,7 +610,9 @@ export default function Home() {
                 </h2>
                 <CategoryButtons
                   categories={["Medical Aid Support", "Mental Health Support"]}
-                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -641,7 +669,9 @@ export default function Home() {
                     "Animal Rescue & Transport",
                     "Pet Supply Distribution",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }

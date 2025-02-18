@@ -190,6 +190,7 @@ export default function Home() {
           >
             <h2 className="relative text-center">
               <span
+                data-no-translate="true"
                 className="absolute inset-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -205,6 +206,7 @@ export default function Home() {
                 DONATE
               </span>
               <span
+                data-no-translate="true"
                 className="relative text-white"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -253,6 +255,7 @@ export default function Home() {
                 </div>
                 {/* Text Content */}
                 <p
+                  data-no-translate="true"
                   className="mb-2 pt-3"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
@@ -265,6 +268,7 @@ export default function Home() {
                   Help by donating to any of the
                 </p>
                 <p
+                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -277,6 +281,7 @@ export default function Home() {
                   100+
                 </p>
                 <p
+                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -290,6 +295,7 @@ export default function Home() {
                   organizations
                 </p>
                 <p
+                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "600",
@@ -304,6 +310,7 @@ export default function Home() {
               </div>
               {/* EXPLORE OPPORTUNITIES Button */}
               <button
+                data-no-translate="true"
                 onClick={() =>
                   scroller.scrollTo("resources", {
                     smooth: true,
@@ -332,6 +339,7 @@ export default function Home() {
               </div>
               {/* Vertical Texts */}
               <div
+                data-no-translate="true"
                 className="absolute w-[40vw] top-[14vw] left-[18vw] text-green-100 font-extrabold -rotate-90 z-20"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -344,6 +352,7 @@ export default function Home() {
                 GIVE CHANGE
               </div>
               <div
+                data-no-translate="true"
                 className="absolute w-[40vw] top-[13vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -379,7 +388,10 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -546,9 +558,11 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredEssentials.slice(0, visibleEssentials).map((resource) => (
-                <DonationCard key={resource.id} resource={resource} />
-              ))}
+              {filteredEssentials
+                .slice(0, visibleEssentials)
+                .map((resource) => (
+                  <DonationCard key={resource.id} resource={resource} />
+                ))}
             </div>
 
             {/* Shelter & Support Services Category */}
@@ -576,7 +590,10 @@ export default function Home() {
                     selectedSubCategories["Shelter & Support Services"] || []
                   }
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick("Shelter & Support Services", subCategory)
+                    handleSubCategoryClick(
+                      "Shelter & Support Services",
+                      subCategory
+                    )
                   }
                   mainCategory="Shelters"
                 />
@@ -631,7 +648,9 @@ export default function Home() {
                     "Medical Supplies",
                     "Monetary Donations (Medical & Health)",
                   ]}
-                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -687,7 +706,9 @@ export default function Home() {
                     "Pet Supplies",
                     "Monetary Donations (Animal Support)",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }

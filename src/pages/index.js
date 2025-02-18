@@ -1,4 +1,10 @@
-import React, { useState, useEffect, lazy, Suspense, startTransition } from "react";
+import React, {
+  useState,
+  useEffect,
+  lazy,
+  Suspense,
+  startTransition,
+} from "react";
 import Image from "next/image";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -27,7 +33,9 @@ import { motion, useInView } from "framer-motion";
 
 const MissionSection = lazy(() => import("@/components/MissionSection"));
 const SupportSection = lazy(() => import("@/components/SupportSection"));
-const MapComponent = dynamic(() => import("@/components/MapComponent"), { ssr: false });
+const MapComponent = dynamic(() => import("@/components/MapComponent"), {
+  ssr: false,
+});
 
 export default function Home() {
   const [resources, setResources] = useState([]);
@@ -65,8 +73,11 @@ export default function Home() {
   // When a subcategory is toggled for a given main category
   const handleSubCategoryClick = (mainCategory, subCategory) => {
     setSelectedSubCategories((prevSelectedSubCategories) => {
-      const subCategoriesForCategory = prevSelectedSubCategories[mainCategory] || [];
-      const updatedSubCategories = subCategoriesForCategory.includes(subCategory)
+      const subCategoriesForCategory =
+        prevSelectedSubCategories[mainCategory] || [];
+      const updatedSubCategories = subCategoriesForCategory.includes(
+        subCategory
+      )
         ? subCategoriesForCategory.filter((sc) => sc !== subCategory)
         : [...subCategoriesForCategory, subCategory];
       return {
@@ -120,7 +131,10 @@ export default function Home() {
     startDate,
     endDate
   );
-  const essentialsResources = filteredEssentials.slice(0, visibleCounts["Essentials"]);
+  const essentialsResources = filteredEssentials.slice(
+    0,
+    visibleCounts["Essentials"]
+  );
 
   const filteredShelter = filterResources(
     resources,
@@ -130,7 +144,10 @@ export default function Home() {
     startDate,
     endDate
   );
-  const shelterResources = filteredShelter.slice(0, visibleCounts["Shelter & Support Services"]);
+  const shelterResources = filteredShelter.slice(
+    0,
+    visibleCounts["Shelter & Support Services"]
+  );
 
   const filteredMedical = filterResources(
     resources,
@@ -140,7 +157,10 @@ export default function Home() {
     startDate,
     endDate
   );
-  const medicalResources = filteredMedical.slice(0, visibleCounts["Medical & Health"]);
+  const medicalResources = filteredMedical.slice(
+    0,
+    visibleCounts["Medical & Health"]
+  );
 
   const filteredAnimal = filterResources(
     resources,
@@ -150,7 +170,10 @@ export default function Home() {
     startDate,
     endDate
   );
-  const animalResources = filteredAnimal.slice(0, visibleCounts["Animal Support"]);
+  const animalResources = filteredAnimal.slice(
+    0,
+    visibleCounts["Animal Support"]
+  );
 
   const deduplicateResources = (resources) => {
     return Array.from(new Map(resources.map((r) => [r.id, r])).values());
@@ -198,6 +221,7 @@ export default function Home() {
           style={{ paddingTop: "4.15rem" }}
         >
           <h1
+            data-no-translate="true"
             className="text-6xl md:text-8xl mb-9"
             style={{
               fontFamily: "'Tilt Warp', sans-serif",
@@ -263,14 +287,15 @@ export default function Home() {
               <p className="mb-2 font-semibold">
                 Easily find the support you need with our customizable filters.
                 Use the top bar to view organizations currently open, seeking
-                donations, or in need of volunteers. As well as currently wildfires 
-                and air quality in different areas. You can also select multiple
-                filters to refine your search.
+                donations, or in need of volunteers. As well as currently
+                wildfires and air quality in different areas. You can also
+                select multiple filters to refine your search.
               </p>
               <p>Map:</p>
               <p className="font-semibold">
-                Locate help near you using our interactive map. Use the search bar to find specific organizations.
-                Click on a place box to access detailed information about the organization.
+                Locate help near you using our interactive map. Use the search
+                bar to find specific organizations. Click on a place box to
+                access detailed information about the organization.
               </p>
             </span>
           </span>
@@ -471,15 +496,21 @@ export default function Home() {
                   "Transportation Assistance",
                   "Legal Aid",
                 ]}
-                selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
+                selectedCategories={
+                  selectedSubCategories["Shelter & Support Services"] || []
+                }
                 handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Shelter & Support Services", subCategory)
+                  handleSubCategoryClick(
+                    "Shelter & Support Services",
+                    subCategory
+                  )
                 }
                 mainCategory="Shelter & Support Services"
               />
             </div>
             <div className="flex gap-2 mt-3">
-              {visibleCounts["Shelter & Support Services"] < filteredShelter.length && (
+              {visibleCounts["Shelter & Support Services"] <
+                filteredShelter.length && (
                 <button
                   onClick={() => handleShowMore("Shelter & Support Services")}
                   className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
@@ -506,111 +537,118 @@ export default function Home() {
               ))}
             </div>
 
-          {/* --- Medical & Health Category --- */}
-          <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2
-                className="text-xl font-bold"
-                style={{
-                  fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
-                  color: "#ffffff",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              >
-                Medical & Health
-              </h2>
-              <CategoryButtons
-                categories={["Medical Aid & First Aid", "Mental Health Support"]}
-                selectedCategories={selectedSubCategories["Medical & Health"] || []}
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Medical & Health", subCategory)
-                }
-                mainCategory="Medical & Health"
-              />
-            </div>
-            <div className="flex gap-2">
-              {visibleCounts["Medical & Health"] < filteredMedical.length && (
-                <button
-                  onClick={() => handleShowMore("Medical & Health")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+            {/* --- Medical & Health Category --- */}
+            <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
+              <div className="flex items-center gap-4">
+                <h2
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Potta One', normal",
+                    fontSize: "50px",
+                    color: "#ffffff",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                  }}
                 >
-                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                  <span>Show More</span>
-                </button>
-              )}
-              {visibleCounts["Medical & Health"] > defaultVisible && (
-                <button
-                  onClick={() => handleShowLess("Medical & Health")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                >
-                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                  <span>Show Less</span>
-                </button>
-              )}
+                  Medical & Health
+                </h2>
+                <CategoryButtons
+                  categories={[
+                    "Medical Aid & First Aid",
+                    "Mental Health Support",
+                  ]}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick("Medical & Health", subCategory)
+                  }
+                  mainCategory="Medical & Health"
+                />
+              </div>
+              <div className="flex gap-2">
+                {visibleCounts["Medical & Health"] < filteredMedical.length && (
+                  <button
+                    onClick={() => handleShowMore("Medical & Health")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleCounts["Medical & Health"] > defaultVisible && (
+                  <button
+                    onClick={() => handleShowLess("Medical & Health")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-            {medicalResources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
-            ))}
-          </div>
+            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+              {medicalResources.map((resource) => (
+                <ResourceCard key={resource.id} resource={resource} />
+              ))}
+            </div>
 
-          {/* --- Animal Support Category --- */}
-          <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2
-                className="text-xl font-bold"
-                style={{
-                  fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
-                  color: "#ffffff",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              >
-                Animal Support
-              </h2>
-              <CategoryButtons
-                categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
-                selectedCategories={selectedSubCategories["Animal Support"] || []}
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick("Animal Support", subCategory)
-                }
-                mainCategory="Animal Support"
-              />
-            </div>
-            <div className="flex gap-2">
-              {visibleCounts["Animal Support"] < filteredAnimal.length && (
-                <button
-                  onClick={() => handleShowMore("Animal Support")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+            {/* --- Animal Support Category --- */}
+            <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
+              <div className="flex items-center gap-4">
+                <h2
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Potta One', normal",
+                    fontSize: "50px",
+                    color: "#ffffff",
+                    marginTop: "15px",
+                    marginBottom: "20px",
+                  }}
                 >
-                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                  <span>Show More</span>
-                </button>
-              )}
-              {visibleCounts["Animal Support"] > defaultVisible && (
-                <button
-                  onClick={() => handleShowLess("Animal Support")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                >
-                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                  <span>Show Less</span>
-                </button>
-              )}
+                  Animal Support
+                </h2>
+                <CategoryButtons
+                  categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick("Animal Support", subCategory)
+                  }
+                  mainCategory="Animal Support"
+                />
+              </div>
+              <div className="flex gap-2">
+                {visibleCounts["Animal Support"] < filteredAnimal.length && (
+                  <button
+                    onClick={() => handleShowMore("Animal Support")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                    <span>Show More</span>
+                  </button>
+                )}
+                {visibleCounts["Animal Support"] > defaultVisible && (
+                  <button
+                    onClick={() => handleShowLess("Animal Support")}
+                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  >
+                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                    <span>Show Less</span>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-            {animalResources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
-            ))}
-          </div>
+            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+              {animalResources.map((resource) => (
+                <ResourceCard key={resource.id} resource={resource} />
+              ))}
+            </div>
           </div>
         </div>
       </section>

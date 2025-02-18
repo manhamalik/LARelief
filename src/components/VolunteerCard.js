@@ -94,7 +94,7 @@ const VolunteerSearch = ({ resource }) => {
   const FormSignUpRequired =
     link_to_volunteer === true ? "Form Sign-Up Required" : "No Form Required";
 
-    console.log("Resource types:", types);
+  console.log("Resource types:", types);
 
   return (
     <div
@@ -175,7 +175,9 @@ const VolunteerSearch = ({ resource }) => {
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
-                <h2 className="resourceName">{name}</h2>
+                <h2 data-no-translate="true" className="resourceName">
+                  {name}
+                </h2>
                 <p>{address}</p>
               </div>
             </div>

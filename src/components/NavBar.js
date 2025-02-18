@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import TranslationContext from "@/context/TranslationContext";
 
 const NavBar = ({ opacity = 100, isShopEnabled }) => {
+  const { translateAllTextNodes } = useContext(TranslationContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // for language dropdown
@@ -210,20 +212,42 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
               >
                 <ul className="bg-transparent">
                   <li>
-                    <Link
-                      href="#"
-                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    <button
+                      data-no-translate="true"
+                      onClick={() => {
+                        window.location.href = "/";
+                      }}
+                      className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       English
-                    </Link>
+                    </button>
                   </li>
                   <li className="border-t border-gray-300">
-                    <Link
-                      href="#"
-                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    <button
+                      data-no-translate="true"
+                      onClick={() => translateAllTextNodes("es")}
+                      className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Spanish
-                    </Link>
+                    </button>
+                  </li>
+                  <li className="border-t border-gray-300">
+                    <button
+                      data-no-translate="true"
+                      onClick={() => translateAllTextNodes("zh")}
+                      className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Chinese
+                    </button>
+                  </li>
+                  <li className="border-t border-gray-300">
+                    <button
+                      data-no-translate="true"
+                      onClick={() => translateAllTextNodes("ko")}
+                      className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Korean
+                    </button>
                   </li>
                 </ul>
               </div>

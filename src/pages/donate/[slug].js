@@ -413,7 +413,9 @@ export default function Resource({ resource }) {
           </Link>
         </div>
 
-        <h1 className="header">{organization_name}</h1>
+        <h1 data-no-translate="true" className="header">
+          {organization_name}
+        </h1>
         <p className="owned-by">
           <img
             src={resource.organization_image}
@@ -533,7 +535,10 @@ export default function Resource({ resource }) {
                     <p key={key}>
                       <FontAwesomeIcon icon={faInstagram} className="icon" />
                       <a
-                        href={`https://instagram.com/${value.replace(/^@/, "")}`}
+                        href={`https://instagram.com/${value.replace(
+                          /^@/,
+                          ""
+                        )}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -614,8 +619,7 @@ export default function Resource({ resource }) {
                 ".horizontal-container p"
               ).innerText;
               const about = document.querySelector("h3 + p").innerText;
-              const itemsNeeded =
-                document.querySelector("h3 + p").innerText;
+              const itemsNeeded = document.querySelector("h3 + p").innerText;
 
               let contactInfo = "";
               const contactElements =

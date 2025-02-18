@@ -413,7 +413,9 @@ export default function Resource({ resource }) {
           </Link>
         </div>
 
-        <h1 className="header">{name}</h1>
+        <h1 data-no-translate="true" className="header">
+          {name}
+        </h1>
         <p className="owned-by">
           <img
             src={resource.organization_image}
@@ -429,10 +431,7 @@ export default function Resource({ resource }) {
         </div>
 
         {/* Start and End Dates */}
-        <div
-          className="horizontal-container schedule"
-          onClick={toggleSchedule}
-        >
+        <div className="horizontal-container schedule" onClick={toggleSchedule}>
           <FontAwesomeIcon icon={faCalendar} className="icon" />
           <p>
             {startDate && !endDate
@@ -622,8 +621,7 @@ export default function Resource({ resource }) {
                 ".horizontal-container p"
               ).innerText;
               const about = document.querySelector("h3 + p").innerText;
-              const itemsNeeded =
-                document.querySelector("h3 + p").innerText;
+              const itemsNeeded = document.querySelector("h3 + p").innerText;
 
               let contactInfo = "";
               const contactElements =

@@ -20,13 +20,25 @@ const categoryIcons = {
   "Food & Water": { icon: faBurger, color: "#015BC3" },
   "Clothing & Bedding": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
-  "Monetary Donations (Essentials)": { icon: faMoneyBillWave, color: "#015BC3" },
+  "Monetary Donations (Essentials)": {
+    icon: faMoneyBillWave,
+    color: "#015BC3",
+  },
   "Emergency Supplies": { icon: faHouse, color: "#4D03CD" },
-  "Monetary Donations (Shelter & Support Services)": {icon: faMoneyBillWave, color: "#4D03CD" },
+  "Monetary Donations (Shelter & Support Services)": {
+    icon: faMoneyBillWave,
+    color: "#4D03CD",
+  },
   "Medical Supplies": { icon: faBriefcaseMedical, color: "#CC0000" },
-  "Monetary Donations (Medical & Health)": { icon: faMoneyBillWave, color: "#CC0000" },
+  "Monetary Donations (Medical & Health)": {
+    icon: faMoneyBillWave,
+    color: "#CC0000",
+  },
   "Pet Supplies": { icon: faPaw, color: "#CF5700" },
-  "Monetary Donations (Animal Support)": { icon: faMoneyBillWave, color: "#CF5700" },
+  "Monetary Donations (Animal Support)": {
+    icon: faMoneyBillWave,
+    color: "#CF5700",
+  },
 };
 
 // Safely parse a time string (e.g. "9:00 AM") into a Date object
@@ -157,7 +169,14 @@ const DonateCard = ({ resource }) => {
   let operatingText = null;
 
   if (operatingStatus.status === "open") {
-    operatingText = <>Open <span style={{ color: "forestgreen" }}>until {operatingStatus.closeTime}</span></>;
+    operatingText = (
+      <>
+        Open{" "}
+        <span style={{ color: "forestgreen" }}>
+          until {operatingStatus.closeTime}
+        </span>
+      </>
+    );
   } else if (operatingStatus.status === "closed") {
     const todayName = new Date().toLocaleString("en-US", { weekday: "long" });
     if (operatingStatus.nextOpenDay === todayName) {
@@ -281,7 +300,9 @@ const DonateCard = ({ resource }) => {
           <div className="cardContent">
             <div className="cardTop">
               <div className="name-container">
-                <h2 className="resourceName">{organization_name}</h2>
+                <h2 data-no-translate="true" className="resourceName">
+                  {organization_name}
+                </h2>
                 <p>{address}</p>
               </div>
             </div>

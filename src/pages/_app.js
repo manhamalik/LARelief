@@ -22,6 +22,8 @@ import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import "leaflet/dist/leaflet.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { TranslationProvider } from "@/context/TranslationContext";
+import { Translation } from "react-i18next";
 
 // Prevent Font Awesome from automatically adding CSS globally
 config.autoAddCss = false;
@@ -91,34 +93,36 @@ export default function App({ Component, pageProps }) {
   const isHomePage = router.pathname === "/";
 
   return (
-    <>
-      <style jsx global>{`
-        html {
-          font-family: ${notoSansMultani.style.fontFamily}, sans-serif;
-        }
-      `}</style>
-      <main style={{ paddingTop: isHomePage ? "0" : "60px" }}>
-        {/* Always render NavBar */}
-        <NavBar />
-        {isMounted && (
-          <Toaster
-            position="bottom-left"
-            toastOptions={{
-              duration: 5000,
-              loading: {
-                duration: Infinity,
-                theme: {
-                  primary: "green",
-                  secondary: "black",
+    <TranslationProvider>
+      <>
+        <style jsx global>{`
+          html {
+            font-family: ${notoSansMultani.style.fontFamily}, sans-serif;
+          }
+        `}</style>
+        <main style={{ paddingTop: isHomePage ? "0" : "60px" }}>
+          {/* Always render NavBar */}
+          <NavBar />
+          {isMounted && (
+            <Toaster
+              position="bottom-left"
+              toastOptions={{
+                duration: 5000,
+                loading: {
+                  duration: Infinity,
+                  theme: {
+                    primary: "green",
+                    secondary: "black",
+                  },
                 },
-              },
-            }}
-          />
-        )}
-        <Component {...pageProps} />
-        <Chatbot />
-        <Footer footerLinks={footerLinks} />
-      </main>
-    </>
+              }}
+            />
+          )}
+          <Component {...pageProps} />
+          <Chatbot />
+          <Footer footerLinks={footerLinks} />
+        </main>
+      </>
+    </TranslationProvider>
   );
 }

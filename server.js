@@ -1,6 +1,8 @@
 const express = require("express");
 const { Pool } = require("pg");
 const cors = require("cors");
+const axios = require("axios");
+const cheerio = require("cheerio");
 require("dotenv").config();
 
 const app = express();

@@ -13,7 +13,7 @@ import {
   faPeopleGroup,
   faDog,
   faPaw,
-  faDoorOpen,   // door open icon
+  faDoorOpen, // door open icon
   faDoorClosed, // door closed icon (ensure this icon is available)
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -133,7 +133,14 @@ const ResourceCard = ({ resource }) => {
   let operatingText;
   if (operatingStatus.status === "open") {
     // If currently open, show closing time
-    operatingText = <>Open <span style={{ color: "forestgreen" }}>until {operatingStatus.closeTime}</span></>;
+    operatingText = (
+      <>
+        Open{" "}
+        <span style={{ color: "forestgreen" }}>
+          until {operatingStatus.closeTime}
+        </span>
+      </>
+    );
   } else if (operatingStatus.status === "closed") {
     // If closed, show next opening time with the time (and day) in forest green
     if (
@@ -185,7 +192,9 @@ const ResourceCard = ({ resource }) => {
         <div
           className="cardContainer"
           style={{
-            backgroundImage: `url(${carousel_images?.[0] || "default-image.jpg"})`,
+            backgroundImage: `url(${
+              carousel_images?.[0] || "default-image.jpg"
+            })`,
           }}
         >
           {/* Top Section with Organization Logo and Category Icons */}
@@ -242,6 +251,7 @@ const ResourceCard = ({ resource }) => {
             <div className="cardTop">
               <div className="name-container">
                 <h2
+                  data-no-translate="true"
                   className="resourceName"
                   style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
                 >
@@ -258,7 +268,9 @@ const ResourceCard = ({ resource }) => {
                 className="icon"
                 style={{
                   color:
-                    operatingStatus.status === "open" ? "forestgreen" : "#201A1A",
+                    operatingStatus.status === "open"
+                      ? "forestgreen"
+                      : "#201A1A",
                   width: "1.5rem",
                   height: "1.5rem",
                 }}
