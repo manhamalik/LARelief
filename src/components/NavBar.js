@@ -237,7 +237,10 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   <li className="border-t border-gray-300">
                     <button
                       data-no-translate="true"
-                      onClick={() => translateAllTextNodes("es")}
+                      onClick={() => {
+                        localStorage.setItem("language", "es");
+                        window.location.reload();
+                      }}
                       className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Spanish
@@ -246,7 +249,10 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   <li className="border-t border-gray-300">
                     <button
                       data-no-translate="true"
-                      onClick={() => translateAllTextNodes("zh")}
+                      onClick={() => {
+                        localStorage.setItem("language", "zh");
+                        window.location.reload();
+                      }}
                       className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Chinese
@@ -255,7 +261,10 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   <li className="border-t border-gray-300">
                     <button
                       data-no-translate="true"
-                      onClick={() => translateAllTextNodes("ko")}
+                      onClick={() => {
+                        localStorage.setItem("language", "ko");
+                        window.location.reload();
+                      }}
                       className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >
                       Korean

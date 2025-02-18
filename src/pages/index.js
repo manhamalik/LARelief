@@ -30,6 +30,7 @@ import "@fontsource/potta-one";
 import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "../components/filter";
 import { motion, useInView } from "framer-motion";
+import { useRouter } from "next/router";
 
 const MissionSection = lazy(() => import("@/components/MissionSection"));
 const SupportSection = lazy(() => import("@/components/SupportSection"));
@@ -45,6 +46,12 @@ export default function Home() {
   const [endDate, setEndDate] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+
+  const handleClick = () => {
+    startTransition(() => {
+      router.push("/");
+    });
+  };
 
   // Default visible count per category.
   const defaultVisible = 4;
