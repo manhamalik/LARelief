@@ -217,7 +217,9 @@ export default function MapComponent() {
     }
   };
 
-  // Data loads
+  // -------------------------------------
+  // DATA LOADS
+  // -------------------------------------
   useEffect(() => {
     fetch("/api/resource-list")
       .then((res) => res.json())
@@ -661,6 +663,27 @@ export default function MapComponent() {
     );
   };
 
+  // ---------------------------------------------------------
+  // Helper Functions for Wildfire Popup Formatting
+  // ---------------------------------------------------------
+  const formatWildfireDate = (dateStr) => {
+    if (!dateStr) return "";
+    return dateStr.replace("T", " ").replace("Z", " PST");
+  };
+
+  const formatAcresBurned = (acres) => {
+    if (acres === undefined || acres === null) return "";
+    
+    const formattedAcres = parseFloat(acres).toLocaleString("en-US", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
+  
+    return formattedAcres.endsWith(".0") 
+      ? formattedAcres.slice(0, -2) + " acres" 
+      : formattedAcres + " acres";
+  };
+  
   return (
     <div>
       <div className="relative w-full">
@@ -687,116 +710,192 @@ export default function MapComponent() {
           {fireIcon &&
             wildfireActive &&
             wildfires
-              .filter((incident) => incident.Name && incident.Name.toLowerCase().includes("fire"))
+              .filter(
+                (incident) =>
+                  incident.Name && incident.Name.toLowerCase().includes("fire")
+              )
               .map((incident) => {
-                const { UniqueId, Latitude, Longitude, Name, Started, Updated, County, Location, AcresBurned, PercentContained } = incident;
+                const {
+                  UniqueId,
+                  Latitude,
+                  Longitude,
+                  Name,
+                  Started,
+                  Updated,
+                  County,
+                  Location,
+                  AcresBurned,
+                  PercentContained,
+                } = incident;
                 if (!Latitude || !Longitude) return null;
                 return (
                   <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
                     <Popup>
-                      <div>
-                        <h3 style={{ marginTop: 0 }}>{Name}</h3>
-                        <p><strong>Start Date:</strong> {Started}</p>
-                        <p><strong>Last Updated:</strong> {Updated}</p>
-                        <p><strong>County:</strong> {County}</p>
-                        <p><strong>Location:</strong> {Location}</p>
-                        <p><strong>Acres Burned:</strong> {AcresBurned}</p>
-                        <p><strong>Percent Contained:</strong> {PercentContained}</p>
+                      <div style={{ fontFamily: "'Noto Sans Multani', sans-serif", width: "280px" }}>
+                        {/* Fire Name */}
+                        <h3 className="text-xl font-bold text-center text-red-600">{Name}</h3>
+
+                        {/* Start Date & Last Updated */}
+                        <p className="text-black">
+                          <strong>📅 Start Date:</strong> {formatWildfireDate(Started)}
+                        </p>
+                        <p className="text-black">
+                          <strong>🕒 Last Updated:</strong> {formatWildfireDate(Updated)}
+                        </p>
+
+                        {/* County & Location */}
+                        <p className="text-black">
+                          <strong>📍 County:</strong> {County}
+                        </p>
+                        <p className="text-black">
+                          <strong>📌 Location:</strong> {Location}
+                        </p>
+
+                        {/* Acres Burned */}
+                        <p className="text-black font-semibold">
+                          🔥 Acres Burned: <span className="text-red-500">{formatAcresBurned(AcresBurned)}</span>
+                        </p>
+
+                        <div className="flex items-center space-x-2">
+                        <p className="text-black font-semibold">🧯 Containment:</p>
+                        <div className="relative">
+                          <svg width="50" height="50">
+                            {/* Background Circle */}
+                            <circle
+                              cx="25"
+                              cy="25"
+                              r="20"
+                              fill="transparent"
+                              stroke="#e5e7eb"
+                              strokeWidth="4"
+                            />
+                            {/* Foreground Progress Circle */}
+                            <circle
+                              cx="25"
+                              cy="25"
+                              r="20"
+                              fill="transparent"
+                              stroke={PercentContained < 50 ? "red" : PercentContained < 100 ? "orange" : "green"}
+                              strokeWidth="4"
+                              strokeDasharray="125.66"
+                              strokeDashoffset={125.66 - (125.66 * PercentContained) / 100}
+                              strokeLinecap="round"
+                              transform="rotate(-90 25 25)"
+                            />
+                            {/* Centered Percentage Text */}
+                            <text
+                              x="25"
+                              y="25"
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              fill="black"
+                              fontSize="12"
+                              fontWeight="bold"
+                            >
+                              {PercentContained}%
+                            </text>
+                          </svg>
+                        </div>
                       </div>
+                     </div>
                     </Popup>
                   </Marker>
                 );
               })}
-  {airQualityActive &&
-  airQualityData.map((feature, index) => {
-    if (!feature.geometry) return null;
-    let fillColor = "#000000";
-    switch (feature.aqi) {
-      case 1:
-        fillColor = "#00e400";
-        break;
-      case 2:
-        fillColor = "#ffeb3b";
-        break;
-      case 3:
-        fillColor = "#ff7e00";
-        break;
-      case 4:
-        fillColor = "#ff0000";
-        break;
-      case 5:
-        fillColor = "#8f3f97";
-        break;
-      default:
-        fillColor = "#000000";
-    }
-    const toLatLngs = (ring) => ring.map(([lng, lat]) => [lat, lng]);
+          {airQualityActive &&
+            airQualityData.map((feature, index) => {
+              if (!feature.geometry) return null;
+              let fillColor = "#000000";
+              switch (feature.aqi) {
+                case 1:
+                  fillColor = "#00e400";
+                  break;
+                case 2:
+                  fillColor = "#ffeb3b";
+                  break;
+                case 3:
+                  fillColor = "#ff7e00";
+                  break;
+                case 4:
+                  fillColor = "#ff0000";
+                  break;
+                case 5:
+                  fillColor = "#8f3f97";
+                  break;
+                default:
+                  fillColor = "#000000";
+              }
+              const toLatLngs = (ring) =>
+                ring.map(([lng, lat]) => [lat, lng]);
 
-    // Updated popup content rendering:
-    const renderPopupContent = () => {
-      if (feature.aqi === -1) return "No data";
-      const { category, description } = getAQICategory(feature.aqi);
-      return (
-        <div
-          className="text-center"
-          style={{
-            fontFamily: "'Noto Sans Multani', sans-serif",
-            width: "275px",
-            margin: "0 auto",
-          }}
-        >
-          <div className="flex justify-center items-center">
-            <span
-              className="inline-block w-3 h-3 flex-none rounded-full mr-1"
-              style={{ backgroundColor: fillColor }}
-            ></span>
-            <span>{`${category} (AQI: ${feature.aqi})`}</span>
-          </div>
-          <div className="mt-1">
-            <em className="text-xs">{description}</em>
-          </div>
-        </div>
-      );
-    };
+              // Updated popup content rendering:
+              const renderPopupContent = () => {
+                if (feature.aqi === -1) return "No data";
+                const { category, description } = getAQICategory(feature.aqi);
+                return (
+                  <div
+                    className="text-center"
+                    style={{
+                      fontFamily: "'Noto Sans Multani', sans-serif",
+                      width: "275px",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <div className="flex justify-center items-center">
+                      <span
+                        className="inline-block w-3 h-3 flex-none rounded-full mr-1"
+                        style={{ backgroundColor: fillColor }}
+                      ></span>
+                      <span>{`${category} (AQI: ${feature.aqi})`}</span>
+                    </div>
+                    <div className="mt-1">
+                      <em className="text-xs">{description}</em>
+                    </div>
+                  </div>
+                );
+              };
 
-          // Render the aqi popup
-          const popupContent = (
-            <div
-              className="text-center"
-              style={{ fontFamily: "'Noto Sans Multani', sans-serif", maxWidth: "275px", margin: "0 auto" }}
-            >
-              <strong>{feature.name}</strong>
-              <br />
-              {renderPopupContent()}
-            </div>
-          );
+              // Render the aqi popup
+              const popupContent = (
+                <div
+                  className="text-center"
+                  style={{
+                    fontFamily: "'Noto Sans Multani', sans-serif",
+                    maxWidth: "275px",
+                    margin: "0 auto",
+                  }}
+                >
+                  <strong>{feature.name}</strong>
+                  <br />
+                  {renderPopupContent()}
+                </div>
+              );
 
-          if (feature.geometry.type === "Polygon") {
-            const rings = feature.geometry.coordinates;
-            return (
-              <Polygon
-                key={index}
-                positions={rings.map((ring) => toLatLngs(ring))}
-                pathOptions={{ color: fillColor, fillColor, fillOpacity: 0.4 }}
-              >
-                <Popup>{popupContent}</Popup>
-              </Polygon>
-            );
-          } else if (feature.geometry.type === "MultiPolygon") {
-            const multi = feature.geometry.coordinates;
-            return multi.map((poly, idx2) => (
-              <Polygon
-                key={`${index}-${idx2}`}
-                positions={poly.map((ring) => toLatLngs(ring))}
-                pathOptions={{ color: fillColor, fillColor, fillOpacity: 0.4 }}
-              >
-                <Popup>{popupContent}</Popup>
-              </Polygon>
-            ));
-          }
-          return null;
-        })}
-
+              if (feature.geometry.type === "Polygon") {
+                const rings = feature.geometry.coordinates;
+                return (
+                  <Polygon
+                    key={index}
+                    positions={rings.map((ring) => toLatLngs(ring))}
+                    pathOptions={{ color: fillColor, fillColor, fillOpacity: 0.4 }}
+                  >
+                    <Popup>{popupContent}</Popup>
+                  </Polygon>
+                );
+              } else if (feature.geometry.type === "MultiPolygon") {
+                const multi = feature.geometry.coordinates;
+                return multi.map((poly, idx2) => (
+                  <Polygon
+                    key={`${index}-${idx2}`}
+                    positions={poly.map((ring) => toLatLngs(ring))}
+                    pathOptions={{ color: fillColor, fillColor, fillOpacity: 0.4 }}
+                  >
+                    <Popup>{popupContent}</Popup>
+                  </Polygon>
+                ));
+              }
+              return null;
+            })}
         </MapContainer>
 
         <div className="absolute z-[3000]" style={{ top: "-0.8vw", left: "-1vw" }}>
