@@ -6,7 +6,8 @@ import Image from "next/image";
 const NavBar = ({ opacity = 100, isShopEnabled }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // for language dropdown
+  const [isWildfireDropdownOpen, setIsWildfireDropdownOpen] = useState(false); // for Wildfire Guide dropdown
   const router = useRouter();
 
   const toggleMenu = () => {
@@ -15,13 +16,11 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
 
   const handleNavigation = (sectionId) => {
     if (router.pathname === "/") {
-      // If already on the index page, scroll directly to the section
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     } else {
-      // Navigate to the index page and scroll to the section
       router.push(`/#${sectionId}`);
     }
   };
@@ -76,6 +75,7 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center">
+          {/* Main Navigation Items */}
           <div className="flex space-x-6">
             <span
               onClick={() => handleNavigation("map")}
@@ -96,13 +96,6 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                 <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
               </span>
             </Link>
-            <span
-              onClick={() => handleNavigation("faq")}
-              className="group relative font-semibold transition-transform ease-in-out duration-300 cursor-pointer"
-            >
-              FAQs
-              <div className="h-0.5 bg-white transition-all duration-300 ease-in-out group-hover:w-full w-0"></div>
-            </span>
             <Link href="/contact">
               <span className="group relative font-semibold transition-transform ease-in-out duration-300">
                 Contact
@@ -111,63 +104,129 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
             </Link>
           </div>
 
-          {/* Language Dropdown */}
-          <div
-            className="relative ml-6"
-            onMouseEnter={() => setIsDropdownOpen(true)}
-            onMouseLeave={() => setIsDropdownOpen(false)}
-          >
-            <button
-              className={`flex items-center space-x-2 px-3 py-1 bg-transparent border border-gray-300 hover:bg-white hover:bg-opacity-30 focus:outline-none transition ease-in-out duration-300 ${
-                isDropdownOpen ? "rounded-t-md" : "rounded-md"
-              }`}
+          {/* Right-Side Dropdowns */}
+          <div className="flex items-center ml-6 space-x-4">
+            {/* Wildfire Guide Dropdown (placed first) */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsWildfireDropdownOpen(true)}
+              onMouseLeave={() => setIsWildfireDropdownOpen(false)}
             >
-              <img
-                src="/images/language-icon.png"
-                alt="Language Icon"
-                className="w-auto h-3"
-              />
-              <span className="font-semibold text-white">English</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="3"
-                stroke="currentColor"
-                className={`w-4 h-4 transition-transform duration-300 ${
-                  isDropdownOpen ? "rotate-180" : ""
+              <button
+                className={`flex items-center space-x-2 px-3 py-1 bg-transparent border border-gray-300 hover:bg-white hover:bg-opacity-30 focus:outline-none transition ease-in-out duration-300 ${
+                  isWildfireDropdownOpen ? "rounded-t-md" : "rounded-md"
                 }`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+                <span className="font-semibold text-white">Wildfire Guide</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="3"
+                  stroke="currentColor"
+                  className={`w-4 h-4 transition-transform duration-300 ${
+                    isWildfireDropdownOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <div
+                className={`absolute ${
+                  isWildfireDropdownOpen ? "block" : "hidden"
+                } bg-transparent shadow-lg w-full border border-gray-300 rounded-b-md`}
+              >
+                <ul className="bg-transparent">
+                  <li>
+                    <Link
+                      href="/wildfire-guide/wildfire-readiness"
+                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Wildfire Readiness
+                    </Link>
+                  </li>
+                  <li className="border-t border-gray-300">
+                    <Link
+                      href="/wildfire-guide/wildfire-monitoring"
+                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Wildfire Monitoring
+                    </Link>
+                  </li>
+                  <li className="border-t border-gray-300">
+                    <Link
+                      href="/wildfire-guide/post-fire-recovery"
+                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Post-Fire Recovery
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Language Dropdown */}
             <div
-              className={`absolute ${
-                isDropdownOpen ? "block" : "hidden"
-              } bg-transparent shadow-lg w-full border border-gray-300 rounded-b-md`}
+              className="relative"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+              onMouseLeave={() => setIsDropdownOpen(false)}
             >
-              <ul className="bg-transparent">
-                <li>
-                  <Link
-                    href="#"
-                    className="block px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
-                  >
-                    English
-                  </Link>
-                </li>
-                <li className="border-t border-gray-300">
-                  <Link
-                    href="#"
-                    className="block px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
-                  >
-                    Spanish
-                  </Link>
-                </li>
-              </ul>
+              <button
+                className={`flex items-center space-x-2 px-3 py-1 bg-transparent border border-gray-300 hover:bg-white hover:bg-opacity-30 focus:outline-none transition ease-in-out duration-300 ${
+                  isDropdownOpen ? "rounded-t-md" : "rounded-md"
+                }`}
+              >
+                <img
+                  src="/images/language-icon.png"
+                  alt="Language Icon"
+                  className="w-auto h-3"
+                />
+                <span className="font-semibold text-white">English</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="3"
+                  stroke="currentColor"
+                  className={`w-4 h-4 transition-transform duration-300 ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <div
+                className={`absolute ${
+                  isDropdownOpen ? "block" : "hidden"
+                } bg-transparent shadow-lg w-full border border-gray-300 rounded-b-md`}
+              >
+                <ul className="bg-transparent">
+                  <li>
+                    <Link
+                      href="#"
+                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      English
+                    </Link>
+                  </li>
+                  <li className="border-t border-gray-300">
+                    <Link
+                      href="#"
+                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
+                    >
+                      Spanish
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

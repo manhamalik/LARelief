@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DetailImageCarousel from "@/components/DetailImageCarousel";
 import { format, addDays } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import {
   faClock,
   faCalendar,
@@ -14,6 +15,7 @@ import {
   faHandHoldingHeart,
   faCircleDollarToSlot,
   faPaperPlane,
+  faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faInstagram,
@@ -248,6 +250,22 @@ export default function Resource({ resource }) {
       });
   };
 
+  // New helper function to get the pin color based on category type.
+  const getPinColor = (category) => {
+    switch (category) {
+      case "Essentials":
+        return "#015BC3";
+      case "Shelter & Support Services":
+        return "#4D03CD";
+      case "Medical & Health":
+        return "#CC0000";
+      case "Animal Support":
+        return "#CF5700";
+      default:
+        return "#000000"; // Default color if category does not match any specified type
+    }
+  };
+
   return (
     <div className="page-layout">
       <style jsx>{`
@@ -285,12 +303,6 @@ export default function Resource({ resource }) {
           align-items: center;
           text-align: center;
         }
-        .categories {
-          margin-bottom: 1.5rem;
-        }
-        .categories p {
-          margin: 0.25rem 0;
-        }
         .header {
           margin-bottom: 1.5rem;
           font-size: 2rem;
@@ -300,7 +312,7 @@ export default function Resource({ resource }) {
           display: flex;
           align-items: center;
           font-size: 1rem;
-          color: black; /* Now always black */
+          color: black;
           margin-bottom: 1rem;
         }
         .organization-image {
@@ -373,7 +385,6 @@ export default function Resource({ resource }) {
           background-color: black;
           color: white;
         }
-        /* Ensure the share icon inherits the button's color */
         .share-icon {
           color: inherit;
           margin-right: 0.5rem;
@@ -394,16 +405,24 @@ export default function Resource({ resource }) {
         .donation-button:hover {
           background-color: #218838;
         }
+        /* Top row for pills: categories & More Resources */
         .pills-container {
           display: flex;
+          align-items: flex-start; /* Align items at the top */
           justify-content: space-between;
-          align-items: center;
           width: 100%;
           margin-bottom: 1rem;
+          flex-wrap: nowrap; /* Prevent the More Resources pill from wrapping */
         }
         .categories-container {
           display: flex;
+          flex-wrap: wrap;
           gap: 0.5rem;
+          flex: 1;
+        }
+        /* Ensure the More Resources pill never shrinks or wraps */
+        .pill.donation.more-resources {
+          flex-shrink: 0;
         }
         .pill {
           display: flex;
@@ -432,7 +451,6 @@ export default function Resource({ resource }) {
         .accessibility-text {
           font-size: 0.8rem;
         }
-        /* Styles for the share popup */
         .share-popup {
           position: fixed;
           bottom: 20px;
@@ -454,20 +472,36 @@ export default function Resource({ resource }) {
 
       {/* Right: Details */}
       <div className="details-container">
-        {/* Pills */}
+        {/* Top row: Categories & More Resources */}
         <div className="pills-container">
           <div className="categories-container">
             {categories.map((category, index) => (
               <div key={index} className="pill category">
-                <FontAwesomeIcon icon={faLocationDot} />
+                <FontAwesomeIcon
+                  icon={faLocationDot}
+                  style={{ color: getPinColor(category) }}
+                />
                 {category}
               </div>
             ))}
           </div>
-          <div className="pill donation">
-            <FontAwesomeIcon icon={faLink} />
-            Resource
-          </div>
+          <Link href="/#resources" passHref>
+            <div
+              className="pill donation more-resources"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              More Resources
+              <FontAwesomeIcon
+                icon={faCaretRight}
+                style={{ color: "white", marginLeft: "5px" }}
+              />
+            </div>
+          </Link>
         </div>
 
         <h1 className="header">{name}</h1>
@@ -552,7 +586,11 @@ export default function Resource({ resource }) {
                       <p key={key} className="text-[0.9rem]">
                         <FontAwesomeIcon icon={faLink} className="icon" />
                         <span className="contact-text">
-                          <a href={value} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={value}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {value}
                           </a>
                         </span>
@@ -580,7 +618,10 @@ export default function Resource({ resource }) {
                         <FontAwesomeIcon icon={faInstagram} className="icon" />
                         <span className="contact-text">
                           <a
-                            href={`https://instagram.com/${value.replace(/^@/, "")}`}
+                            href={`https://instagram.com/${value.replace(
+                              /^@/,
+                              ""
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -595,7 +636,10 @@ export default function Resource({ resource }) {
                         <FontAwesomeIcon icon={faTwitter} className="icon" />
                         <span className="contact-text">
                           <a
-                            href={`https://twitter.com/${value.replace(/^@/, "")}`}
+                            href={`https://twitter.com/${value.replace(
+                              /^@/,
+                              ""
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -610,7 +654,10 @@ export default function Resource({ resource }) {
                         <FontAwesomeIcon icon={faTiktok} className="icon" />
                         <span className="contact-text">
                           <a
-                            href={`https://tiktok.com/@${value.replace(/^@/, "")}`}
+                            href={`https://tiktok.com/@${value.replace(
+                              /^@/,
+                              ""
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -685,10 +732,7 @@ export default function Resource({ resource }) {
             Volunteer
           </button>
           <button className="button" onClick={handleShareClick}>
-            <FontAwesomeIcon
-              icon={faPaperPlane}
-              className="share-icon mr-2"
-            />
+            <FontAwesomeIcon icon={faPaperPlane} className="share-icon mr-2" />
             Share
           </button>
         </div>

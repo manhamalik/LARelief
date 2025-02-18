@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DetailImageCarousel from "@/components/DetailImageCarousel";
 import { format, addDays } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import {
   faClock,
   faCalendar,
@@ -14,6 +15,7 @@ import {
   faHandHoldingHeart,
   faCircleDollarToSlot,
   faPaperPlane,
+  faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faInstagram,
@@ -107,6 +109,22 @@ export async function getServerSideProps({ params, req }) {
   };
 }
 
+// Helper function to return pin color based on category
+const getPinColor = (category) => {
+  switch (category) {
+    case "Essentials":
+      return "#015BC3";
+    case "Shelter & Support Services":
+      return "#4D03CD";
+    case "Medical & Health":
+      return "#CC0000";
+    case "Animal Support":
+      return "#CF5700";
+    default:
+      return "#000000";
+  }
+};
+
 export default function Resource({ resource }) {
   console.log("Resource prop:", resource);
 
@@ -155,16 +173,14 @@ export default function Resource({ resource }) {
 
   const getDatesRange = () => {
     const dates = [];
-    const today = new Date(); // Current day
-    const limit = addDays(today, 6); // 6 days following today
-
+    const today = new Date();
+    const limit = addDays(today, 6);
     let current = today;
     while (current <= limit) {
       dates.push(new Date(current));
       current = addDays(current, 1);
     }
-
-    return dates; // Return dates in natural order
+    return dates;
   };
 
   // Helper function to add days to a date
@@ -188,7 +204,6 @@ export default function Resource({ resource }) {
           align-items: flex-start;
           width: 100vw;
           min-height: 100vh;
-          // background-color: #f9f9f9;
           font-family: "Noto Sans", sans-serif;
         }
         .carousel-container {
@@ -215,12 +230,6 @@ export default function Resource({ resource }) {
           justify-content: center;
           align-items: center;
           text-align: center;
-        }
-        .categories {
-          margin-bottom: 1.5rem;
-        }
-        .categories p {
-          margin: 0.25rem 0;
         }
         .header {
           margin-bottom: 1.5rem;
@@ -250,7 +259,6 @@ export default function Resource({ resource }) {
         .schedule {
           cursor: pointer;
         }
-
         .additional-info {
           margin: 0;
           display: flex;
@@ -258,7 +266,6 @@ export default function Resource({ resource }) {
           width: 100%;
           margin-top: 2rem;
         }
-
         .info-column-left {
           width: 45%;
           text-align: left;
@@ -319,16 +326,20 @@ export default function Resource({ resource }) {
         .donation-button:hover {
           background-color: #218838;
         }
+        /* Top row for pills: Categories & More Donations */
         .pills-container {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           width: 100%;
           margin-bottom: 1rem;
+          flex-wrap: nowrap;
         }
         .categories-container {
           display: flex;
           gap: 0.5rem;
+          flex-wrap: wrap;
+          flex: 1;
         }
         .pill {
           display: flex;
@@ -348,13 +359,16 @@ export default function Resource({ resource }) {
           background-color: #000;
           color: #fff;
         }
+        /* Ensure More Donations pill never shrinks */
+        .pill.donation.more-donations {
+          flex-shrink: 0;
+        }
         .contact-text {
           margin-left: 0.5rem;
         }
         .accessibility-icon {
           margin-right: 0.5rem;
         }
-
         .accessibility-text {
           font-size: 0.8rem;
         }
@@ -367,20 +381,36 @@ export default function Resource({ resource }) {
 
       {/* Right: Details */}
       <div className="details-container">
-        {/* Pills */}
+        {/* Top Row: Categories & More Donations Button */}
         <div className="pills-container">
           <div className="categories-container">
             {categories.map((category, index) => (
               <div key={index} className="pill category">
-                <FontAwesomeIcon icon={faLocationDot} />
+                <FontAwesomeIcon
+                  icon={faLocationDot}
+                  style={{ color: getPinColor(category) }}
+                />
                 {category}
               </div>
             ))}
           </div>
-          <div className="pill donation">
-            <FontAwesomeIcon icon={faLink} />
-            Donation
-          </div>
+          <Link href="/donate/#resources" passHref>
+            <div
+              className="pill donation more-donations"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              More Donations
+              <FontAwesomeIcon
+                icon={faCaretRight}
+                style={{ color: "white", marginLeft: "5px" }}
+              />
+            </div>
+          </Link>
         </div>
 
         <h1 className="header">{organization_name}</h1>
@@ -403,7 +433,7 @@ export default function Resource({ resource }) {
           <FontAwesomeIcon icon={faCalendar} className="icon" />
           <p>
             {startDate && !endDate
-              ? format(today, "EEEE, MMMM d, yyyy") // Display current day
+              ? format(today, "EEEE, MMMM d, yyyy")
               : `${format(startDisplayDate, "EEEE, MMMM d, yyyy")}${
                   endDate
                     ? ` - ${format(endDisplayDate, "EEEE, MMMM d, yyyy")}`
@@ -422,7 +452,6 @@ export default function Resource({ resource }) {
             {displayedDates.map((date, index) => {
               const day = format(date, "EEEE");
               const hours = parseHours(hours_of_operation, day);
-
               return (
                 <p key={index}>
                   {format(date, "EEEE, MMMM d, yyyy")} :{" "}
@@ -447,12 +476,12 @@ export default function Resource({ resource }) {
           <b>About</b>
         </h3>
         <p>{about}</p>
-        <br></br>
+        <br />
         <h3>
           <b>Accepting Items</b>
         </h3>
         <p>{items_needed}</p>
-        <br></br>
+        <br />
         {/* Donation Link Button */}
         {link_to_donate && (
           <a
@@ -465,7 +494,7 @@ export default function Resource({ resource }) {
             Link to Donate
           </a>
         )}
-        <br></br>
+        <br />
         <div className="info-column">
           <h2>
             <b>Additional Info</b>
@@ -474,8 +503,7 @@ export default function Resource({ resource }) {
           {contact_info && Object.keys(contact_info).length > 0 ? (
             Object.keys(contact_info).map((key) => {
               const value = contact_info[key];
-              if (!value) return null; // Skip empty or null values
-
+              if (!value) return null;
               switch (key) {
                 case "website":
                   return (
@@ -505,10 +533,7 @@ export default function Resource({ resource }) {
                     <p key={key}>
                       <FontAwesomeIcon icon={faInstagram} className="icon" />
                       <a
-                        href={`https://instagram.com/${value.replace(
-                          /^@/,
-                          ""
-                        )}`}
+                        href={`https://instagram.com/${value.replace(/^@/, "")}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -581,7 +606,6 @@ export default function Resource({ resource }) {
           <button
             className="button"
             onClick={() => {
-              // Get specific content
               const organizationName =
                 document.querySelector(".header").innerText;
               const dates =
@@ -590,9 +614,9 @@ export default function Resource({ resource }) {
                 ".horizontal-container p"
               ).innerText;
               const about = document.querySelector("h3 + p").innerText;
-              const itemsNeeded = document.querySelector("h3 + p").innerText;
+              const itemsNeeded =
+                document.querySelector("h3 + p").innerText;
 
-              // Get contact info if available
               let contactInfo = "";
               const contactElements =
                 document.querySelectorAll(".info-column p");
@@ -600,7 +624,6 @@ export default function Resource({ resource }) {
                 contactInfo += el.innerText + "\n";
               });
 
-              // Format the text you want to copy
               const textToCopy = `
       Organization: ${organizationName}
       Address: ${hours || "No address information available"}
@@ -610,7 +633,6 @@ export default function Resource({ resource }) {
       ${contactInfo || "No contact information available"}
     `;
 
-              // Copy the selected text to the clipboard
               navigator.clipboard
                 .writeText(textToCopy)
                 .then(() => {
