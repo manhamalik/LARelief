@@ -261,12 +261,13 @@ export default function Home() {
             >
               <p className="mt-2 font-semibold">Welcome to our interactive map! </p>
               <p className="mb-2 font-medium">
-              Explore to find resources, donation options, or volunteer opportunities. Use the top buttons to toggle features like 
-              'Open Now', wildfire alerts, and air quality overlays, and search for organizations 
-              using the search bar. Click on any marker to get detailed information, and check the
-               legend for air quality details. This tool is designed to help you quickly find the 
-               support you need!
-              </p>
+              Explore to find resources, donation options, or volunteer opportunities. 
+              Use the top buttons to toggle features like &apos;Open Now&apos;, wildfire alerts, 
+              and air quality overlays, and search for organizations using the search bar. 
+              Click on any marker to get detailed information, and check the legend for air quality
+               details. This tool is designed to help you quickly find the support you need!
+            </p>
+
             </span>
           </span>
         </h2>
