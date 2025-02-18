@@ -135,39 +135,42 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                   />
                 </svg>
               </button>
+              
               <div
-                className={`absolute ${
-                  isWildfireDropdownOpen ? "block" : "hidden"
-                } bg-transparent shadow-lg w-full border border-gray-300 rounded-b-md`}
-              >
-                <ul className="bg-transparent">
-                  <li>
-                    <Link
-                      href="/wildfire-guide/wildfire-readiness"
-                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
-                    >
-                      Wildfire Readiness
-                    </Link>
-                  </li>
-                  <li className="border-t border-gray-300">
-                    <Link
-                      href="/wildfire-guide/wildfire-monitoring"
-                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
-                    >
-                      Wildfire Monitoring
-                    </Link>
-                  </li>
-                  <li className="border-t border-gray-300">
-                    <Link
-                      href="/wildfire-guide/post-fire-recovery"
-                      className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
-                    >
-                      Post-Fire Recovery
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
+  className={`absolute ${isWildfireDropdownOpen ? "block" : "hidden"}
+  bg-transparent shadow-lg w-full border border-gray-300 rounded-b-md`}
+>
+  <ul className="bg-transparent">
+    <li>
+      <Link
+        href="wildfireguide#wildfire-readiness"
+        className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 
+        hover:bg-white hover:bg-opacity-100 text-gray-500"
+      >
+        Wildfire Readiness
+      </Link>
+    </li>
+    <li className="border-t border-gray-300">
+      <Link
+        href="wildfireguide#wildfire-monitoring"
+        className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 
+        hover:bg-white hover:bg-opacity-100 text-gray-500"
+      >
+        Wildfire Monitoring
+      </Link>
+    </li>
+    <li className="border-t border-gray-300">
+      <Link
+        href="wildfireguide#post-fire-recovery"
+        className="block px-3 py-1 text-sm font-semibold bg-white bg-opacity-90 
+        hover:bg-white hover:bg-opacity-100 text-gray-500"
+      >
+        Post-Fire Recovery
+      </Link>
+    </li>
+  </ul>
+</div>
+</div>
 
             {/* Language Dropdown */}
             <div
