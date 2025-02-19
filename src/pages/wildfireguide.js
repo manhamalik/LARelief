@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const essentials = [
   {
@@ -256,7 +257,13 @@ export default function WildfireGuide() {
           {/* Popup */}{" "}
           {showPopup && (
             <div className="fixed inset-0 z-10 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-10 m-4 rounded-[3rem] max-w-md text-gray-900 text-left shadow-lg relative">
+              <motion.div
+                className="bg-white p-10 m-4 rounded-[3rem] max-w-md text-gray-900 text-left shadow-lg relative"
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+              >
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 flex justify-center items-center gap-3">
                   Your Complete Wildfire Safety Guide
                 </h2>
@@ -312,7 +319,7 @@ export default function WildfireGuide() {
                 >
                   Close
                 </button>
-              </div>
+              </motion.div>
             </div>
           )}
           {/* guide info */}

@@ -17,6 +17,7 @@ import {
   faCar,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
 
 // Mapping categories to icons with colors
 const categoryIcons = {
@@ -45,13 +46,25 @@ const categoryIcons = {
   // donate categories
   "Clothing & Bedding": { icon: faShirt, color: "#015BC3" },
   "Hygiene & Sanitation Supplies": { icon: faBath, color: "#015BC3" },
-  "Monetary Donations (Essentials)": { icon: faMoneyBillWave, color: "#015BC3" },
+  "Monetary Donations (Essentials)": {
+    icon: faMoneyBillWave,
+    color: "#015BC3",
+  },
   "Emergency Supplies": { icon: faHouse, color: "#4D03CD" },
-  "Monetary Donations (Shelter & Support Services)": {icon: faMoneyBillWave, color: "#4D03CD" },
+  "Monetary Donations (Shelter & Support Services)": {
+    icon: faMoneyBillWave,
+    color: "#4D03CD",
+  },
   "Medical Supplies": { icon: faBriefcaseMedical, color: "#CC0000" },
-  "Monetary Donations (Medical & Health)": { icon: faMoneyBillWave, color: "#CC0000" },
+  "Monetary Donations (Medical & Health)": {
+    icon: faMoneyBillWave,
+    color: "#CC0000",
+  },
   "Pet Supplies": { icon: faPaw, color: "#CF5700" },
-  "Monetary Donations (Animal Support)": { icon: faMoneyBillWave, color: "#CF5700" },
+  "Monetary Donations (Animal Support)": {
+    icon: faMoneyBillWave,
+    color: "#CF5700",
+  },
 };
 
 const CategoryButtons = ({
@@ -63,7 +76,7 @@ const CategoryButtons = ({
   return (
     <div className="category-buttons flex flex-wrap gap-4">
       {categories.map((category) => (
-        <button
+        <motion.button
           key={category}
           onClick={() => handleCategoryClick(category)}
           className={`flex items-center font-bold px-4 py-2 rounded-full ${
@@ -79,6 +92,8 @@ const CategoryButtons = ({
             fontWeight: "700",
             color: "black",
           }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.3 }}
         >
           {categoryIcons[category] && (
             <FontAwesomeIcon
@@ -100,7 +115,7 @@ const CategoryButtons = ({
           >
             {category}
           </span>
-        </button>
+        </motion.button>
       ))}
     </div>
   );

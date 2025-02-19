@@ -59,7 +59,7 @@ const getOperatingSortKeyForDonation = (resource) => {
     hoursOfOperation[todayName].toLowerCase() !== "closed"
       ? hoursOfOperation[todayName]
       : null;
-  
+
   if (todaysHours) {
     const [openStr, closeStr] = todaysHours.split(" - ");
     const openTime = parseTimeForDonation(openStr, now);
@@ -237,13 +237,24 @@ export default function Home() {
   );
 
   // Sort the full filtered arrays by operating status (using our new helpers)
-  const sortedFilteredEssentials = [...filteredEssentials].sort(sortByOperatingStatusForDonation);
-  const sortedFilteredShelter = [...filteredShelter].sort(sortByOperatingStatusForDonation);
-  const sortedFilteredMedical = [...filteredMedical].sort(sortByOperatingStatusForDonation);
-  const sortedFilteredAnimal = [...filteredAnimal].sort(sortByOperatingStatusForDonation);
+  const sortedFilteredEssentials = [...filteredEssentials].sort(
+    sortByOperatingStatusForDonation
+  );
+  const sortedFilteredShelter = [...filteredShelter].sort(
+    sortByOperatingStatusForDonation
+  );
+  const sortedFilteredMedical = [...filteredMedical].sort(
+    sortByOperatingStatusForDonation
+  );
+  const sortedFilteredAnimal = [...filteredAnimal].sort(
+    sortByOperatingStatusForDonation
+  );
 
   // Then slice using the visible counts.
-  const essentialsToDisplay = sortedFilteredEssentials.slice(0, visibleEssentials);
+  const essentialsToDisplay = sortedFilteredEssentials.slice(
+    0,
+    visibleEssentials
+  );
   const shelterToDisplay = sortedFilteredShelter.slice(0, visibleShelter);
   const medicalToDisplay = sortedFilteredMedical.slice(0, visibleMedical);
   const animalToDisplay = sortedFilteredAnimal.slice(0, visibleAnimal);
@@ -289,8 +300,13 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            <h2 className="relative text-center">
-              <span
+            <motion.h2
+              className="relative text-center"
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <motion.span
                 className="absolute inset-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -302,9 +318,12 @@ export default function Home() {
                   WebkitTextStroke: "1px #ffffff",
                   zIndex: 1,
                 }}
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2 }}
               >
                 DONATE
-              </span>
+              </motion.span>
               <span
                 className="relative text-white"
                 style={{
@@ -317,7 +336,7 @@ export default function Home() {
               >
                 DONATE
               </span>
-            </h2>
+            </motion.h2>
           </div>
 
           {/* Lighter Green Square on Right */}
@@ -334,13 +353,15 @@ export default function Home() {
           <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
             {/* Text Content */}
             <div className="w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full">
-              <div
+              <motion.div
                 className="relative bg-[#183917] right-[3vw] rounded-[2.5vw] border-[0.2rem] border-white shadow-lg mt-[8vw] py-4 px-0 w-[27vw]"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   color: "#ffffff",
                   maxWidth: "90%",
                 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                whileHover={{ scale: 1.04 }}
               >
                 {/* Circle with Star */}
                 <div
@@ -365,7 +386,7 @@ export default function Home() {
                 >
                   Help by donating to any of the
                 </p>
-                <p
+                <motion.p
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -374,10 +395,13 @@ export default function Home() {
                     paddingTop: "2.25vw",
                     lineHeight: "1rem",
                   }}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
                 >
                   100+
-                </p>
-                <p
+                </motion.p>
+                <motion.p
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -387,9 +411,12 @@ export default function Home() {
                     paddingTop: "1.25vw",
                     lineHeight: "5vw",
                   }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
                 >
                   organizations
-                </p>
+                </motion.p>
                 <p
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
@@ -402,9 +429,9 @@ export default function Home() {
                 >
                   supporting Los Angeles through wildfires
                 </p>
-              </div>
+              </motion.div>
               {/* EXPLORE OPPORTUNITIES Button */}
-              <button
+              <motion.button
                 onClick={() =>
                   scroller.scrollTo("resources", {
                     smooth: true,
@@ -417,22 +444,30 @@ export default function Home() {
                   fontFamily: "'Noto Sans', sans-serif",
                   fontSize: "1.75vw",
                 }}
+                transition={{ duration: 0, ease: "easeInOut" }}
+                whileHover={{ scale: 1.03 }}
               >
                 EXPLORE OPPORTUNITIES
-              </button>
+              </motion.button>
             </div>
 
             {/* Image Content - Support Image */}
             <div className="relative h-full right-[15vw] z-1">
-              <div className="relative z-50">
+              <motion.div
+                className="relative z-50"
+                initial={{ opacity: 0.7, y: 0 }}
+                animate={{ opacity: 1, y: 0, scale: [1, 1.03, 1] }}
+                transition={{ duration: 1, ease: "easeInOut" }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <img
                   src="/images/donate.png"
                   alt="Support graphic"
                   className="w-[60vw] h-auto"
                 />
-              </div>
+              </motion.div>
               {/* Vertical Texts */}
-              <div
+              <motion.div
                 data-no-translate="true"
                 className="absolute w-[40vw] top-[14vw] left-[18vw] text-green-100 font-extrabold -rotate-90 z-20"
                 style={{
@@ -442,10 +477,13 @@ export default function Home() {
                   color: "#194218",
                   textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
                 }}
+                initial={{ x: 130, opacity: 0, rotate: -90 }}
+                whileInView={{ x: 0, opacity: 1, rotate: -90 }}
+                transition={{ duration: 1, ease: "easeOut" }}
               >
                 GIVE CHANGE
-              </div>
-              <div
+              </motion.div>
+              <motion.div
                 data-no-translate="true"
                 className="absolute w-[40vw] top-[13vw] left-[23.5vw] text-green-100 font-extrabold -rotate-90 z-20"
                 style={{
@@ -455,9 +493,12 @@ export default function Home() {
                   WebkitTextStroke: "2px #194218",
                   color: "transparent",
                 }}
+                initial={{ x: 150, opacity: 0, rotate: -90 }}
+                whileInView={{ x: 0, opacity: 1, rotate: -90 }}
+                transition={{ duration: 1, ease: "easeOut" }}
               >
                 FOR CHANGE
-              </div>
+              </motion.div>
             </div>
           </div>
           {/* Scroll Arrow Component */}
@@ -482,7 +523,10 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -537,7 +581,11 @@ export default function Home() {
               >
                 {/* Search and Date Filter */}
                 <div className="flex items-center gap-4">
-                  <div className="search-filter-containers relative flex items-center">
+                  <motion.div
+                    className="search-filter-containers relative flex items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <input
                       type="text"
                       placeholder="Name of organization"
@@ -556,8 +604,12 @@ export default function Home() {
                         transform: "translateY(-50%)",
                       }}
                     />
-                  </div>
-                  <div className="date-picker-container relative flex gap-4 items-center">
+                  </motion.div>
+                  <motion.div
+                    className="date-picker-container relative flex gap-4 items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <div>
                       <DatePicker
                         selected={startDate}
@@ -583,7 +635,7 @@ export default function Home() {
                         }}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                   {startDate && endDate && (
                     <button
                       onClick={clearDateSelection}
@@ -627,24 +679,28 @@ export default function Home() {
               </div>
               <div className="flex gap-2">
                 {visibleEssentials < filteredEssentials.length && (
-                  <button
+                  <motion.button
                     onClick={handleShowMoreEssentials}
                     className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronDown} width="16px" />
                     <span>Show More</span>
-                  </button>
+                  </motion.button>
                 )}
                 {visibleEssentials > 4 && (
-                  <button
-                    onClick={handleShowLessEssentials}
+                  <motion.button
+                    onClick={handleShowLessShelter}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronUp} width="16px" />
                     <span>Show Less</span>
-                  </button>
+                  </motion.button>
                 )}
               </div>
             </div>
@@ -693,24 +749,28 @@ export default function Home() {
               </div>
               <div className="flex gap-2">
                 {visibleShelter < filteredShelter.length && (
-                  <button
+                  <motion.button
                     onClick={handleShowMoreShelter}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronDown} width="16px" />
                     <span>Show More</span>
-                  </button>
+                  </motion.button>
                 )}
                 {visibleShelter > 4 && (
-                  <button
+                  <motion.button
                     onClick={handleShowLessShelter}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronUp} width="16px" />
                     <span>Show Less</span>
-                  </button>
+                  </motion.button>
                 )}
               </div>
             </div>
@@ -754,24 +814,28 @@ export default function Home() {
               </div>
               <div className="flex gap-2">
                 {visibleMedical < filteredMedical.length && (
-                  <button
+                  <motion.button
                     onClick={handleShowMoreMedical}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronDown} width="16px" />
                     <span>Show More</span>
-                  </button>
+                  </motion.button>
                 )}
                 {visibleMedical > 4 && (
-                  <button
-                    onClick={handleShowLessMedical}
+                  <motion.button
+                    onClick={handleShowLessShelter}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronUp} width="16px" />
                     <span>Show Less</span>
-                  </button>
+                  </motion.button>
                 )}
               </div>
             </div>
@@ -804,7 +868,9 @@ export default function Home() {
                     "Pet Supplies",
                     "Monetary Donations (Animal Support)",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
@@ -813,24 +879,28 @@ export default function Home() {
               </div>
               <div className="flex gap-2">
                 {visibleAnimal < filteredAnimal.length && (
-                  <button
+                  <motion.button
                     onClick={handleShowMoreAnimal}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronDown} width="16px" />
                     <span>Show More</span>
-                  </button>
+                  </motion.button>
                 )}
                 {visibleAnimal > 4 && (
-                  <button
-                    onClick={handleShowLessAnimal}
+                  <motion.button
+                    onClick={handleShowLessShelter}
                     className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                     style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FontAwesomeIcon icon={faChevronUp} width="16px" />
                     <span>Show Less</span>
-                  </button>
+                  </motion.button>
                 )}
               </div>
             </div>

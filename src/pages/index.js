@@ -4,6 +4,7 @@ import React, {
   lazy,
   Suspense,
   startTransition,
+  useRef,
 } from "react";
 import Image from "next/image";
 import Head from "next/head";
@@ -31,12 +32,11 @@ import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "../components/filter";
 import { motion, useInView } from "framer-motion";
 import { useRouter } from "next/router";
-
-const MissionSection = lazy(() => import("@/components/MissionSection"));
-const SupportSection = lazy(() => import("@/components/SupportSection"));
 const MapComponent = dynamic(() => import("@/components/MapComponent"), {
   ssr: false,
 });
+
+const bethehope = "Be the hope".split(" "); // Spaces included
 
 // --- NEW: Helper functions for sorting resources by operating status ---
 const daysOfWeek = [
@@ -69,10 +69,12 @@ const getOperatingSortKey = (resource) => {
   const todayIndex = now.getDay();
   const todayName = daysOfWeek[todayIndex];
   const todaysHours =
-    hoursOfOperation && hoursOfOperation[todayName] && hoursOfOperation[todayName].toLowerCase() !== "closed"
+    hoursOfOperation &&
+    hoursOfOperation[todayName] &&
+    hoursOfOperation[todayName].toLowerCase() !== "closed"
       ? hoursOfOperation[todayName]
       : null;
-  
+
   if (todaysHours) {
     const [openStr, closeStr] = todaysHours.split(" - ");
     const openTime = parseTime(openStr, now);
@@ -91,7 +93,9 @@ const getOperatingSortKey = (resource) => {
     const nextDayIndex = (todayIndex + i) % 7;
     const nextDayName = daysOfWeek[nextDayIndex];
     const nextDayHours =
-      hoursOfOperation && hoursOfOperation[nextDayName] && hoursOfOperation[nextDayName].toLowerCase() !== "closed"
+      hoursOfOperation &&
+      hoursOfOperation[nextDayName] &&
+      hoursOfOperation[nextDayName].toLowerCase() !== "closed"
         ? hoursOfOperation[nextDayName]
         : null;
     if (nextDayHours) {
@@ -210,7 +214,9 @@ export default function Home() {
     startDate,
     endDate
   );
-  const sortedFilteredEssentials = [...filteredEssentials].sort(sortByOperatingStatus);
+  const sortedFilteredEssentials = [...filteredEssentials].sort(
+    sortByOperatingStatus
+  );
   const essentialsResources = sortedFilteredEssentials.slice(
     0,
     visibleCounts["Essentials"]
@@ -224,7 +230,9 @@ export default function Home() {
     startDate,
     endDate
   );
-  const sortedFilteredShelter = [...filteredShelter].sort(sortByOperatingStatus);
+  const sortedFilteredShelter = [...filteredShelter].sort(
+    sortByOperatingStatus
+  );
   const shelterResources = sortedFilteredShelter.slice(
     0,
     visibleCounts["Shelter & Support Services"]
@@ -238,7 +246,9 @@ export default function Home() {
     startDate,
     endDate
   );
-  const sortedFilteredMedical = [...filteredMedical].sort(sortByOperatingStatus);
+  const sortedFilteredMedical = [...filteredMedical].sort(
+    sortByOperatingStatus
+  );
   const medicalResources = sortedFilteredMedical.slice(
     0,
     visibleCounts["Medical & Health"]
@@ -303,32 +313,45 @@ export default function Home() {
           className="absolute inset-0 flex flex-col justify-center items-center text-center text-white"
           style={{ paddingTop: "4.15rem" }}
         >
-          <h1
+          <motion.h1
             className="text-6xl md:text-8xl mb-9"
             style={{
               fontFamily: "'Tilt Warp', sans-serif",
               textShadow: "0px 11.36px 11.36px rgba(0, 0, 0, 0.15)",
             }}
+            initial={{ y: 30, opacity: 0.2 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1.1, ease: "easeInOut" }}
           >
             Discover Aid Near You
-          </h1>
-          <Link
-            to="map"
-            className="flex justify-center items-center border border-white text-white hover:text-black hover:bg-white transition-all duration-300 cursor-pointer"
-            style={{
-              fontFamily: "'Noto Sans Multani', sans-serif",
-              fontSize: "24px",
-              fontWeight: "bold",
-              borderRadius: "22px",
-              padding: "10px 22px",
-              borderWidth: "2px",
+          </motion.h1>
+          <motion.div
+            className=" rounded-[22px]"
+            initial={{ background: "rgba(206, 206, 206, 0.62)" }}
+            animate={{
+              background: "rgba(218, 218, 218, 0)",
+              scale: [0.93, 1, 1],
             }}
-            spy={true}
-            smooth={true}
-            duration={500}
+            transition={{ duration: 1.06, ease: "easeInOut" }}
           >
-            EXPLORE RESOURCES
-          </Link>
+            <Link
+              to="map"
+              className="flex justify-center items-center border border-white text-white hover:text-black hover:bg-white transition-all duration-300 cursor-pointer "
+              style={{
+                fontFamily: "'Noto Sans Multani', sans-serif",
+                fontSize: "24px",
+                fontWeight: "bold",
+                borderRadius: "22px",
+                padding: "10px 22px",
+                borderWidth: "2px",
+              }}
+              spy={true}
+              smooth={true}
+              duration={500}
+            >
+              EXPLORE RESOURCES
+            </Link>
+          </motion.div>
         </div>
 
         {/* Scroll Arrow */}
@@ -337,10 +360,156 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Mission Section wrapped in its own Suspense boundary */}
-      <Suspense fallback={null}>
-        <MissionSection />
-      </Suspense>
+      <section
+        id="mission"
+        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden overflow-x-hidden"
+      >
+        <div>
+          {/* Lighter green square on right with drop shadow */}
+          <div
+            className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
+            style={{
+              zIndex: 0,
+              width: "30.5%",
+              boxShadow: "-25px 1px 2px 0 rgba(0, 0, 0, 0.3)",
+            }}
+          ></div>
+
+          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+            {/* Text Content */}
+            <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
+              {/* Title */}
+              <h2
+                className="mb-6"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "94px",
+                  lineHeight: "1.1",
+                  whiteSpace: "nowrap",
+                  textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
+                }}
+              >
+                OUR MISSION
+              </h2>
+
+              {/* Paragraph */}
+              <motion.p
+                className="text-lg md:text-xl mb-8 leading-relaxed"
+                style={{
+                  fontFamily: "'Noto Sans Multani', sans-serif",
+                  fontWeight: "400",
+                  fontSize: "22px",
+                }}
+                initial={{ opacity: 0, y: 50 }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              >
+                Our mission is to stand with communities affected by the Los
+                Angeles wildfires. We’re here to make it easier to find the
+                resources, support, and opportunities needed to recover and
+                rebuild. Whether it’s through donations, volunteering, or simply
+                offering a helping hand, we believe in the power of coming
+                together to make a real difference.
+              </motion.p>
+
+              {/* Buttons */}
+              <motion.div
+                className="flex gap-4"
+                initial={{ opacity: 0, y: 50 }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                {/* Using ScrollLink to scroll to the section with id "map" */}
+                <ScrollLink to="map" smooth={true} duration={500} offset={-70}>
+                  <motion.button
+                    className="bg-white text-[#183917] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
+                    style={{
+                      fontFamily: "'Noto Sans Multani', sans-serif",
+                      fontSize: "20px",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    EXPLORE RESOURCES
+                  </motion.button>
+                </ScrollLink>
+
+                <motion.button
+                  className="bg-transparent border-2 border-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-green-900 transition-all duration-300"
+                  style={{
+                    fontFamily: "'Noto Sans Multani', sans-serif",
+                    fontSize: "20px",
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate("/contact")}
+                >
+                  GET SUPPORT
+                </motion.button>
+              </motion.div>
+            </div>
+
+            {/* Image Content */}
+            <div className="md:w-[55%] relative h-full pr-8">
+              <motion.div
+                className="relative z-10"
+                initial={{ opacity: 0, scale: 0.8 }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              >
+                <img
+                  src="/images/mission-graphic.png"
+                  alt="Support graphic"
+                  className="w-[73%] h-auto"
+                />
+              </motion.div>
+              {/* Vertical Texts */}
+              <motion.div
+                data-no-translate="true"
+                className="absolute top-[16vw] transform -translate-y-[14vw] right-[-3rem] text-green-100 font-extrabold z-20"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "105px",
+                  letterSpacing: "normal",
+                  color: "#ffffff",
+                  textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
+                }}
+                initial={{ x: 150, opacity: 0, rotate: -90 }}
+                whileInView={{ x: 0, opacity: 1, rotate: -90 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              >
+                SUPPORT
+              </motion.div>
+
+              <motion.div
+                data-no-translate="true"
+                className="absolute top-[16vw] transform -translate-y-[16vw] right-[-8.7rem] text-green-100 font-extrabold z-10"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "105px",
+                  letterSpacing: "normal",
+                  WebkitTextStroke: "1px #ffffff",
+                  color: "transparent",
+                }}
+                initial={{ x: 160, opacity: 0, rotate: -90 }}
+                whileInView={{ x: 0, opacity: 1, rotate: -90 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              >
+                SUPPORT
+              </motion.div>
+            </div>
+          </div>
+          <ScrollArrow to="map" />
+        </div>
+      </section>
 
       {/* Map Section */}
       <section
@@ -439,7 +608,11 @@ export default function Home() {
                 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="search-filter-containers relative flex items-center">
+                  <motion.div
+                    className="search-filter-containers relative flex items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <input
                       type="text"
                       placeholder="Name of organization"
@@ -458,8 +631,12 @@ export default function Home() {
                         transform: "translateY(-50%)",
                       }}
                     />
-                  </div>
-                  <div className="date-picker-container relative flex gap-4 items-center">
+                  </motion.div>
+                  <motion.div
+                    className="date-picker-container relative flex gap-4 items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <div>
                       <DatePicker
                         selected={startDate}
@@ -485,7 +662,7 @@ export default function Home() {
                         }}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                   {startDate && endDate && (
                     <button
                       onClick={clearDateSelection}
@@ -692,7 +869,9 @@ export default function Home() {
                 </h2>
                 <CategoryButtons
                   categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
@@ -735,10 +914,164 @@ export default function Home() {
         <ScrollArrow to="support" />
       </section>
 
-      {/* Support Section wrapped in its own Suspense boundary */}
-      <Suspense fallback={null}>
-        <SupportSection />
-      </Suspense>
+      <section
+        id="support"
+        className="bg-[#267738] min-h-screen flex items-center pb-8 overflow-hidden"
+      >
+        <div className="bg-[#267738]">
+          <div className="w-[100vw] px-4 md:px-10 flex flex-col lg:flex-row">
+            {/* Text Content */}
+            <div className="flex flex-col justify-center items-start lg:w-1/2 text-white text-left">
+              <div className="flex flex-col justify-center items-start h-full mx-auto">
+                <h2 className="text-5xl md:text-6xl font-bold mb-4 w-[400px]">
+                  {bethehope.map((char, index) => (
+                    <motion.span
+                      key={index}
+                      className="text-[5.5rem] mr-4"
+                      style={{
+                        fontFamily: "'Dancing Script', cursive",
+                        fontWeight: 400,
+                        display: "inline-block",
+                      }}
+                      initial={{ y: 0 }}
+                      viewport={{ once: true }}
+                      whileInView={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: 0,
+                        repeatType: "loop",
+                        ease: "easeInOut",
+                        delay: index * 0.1,
+                      }}
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                  <br />
+                  <span
+                    data-no-translate="true"
+                    className="text-white text-[6rem]"
+                    style={{
+                      fontFamily: "'Noto Sans', sans-serif",
+                      fontWeight: 800,
+                    }}
+                  >
+                    SOMEONE NEEDS
+                  </span>
+                </h2>
+                <motion.p
+                  className="text-[1.65rem] mb-8 w-[550px]"
+                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                  initial={{ opacity: 0, y: 50 }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
+                >
+                  The Los Angeles community needs your help to provide
+                  essentials, shelter, medical care, and support for animals
+                  affected by the wildfires. Offer your time or resources to
+                  support those in need!
+                </motion.p>
+                <motion.div
+                  className="flex flex-col gap-4"
+                  initial={{ opacity: 0, y: 50 }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
+                >
+                  <button
+                    onClick={() => navigate("/volunteer")}
+                    className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
+                    style={{
+                      fontFamily: "'Noto Sans', sans-serif",
+                      fontWeight: 800,
+                      fontSize: "1.8rem",
+                    }}
+                  >
+                    <span className="flex-grow text-left">VOLUNTEER</span>
+                    <FontAwesomeIcon icon={faCaretRight} />
+                  </button>
+                  <button
+                    onClick={() => navigate("/donate")}
+                    className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
+                    style={{
+                      fontFamily: "'Noto Sans', sans-serif",
+                      fontWeight: 800,
+                      fontSize: "1.8rem",
+                    }}
+                  >
+                    <span className="flex-grow text-left">DONATE</span>
+                    <FontAwesomeIcon icon={faCaretRight} />
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Graphic Content Group, right side */}
+            <div className="flex justify-center items-center lg:w-1/2">
+              <div className="relative w-full flex justify-center">
+                {/* Background SUPPORT text */}
+                <div
+                  className="absolute inset-0 flex flex-col justify-center items-center z-0 text-[#184822] mr-10"
+                  style={{
+                    fontFamily: "'Noto Sans', sans-serif",
+                    fontWeight: 800,
+                    lineHeight: "0.88",
+                    fontSize: "12rem",
+                    letterSpacing: "-0.5rem",
+                  }}
+                >
+                  <motion.span
+                    data-no-translate="true"
+                    initial={{ y: 200, opacity: 0 }}
+                    viewport={{ once: true }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  >
+                    SUPPORT
+                  </motion.span>
+                  <motion.span
+                    data-no-translate="true"
+                    initial={{ y: 210, opacity: 0 }}
+                    viewport={{ once: true }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  >
+                    SUPPORT
+                  </motion.span>
+                  <motion.span
+                    data-no-translate="true"
+                    initial={{ y: 220, opacity: 0 }}
+                    viewport={{ once: true }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  >
+                    SUPPORT
+                  </motion.span>
+                  <motion.span
+                    data-no-translate="true"
+                    initial={{ y: 230, opacity: 0 }}
+                    viewport={{ once: true }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  >
+                    SUPPORT
+                  </motion.span>
+                </div>
+
+                {/* Globe Image */}
+                <img
+                  src="/images/globe.png"
+                  alt="Earth Graphic"
+                  className="relative z-10 w-[45.25vw] mt-[9.5rem] ml-[3rem] mr-10"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Scroll Arrow Component */}
+          <ScrollArrow to="faq" />
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section id="faq" className="bg-[#183917] py-10">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { scroller } from "react-scroll";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -177,11 +178,14 @@ export default function Home() {
         className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 px-8 relative overflow-hidden"
       >
         {/* Road Background Image */}
-        <img
+        <motion.img
           src="/images/road.png"
           alt="Green road shape"
           className="absolute bottom-0 left-0 w-full md:h-auto object-cover"
           style={{ zIndex: 0 }}
+          initial={{ x: -150, y: -100, opacity: 0.5 }}
+          animate={{ x: 0, y: 0, opacity: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         />
 
         {/* VOLUNTEER Label */}
@@ -195,8 +199,13 @@ export default function Home() {
             textAlign: "center",
           }}
         >
-          <h2 className="relative text-center font-bold text-white">
-            <span
+          <motion.h2
+            className="relative text-center font-bold text-white"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <motion.span
               data-no-translate="true"
               className="absolute inset-0"
               style={{
@@ -209,9 +218,12 @@ export default function Home() {
                 WebkitTextStroke: "1px #ffffff",
                 zIndex: 1,
               }}
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.3 }}
             >
               VOLUNTEER
-            </span>
+            </motion.span>
             <span
               data-no-translate="true"
               className="relative text-white"
@@ -225,7 +237,7 @@ export default function Home() {
             >
               VOLUNTEER
             </span>
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Main Content Row */}
@@ -243,7 +255,7 @@ export default function Home() {
             data-no-translate="true"
             className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4"
           >
-            <h3
+            <motion.h3
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "400",
@@ -252,10 +264,13 @@ export default function Home() {
                 margin: "0 auto",
                 textAlign: "center",
               }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
               Join a community of
-            </h3>
-            <h3
+            </motion.h3>
+            <motion.h3
               data-no-translate="true"
               className="font-extrabold mt-2"
               style={{
@@ -267,10 +282,13 @@ export default function Home() {
                 lineHeight: "1rem",
                 textAlign: "center",
               }}
+              initial={{ opacity: 0, y: 70 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
               10,000+
-            </h3>
-            <p
+            </motion.h3>
+            <motion.p
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
@@ -282,10 +300,13 @@ export default function Home() {
                 lineHeight: "4vw",
                 textAlign: "center",
               }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
               volunteers
-            </p>
-            <p
+            </motion.p>
+            <motion.p
               className="-mt-3vw"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -298,11 +319,14 @@ export default function Home() {
                 textAlign: "center",
                 lineHeight: "2vw",
               }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
             >
               making a difference in Los Angeles
-            </p>
+            </motion.p>
             {/* EXPLORE OPPORTUNITIES Button */}
-            <button
+            <motion.button
               onClick={() =>
                 scroller.scrollTo("resources", {
                   smooth: true,
@@ -315,9 +339,11 @@ export default function Home() {
                 fontFamily: "'Noto Sans', sans-serif",
                 fontSize: "1.5vw",
               }}
+              transition={{ duration: 0, ease: "easeInOut" }}
+              whileHover={{ scale: 1.03 }}
             >
               EXPLORE OPPORTUNITIES
-            </button>
+            </motion.button>
           </div>
         </div>
       </section>
@@ -406,7 +432,11 @@ export default function Home() {
               >
                 {/* Search and Date Filter */}
                 <div className="flex items-center gap-4">
-                  <div className="search-filter-containers relative flex items-center">
+                  <motion.div
+                    className="search-filter-containers relative flex items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <input
                       type="text"
                       placeholder="Name of organization"
@@ -426,8 +456,12 @@ export default function Home() {
                         transform: "translateY(-50%)",
                       }}
                     />
-                  </div>
-                  <div className="date-picker-container relative flex gap-4 items-center">
+                  </motion.div>
+                  <motion.div
+                    className="date-picker-container relative flex gap-4 items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <div>
                       <DatePicker
                         selected={startDate}
@@ -456,7 +490,7 @@ export default function Home() {
                         }}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                   {startDate && endDate && (
                     <button
                       onClick={clearDateSelection}
@@ -494,7 +528,6 @@ export default function Home() {
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Essentials", subCategory)
                   }
-                  mainCategory="Essentials"
                 />
               </div>
               <div className="flex gap-2">
