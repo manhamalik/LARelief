@@ -33,6 +33,15 @@ export const TranslationProvider = ({ children }) => {
     }
   };
 
+  // Get the stored language from localStorage on component mount
+  useEffect(() => {
+    const targetLang = localStorage.getItem("language") || "en";
+    if (targetLang) {
+      setLanguage(targetLang); // Set the language from localStorage
+      translateAllTextNodes(targetLang); // Translate content to the stored language
+    }
+  }, []);
+
   useEffect(() => {
     if (language !== "en") {
       translateAllTextNodes(language);
