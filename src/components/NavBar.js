@@ -227,7 +227,8 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
                     <button
                       data-no-translate="true"
                       onClick={() => {
-                        window.location.href = "/";
+                        localStorage.setItem("language", "en");
+                        window.location.reload();
                       }}
                       className="block item-center w-full px-3 py-1 font-semibold bg-white bg-opacity-90 hover:bg-white hover:bg-opacity-100 text-gray-500"
                     >

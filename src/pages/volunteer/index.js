@@ -244,7 +244,6 @@ export default function Home() {
             className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4"
           >
             <h3
-              data-no-translate="true"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "400",
@@ -272,7 +271,6 @@ export default function Home() {
               10,000+
             </h3>
             <p
-              data-no-translate="true"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
@@ -288,7 +286,6 @@ export default function Home() {
               volunteers
             </p>
             <p
-              data-no-translate="true"
               className="-mt-3vw"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -306,7 +303,6 @@ export default function Home() {
             </p>
             {/* EXPLORE OPPORTUNITIES Button */}
             <button
-              data-no-translate="true"
               onClick={() =>
                 scroller.scrollTo("resources", {
                   smooth: true,

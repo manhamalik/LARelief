@@ -190,7 +190,6 @@ export default function Home() {
           >
             <h2 className="relative text-center">
               <span
-                data-no-translate="true"
                 className="absolute inset-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -206,7 +205,6 @@ export default function Home() {
                 DONATE
               </span>
               <span
-                data-no-translate="true"
                 className="relative text-white"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
@@ -255,7 +253,6 @@ export default function Home() {
                 </div>
                 {/* Text Content */}
                 <p
-                  data-no-translate="true"
                   className="mb-2 pt-3"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
@@ -268,7 +265,6 @@ export default function Home() {
                   Help by donating to any of the
                 </p>
                 <p
-                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -281,7 +277,6 @@ export default function Home() {
                   100+
                 </p>
                 <p
-                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "900",
@@ -295,7 +290,6 @@ export default function Home() {
                   organizations
                 </p>
                 <p
-                  data-no-translate="true"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: "600",
@@ -310,7 +304,6 @@ export default function Home() {
               </div>
               {/* EXPLORE OPPORTUNITIES Button */}
               <button
-                data-no-translate="true"
                 onClick={() =>
                   scroller.scrollTo("resources", {
                     smooth: true,

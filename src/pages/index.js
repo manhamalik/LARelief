@@ -47,12 +47,6 @@ export default function Home() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
 
-  const handleClick = () => {
-    startTransition(() => {
-      router.push("/");
-    });
-  };
-
   // Default visible count per category.
   const defaultVisible = 4;
   const [visibleCounts, setVisibleCounts] = useState({
@@ -228,7 +222,6 @@ export default function Home() {
           style={{ paddingTop: "4.15rem" }}
         >
           <h1
-            data-no-translate="true"
             className="text-6xl md:text-8xl mb-9"
             style={{
               fontFamily: "'Tilt Warp', sans-serif",
