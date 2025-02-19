@@ -44,6 +44,10 @@ app.get("/api/resources", async (req, res) => {
   }
 });
 
+app.get("/cron-status", (req, res) => {
+  res.json({ status: "OK", timestamp: Date.now() });
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
