@@ -304,7 +304,8 @@ export default function Resource({ resource }) {
           text-align: center;
         }
         .header {
-          margin-bottom: 1.5rem;
+          margin-top: 0.75rem;
+          margin-bottom: 0.75rem;
           font-size: 2rem;
           font-weight: bold;
         }
@@ -336,7 +337,7 @@ export default function Resource({ resource }) {
           display: flex;
           justify-content: center;
           width: 100%;
-          margin-top: 2rem;
+          margin-top: 1rem;
         }
         .info-column-left {
           width: 45%;
@@ -380,6 +381,7 @@ export default function Resource({ resource }) {
           box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.1);
           display: flex;
           align-items: center;
+          border: 1px solid #E0E0E0;
         }
         .button:hover {
           background-color: black;
@@ -429,18 +431,31 @@ export default function Resource({ resource }) {
           align-items: center;
           gap: 0.5rem;
           padding: 0.5rem 1rem;
-          border-radius: 20px;
+          border-radius: 15px;
           font-weight: bold;
           font-size: 0.9rem;
+          box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.1);
         }
         .pill.category {
-          background-color: #f5f5f5;
+          background-color: white;
           color: #000000;
-          border: 1px solid #000000;
+          border: 1px solid #E0E0E0;
         }
         .pill.donation {
           background-color: #000;
           color: #fff;
+        }
+        .pill.donation:hover {
+          background-color: white;
+          color: black;
+          border: 1px solid #E0E0E0;
+        }
+        /* Set default and hover color for the More Resources caret icon */
+        .more-resources-icon {
+          color: white;
+        }
+        .pill.donation.more-resources:hover .more-resources-icon {
+          color: black;
         }
         .contact-text {
           margin-left: 0.5rem;
@@ -498,7 +513,8 @@ export default function Resource({ resource }) {
               More Resources
               <FontAwesomeIcon
                 icon={faCaretRight}
-                style={{ color: "white", marginLeft: "5px" }}
+                className="more-resources-icon"
+                style={{ marginLeft: "5px" }}
               />
             </div>
           </Link>
@@ -559,18 +575,18 @@ export default function Resource({ resource }) {
           <p>{displayHours}</p>
         </div>
 
-        <h3 className="text-[25px]">
+        <h3 className="text-[24px] pb-1">
           <b>About</b>
         </h3>
-        <p className="text-[13px] pr-20 pl-20">{about}</p>
+        <p className="text-[15px] pr-[30px] pl-[30px]">{about}</p>
         <br />
-        <h3>
-          <b className="text-[25px]">Items Provided</b>
+        <h3 className="text-[24px] pb-1">
+          <b>Items Provided</b>
         </h3>
-        <p className="text-[13px] pr-20 pl-20">{details}</p>
+        <p className="text-[15px] pr-[30px] pl-[30px]">{details}</p>
         <br />
-        <h2>
-          <b className="text-[25px]">Additional Info</b>
+        <h2 className="text-[24px] pb-0">
+          <b>Additional Info</b>
         </h2>
         <div className="additional-info">
           {/* Left Column: Contact Info */}
