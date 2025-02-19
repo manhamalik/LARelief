@@ -129,6 +129,7 @@ export default function Resource({ resource }) {
   console.log("Resource prop:", resource);
 
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [showSharePopup, setShowSharePopup] = useState(false);
 
   if (!resource) {
     return <p>Resource not found</p>;
@@ -175,13 +176,11 @@ export default function Resource({ resource }) {
     const dates = [];
     const today = new Date();
     const limit = addDays(today, 6);
-
     let current = today;
     while (current <= limit) {
       dates.push(new Date(current));
       current = addDays(current, 1);
     }
-
     return dates;
   };
 
@@ -195,6 +194,41 @@ export default function Resource({ resource }) {
   const displayedDates = getDatesRange();
 
   const toggleSchedule = () => setScheduleOpen(!scheduleOpen);
+
+  // New handleShareClick function with popup notification
+  const handleShareClick = () => {
+    const organizationName = document.querySelector(".header")?.innerText;
+    const dates = document.querySelector(".schedule-dropdown")?.innerText;
+    const hours = document.querySelector(".horizontal-container p")?.innerText;
+    const aboutText = document.querySelector("h3 + p")?.innerText;
+    const itemsNeeded =
+      document.querySelector("h3 + p")?.innerText || "";
+
+    let contactInfo = "";
+    const contactElements = document.querySelectorAll(".info-column p");
+    contactElements.forEach((el) => {
+      contactInfo += el.innerText + "\n";
+    });
+
+    const textToCopy = `
+      Organization: ${organizationName}
+      Address: ${hours || "No address information available"}
+      About: ${aboutText || "No description available"}
+      Items Needed: ${itemsNeeded || "No items needed information available"}
+      Contact Info:
+      ${contactInfo || "No contact information available"}
+    `;
+
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        setShowSharePopup(true);
+        setTimeout(() => setShowSharePopup(false), 3000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy content: ", err);
+      });
+  };
 
   return (
     <div className="page-layout">
@@ -238,7 +272,8 @@ export default function Resource({ resource }) {
           text-align: center;
         }
         .header {
-          margin-bottom: 1.5rem;
+          margin-top: 0.75rem;
+          margin-bottom: 0.75rem;
           font-size: 2rem;
           font-weight: bold;
         }
@@ -246,7 +281,7 @@ export default function Resource({ resource }) {
           display: flex;
           align-items: center;
           font-size: 1rem;
-          color: #555;
+          color: black;
           margin-bottom: 1rem;
         }
         .organization-image {
@@ -270,9 +305,12 @@ export default function Resource({ resource }) {
           display: flex;
           justify-content: center;
           width: 100%;
-          margin-top: 2rem;
+          margin-top: 1rem;
         }
         .info-column {
+          text-align: center;
+        }
+        .info-column p {
           text-align: left;
         }
         .accessibility-tags {
@@ -306,27 +344,16 @@ export default function Resource({ resource }) {
           font-size: 1.2rem;
           font-weight: bold;
           box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .button:hover {
-          background-color: rgb(104, 167, 98);
-        }
-        .donation-button {
+          text-decoration: none;
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          background-color: #28a745;
+          border: 1px solid #E0E0E0;
+        }
+        .button:hover {
+          background-color: black;
           color: white;
-          text-decoration: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 5px;
-          font-size: 1rem;
-          margin-top: 1rem;
         }
-        .donation-button:hover {
-          background-color: #218838;
-        }
-        /* Top row: Categories and More Volunteering */
+        /* Top row: Categories & More Volunteering */
         .pills-container {
           display: flex;
           justify-content: space-between;
@@ -346,22 +373,34 @@ export default function Resource({ resource }) {
           align-items: center;
           gap: 0.5rem;
           padding: 0.5rem 1rem;
-          border-radius: 20px;
+          border-radius: 15px;
           font-weight: bold;
           font-size: 0.9rem;
+          box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.1);
         }
         .pill.category {
-          background-color: #f5f5f5;
+          background-color: white;
           color: #000000;
-          border: 1px solid #000000;
+          border: 1px solid #E0E0E0;
         }
         .pill.donation {
           background-color: #000;
           color: #fff;
         }
-        /* Ensure More Volunteering pill never shrinks/wraps */
+        .pill.donation:hover {
+          background-color: white;
+          color: black;
+          border: 1px solid #E0E0E0;
+        }
         .pill.donation.more-volunteering {
           flex-shrink: 0;
+        }
+        .more-volunteering-icon {
+          color: white;
+          margin-left: 5px;
+        }
+        .pill.donation.more-volunteering:hover .more-volunteering-icon {
+          color: black;
         }
         .contact-text {
           margin-left: 0.5rem;
@@ -371,6 +410,19 @@ export default function Resource({ resource }) {
         }
         .accessibility-text {
           font-size: 0.8rem;
+        }
+        /* Share popup styles */
+        .share-popup {
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          background-color: #333;
+          color: #fff;
+          padding: 10px 20px;
+          border-radius: 5px;
+          font-size: 0.9rem;
+          z-index: 9999;
+          opacity: 0.9;
         }
       `}</style>
 
@@ -407,7 +459,7 @@ export default function Resource({ resource }) {
               More Volunteering
               <FontAwesomeIcon
                 icon={faCaretRight}
-                style={{ color: "white", marginLeft: "5px" }}
+                className="more-volunteering-icon"
               />
             </div>
           </Link>
@@ -474,15 +526,15 @@ export default function Resource({ resource }) {
           </p>
         </div>
 
-        <h3>
+        <h3 className="text-[24px] pb-1">
           <b>About</b>
         </h3>
-        <p>{about}</p>
+        <p className="text-[15px] pr-[30px] pl-[30px]">{about}</p>
         <br />
-        <h3>
+        <h3 className="text-[24px] pb-1">
           <b>Role Expectations</b>
         </h3>
-        <p>{tasks}</p>
+        <p className="text-[15px] pr-[30px] pl-[30px]">{tasks}</p>
         <br />
         {/* Volunteer Link Button */}
         {link_to_volunteer && (
@@ -490,15 +542,15 @@ export default function Resource({ resource }) {
             href={link_to_volunteer}
             target="_blank"
             rel="noopener noreferrer"
-            className="donation-button"
+            className="button"
           >
-            <FontAwesomeIcon icon={faLink} />
+            <FontAwesomeIcon icon={faLink} className="mr-2" />
             Link to Volunteer
           </a>
         )}
         <br />
         <div className="info-column">
-          <h2>
+          <h2 className="text-[24px] pb-1">
             <b>Additional Info</b>
           </h2>
           <h3>
@@ -513,65 +565,79 @@ export default function Resource({ resource }) {
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faLink} className="icon" />
-                      <a href={value} target="_blank" rel="noopener noreferrer">
-                        {value}
-                      </a>
+                      <span className="contact-text">
+                        <a
+                          href={value}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {value}
+                        </a>
+                      </span>
                     </p>
                   );
                 case "phone":
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faPhone} className="icon" />
-                      {formatPhoneNumber(value)}
+                      <span className="contact-text">
+                        {formatPhoneNumber(value)}
+                      </span>
                     </p>
                   );
                 case "email":
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faEnvelope} className="icon" />
-                      {value}
+                      <span className="contact-text">{value}</span>
                     </p>
                   );
                 case "instagram":
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faInstagram} className="icon" />
-                      <a
-                        href={`https://instagram.com/${value.replace(
-                          /^@/,
-                          ""
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        @{value.replace(/^@/, "")}
-                      </a>
+                      <span className="contact-text">
+                        <a
+                          href={`https://instagram.com/${value.replace(
+                            /^@/,
+                            ""
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          @{value.replace(/^@/, "")}
+                        </a>
+                      </span>
                     </p>
                   );
                 case "twitter":
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faTwitter} className="icon" />
-                      <a
-                        href={`https://twitter.com/${value.replace(/^@/, "")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        @{value.replace(/^@/, "")}
-                      </a>
+                      <span className="contact-text">
+                        <a
+                          href={`https://twitter.com/${value.replace(/^@/, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          @{value.replace(/^@/, "")}
+                        </a>
+                      </span>
                     </p>
                   );
                 case "tiktok":
                   return (
                     <p key={key}>
                       <FontAwesomeIcon icon={faTiktok} className="icon" />
-                      <a
-                        href={`https://tiktok.com/@${value.replace(/^@/, "")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        @{value.replace(/^@/, "")}
-                      </a>
+                      <span className="contact-text">
+                        <a
+                          href={`https://tiktok.com/@${value.replace(/^@/, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          @{value.replace(/^@/, "")}
+                        </a>
+                      </span>
                     </p>
                   );
                 default:
@@ -594,7 +660,8 @@ export default function Resource({ resource }) {
           >
             <FontAwesomeIcon
               icon={faCircleDollarToSlot}
-              className="text-[#2B9FD0] mr-2"
+              className="mr-2"
+              style={{ color: "#2B9FD0" }}
             />
             Donate
           </button>
@@ -606,59 +673,27 @@ export default function Resource({ resource }) {
           >
             <FontAwesomeIcon
               icon={faHandHoldingHeart}
-              className="text-[#D55858] mr-2"
+              className="mr-2"
+              style={{ color: "#D55858" }}
             />
             Volunteer
           </button>
-          <button
-            className="button"
-            onClick={() => {
-              const organizationName =
-                document.querySelector(".header").innerText;
-              const dates =
-                document.querySelector(".schedule-dropdown")?.innerText;
-              const hours = document.querySelector(
-                ".horizontal-container p"
-              ).innerText;
-              const about = document.querySelector("h3 + p").innerText;
-              const itemsNeeded = document.querySelector("h3 + p").innerText;
-
-              let contactInfo = "";
-              const contactElements =
-                document.querySelectorAll(".info-column p");
-              contactElements.forEach((el) => {
-                contactInfo += el.innerText + "\n";
-              });
-
-              const textToCopy = `
-      Organization: ${organizationName}
-      Address: ${hours || "No address information available"}
-      About: ${about || "No description available"}
-      Items Needed: ${itemsNeeded || "No items needed information available"}
-      Contact Info:
-      ${contactInfo || "No contact information available"}
-    `;
-
-              navigator.clipboard
-                .writeText(textToCopy)
-                .then(() => {
-                  alert(
-                    "Information copied to clipboard! Please share this opportunity!"
-                  );
-                })
-                .catch((err) => {
-                  console.error("Failed to copy content: ", err);
-                });
-            }}
-          >
+          <button className="button" onClick={handleShareClick}>
             <FontAwesomeIcon
               icon={faPaperPlane}
-              className="text-[#000000] mr-2"
+              className="share-icon mr-2"
             />
             Share
           </button>
         </div>
       </div>
+
+      {/* Share Popup Notification */}
+      {showSharePopup && (
+        <div className="share-popup">
+          Information copied to clipboard! Please share this opportunity!
+        </div>
+      )}
     </div>
   );
 }
