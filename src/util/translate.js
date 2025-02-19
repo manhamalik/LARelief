@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:5050/translate"; // Change if needed
 
-export const translateText = async (text, targetLang = "es") => {
+export const translateText = async (text, targetLang) => {
   if (!text.trim()) return text; // Ignore empty strings
 
   try {

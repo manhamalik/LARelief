@@ -229,7 +229,7 @@ export default function WildfireGuide() {
         }}
       >
         {/* Optional overlay to darken the background for better text visibility */}
-        <div className="min-h-screen flex bg-gray-10 text-white">
+        <div className="min-h-screen flex-col md:flex-row flex bg-gray-10 text-white">
           {/* Left Half */}
           <div className="relative  w-1/2 flex items-center justify-center">
             {/* Background Image behind text */}
@@ -241,7 +241,7 @@ export default function WildfireGuide() {
             />
 
             {/* Title (positioned absolutely on top of the background image) */}
-            <h1 className="absolute z-10 text-5xl md:text-[7rem] mb-[16rem] drop-shadow-[0_5px_5px_rgba(30,30,0,0.9)] leading-[1.3]">
+            <h1 className="absolute z-10 text-[3rem] md:text-[5rem] mb-[16rem] drop-shadow-[0_5px_5px_rgba(30,30,0,0.9)] leading-[1.3]">
               WILDFIRE <br />
               GUIDE
             </h1>
@@ -250,7 +250,7 @@ export default function WildfireGuide() {
             <img
               src="images/guidebook.png"
               alt="Guide Book"
-              className="relative p-13 mb-6 ml-2"
+              className="relative w-[30remm] md:w-[50rem]"
             />
           </div>
           {/* Popup */}{" "}
@@ -429,13 +429,13 @@ export default function WildfireGuide() {
             className="relative flex flex-col items-center justify-center text-center text-white min-h-[50vh]"
             style={{
               backgroundImage: "url('images/ㄴㄱ.png')",
-              backgroundSize: 1800,
+              backgroundSize: 1600,
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
           >
             <div className=" flex flex-col flex-wrap items-center justify-center">
-              <h1 className="text-3xl font-bold uppercase text-center ">
+              <h1 className="text-[2rem] font-bold uppercase text-center ">
                 Use the{" "}
                 <img
                   src="images/larelieflogo.png"

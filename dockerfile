@@ -1,8 +1,10 @@
-# Use the official LibreTranslate image
-FROM libretranslate/libretranslate
+# Use the official LibreTranslate image as the base
+FROM libretranslate/libretranslate:latest
 
-# Expose the necessary port (5000 inside the container, 5050 on your host machine)
-EXPOSE 5000
+# Render provides a dynamic port via the $PORT environment variable.
+# We'll expose that port (defaulting to 5000 if not provided).
+EXPOSE ${PORT:-5000}
 
-# Start the LibreTranslate service
-CMD ["./venv/bin/libretranslate", "--host", "0.0.0.0"]
+# Start LibreTranslate, binding to all interfaces and using the provided PORT.
+# The shell form here lets us use environment variable substitution.
+CMD sh -c 'libretranslate --host 0.0.0.0 --port ${PORT:-5000}'
