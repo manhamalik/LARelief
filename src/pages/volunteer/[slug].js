@@ -23,6 +23,16 @@ import {
   faTiktok,
 } from "@fortawesome/free-brands-svg-icons";
 
+// Helper function to truncate a URL to its hostname (or a fallback truncation)
+const truncateUrl = (url, maxLength = 30) => {
+  try {
+    const { hostname } = new URL(url);
+    return hostname;
+  } catch (err) {
+    return url.length > maxLength ? url.slice(0, maxLength) + "..." : url;
+  }
+};
+
 // Utility functions
 const capitalizeFirstLetter = (string) => {
   if (!string) return "";
@@ -39,10 +49,14 @@ const formatPhoneNumber = (phone) => {
   return phone;
 };
 
+// Updated parseHours function: returns "Closed" if hours are empty/missing/"closed"
 const parseHours = (hoursOfOperation, day) => {
   if (!hoursOfOperation) return null;
   const hours = hoursOfOperation[day];
-  return hours ? (hours === "closed" ? null : hours.split(" - ")) : null;
+  if (!hours || hours.trim() === "" || hours.toLowerCase() === "closed") {
+    return "Closed";
+  }
+  return hours.split(" - ");
 };
 
 // Dummy resource data (for testing purposes)
@@ -125,6 +139,13 @@ const getPinColor = (category) => {
   }
 };
 
+// Helper function to add days to a date
+const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
 export default function Resource({ resource }) {
   console.log("Resource prop:", resource);
 
@@ -164,10 +185,8 @@ export default function Resource({ resource }) {
 
   const today = new Date();
   const currentDay = weekdays[today.getDay()];
-  const currentHours = parseHours(hours_of_operation, currentDay) || [
-    startTime,
-    endTime,
-  ];
+  // Use the updated parseHours function. If it returns "Closed", that string remains.
+  const currentHours = parseHours(hours_of_operation, currentDay) || [startTime, endTime];
 
   const startDisplayDate = startDate ? new Date(startDate) : today;
   const endDisplayDate = endDate ? new Date(endDate) : null;
@@ -184,25 +203,17 @@ export default function Resource({ resource }) {
     return dates;
   };
 
-  // Helper function to add days
-  const addDays = (date, days) => {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  };
-
   const displayedDates = getDatesRange();
 
   const toggleSchedule = () => setScheduleOpen(!scheduleOpen);
 
-  // New handleShareClick function with popup notification
+  // Updated handleShareClick function with popup notification
   const handleShareClick = () => {
     const organizationName = document.querySelector(".header")?.innerText;
     const dates = document.querySelector(".schedule-dropdown")?.innerText;
     const hours = document.querySelector(".horizontal-container p")?.innerText;
     const aboutText = document.querySelector("h3 + p")?.innerText;
-    const itemsNeeded =
-      document.querySelector("h3 + p")?.innerText || "";
+    const itemsNeeded = document.querySelector("h3 + p")?.innerText || "";
 
     let contactInfo = "";
     const contactElements = document.querySelectorAll(".info-column p");
@@ -253,14 +264,22 @@ export default function Resource({ resource }) {
           align-items: center;
         }
         .schedule-dropdown {
-          margin-top: 10px;
-          padding: 15px;
+          margin-top: -1vw;
+          padding: 5px;
           background: #f9f9f9;
           border-radius: 10px;
-          width: 70%;
+          width: 28vw;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           text-align: center;
           animation: fadeIn 0.3s ease-in-out;
+        }
+        /* New styling for each dropdown option with line separation */
+        .schedule-dropdown p {
+          margin: 0;
+          padding: 10px 0;
+        }
+        .schedule-dropdown p:not(:last-child) {
+          border-bottom: 1px solid #ccc;
         }
         .details-container {
           width: 50%;
@@ -353,7 +372,7 @@ export default function Resource({ resource }) {
           background-color: black;
           color: white;
         }
-        /* Top row: Categories & More Volunteering */
+        /* Top row: Categories & More Volunteering Button */
         .pills-container {
           display: flex;
           justify-content: space-between;
@@ -457,10 +476,7 @@ export default function Resource({ resource }) {
               }}
             >
               More Volunteering
-              <FontAwesomeIcon
-                icon={faCaretRight}
-                className="more-volunteering-icon"
-              />
+              <FontAwesomeIcon icon={faCaretRight} className="more-volunteering-icon" />
             </div>
           </Link>
         </div>
@@ -489,14 +505,12 @@ export default function Resource({ resource }) {
             {startDate && !endDate
               ? format(today, "EEEE, MMMM d, yyyy")
               : `${format(startDisplayDate, "EEEE, MMMM d, yyyy")}${
-                  endDate
-                    ? ` - ${format(endDisplayDate, "EEEE, MMMM d, yyyy")}`
-                    : ""
+                  endDate ? ` - ${format(endDisplayDate, "EEEE, MMMM d, yyyy")}` : ""
                 }`}
           </p>
           <FontAwesomeIcon
             icon={scheduleOpen ? faChevronUp : faChevronDown}
-            style={{ marginLeft: "1rem" }}
+            style={{ marginLeft: "0.1rem" }}
           />
         </div>
 
@@ -509,7 +523,7 @@ export default function Resource({ resource }) {
               return (
                 <p key={index}>
                   {format(date, "EEEE, MMMM d, yyyy")} :{" "}
-                  {hours ? `${hours[0]} - ${hours[1]}` : "Closed"}
+                  {hours === "Closed" ? "Closed" : `${hours[0]} - ${hours[1]}`}
                 </p>
               );
             })}
@@ -520,7 +534,9 @@ export default function Resource({ resource }) {
         <div className="horizontal-container">
           <FontAwesomeIcon icon={faClock} className="icon" />
           <p>
-            {currentHours
+            {currentHours === "Closed"
+              ? "Closed"
+              : currentHours
               ? `Hours: ${currentHours[0]} - ${currentHours[1]}`
               : "Closed today"}
           </p>
@@ -553,9 +569,7 @@ export default function Resource({ resource }) {
           <h2 className="text-[24px] pb-1">
             <b>Additional Info</b>
           </h2>
-          <h3>
-            <i>Organization Contact</i>
-          </h3>
+          <h3>Organization Contact</h3>
           {contact_info && Object.keys(contact_info).length > 0 ? (
             Object.keys(contact_info).map((key) => {
               const value = contact_info[key];
@@ -571,7 +585,7 @@ export default function Resource({ resource }) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {value}
+                          {truncateUrl(value)}
                         </a>
                       </span>
                     </p>
@@ -598,10 +612,7 @@ export default function Resource({ resource }) {
                       <FontAwesomeIcon icon={faInstagram} className="icon" />
                       <span className="contact-text">
                         <a
-                          href={`https://instagram.com/${value.replace(
-                            /^@/,
-                            ""
-                          )}`}
+                          href={`https://instagram.com/${value.replace(/^@/, "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -679,10 +690,7 @@ export default function Resource({ resource }) {
             Volunteer
           </button>
           <button className="button" onClick={handleShareClick}>
-            <FontAwesomeIcon
-              icon={faPaperPlane}
-              className="share-icon mr-2"
-            />
+            <FontAwesomeIcon icon={faPaperPlane} className="share-icon mr-2" />
             Share
           </button>
         </div>

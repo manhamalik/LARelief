@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DetailImageCarousel from "@/components/DetailImageCarousel";
-import { format, addDays } from "date-fns";
+import { format, addDays as dateFnsAddDays } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import {
@@ -31,11 +31,20 @@ import {
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Updated Google Fonts link for Noto Sans Multani
 <link
   href="https://fonts.googleapis.com/css2?family=Noto+Sans+Multani&display=swap"
   rel="stylesheet"
 />;
+
+// Helper function to truncate the URL to just its hostname (or a fallback truncation)
+const truncateUrl = (url, maxLength = 30) => {
+  try {
+    const { hostname } = new URL(url);
+    return hostname;
+  } catch (err) {
+    return url.length > maxLength ? url.slice(0, maxLength) + "..." : url;
+  }
+};
 
 const accessibilityIcons = {
   wifi: faWifi,
@@ -62,11 +71,14 @@ const formatPhoneNumber = (phone) => {
   return phone;
 };
 
-// Function to parse the hours of operation
+// Updated parseHours function
 const parseHours = (hoursOfOperation, day) => {
   if (!hoursOfOperation) return null;
   const hours = hoursOfOperation[day];
-  return hours ? (hours === "closed" ? null : hours.split(" - ")) : null;
+  if (!hours || hours.trim() === "" || hours.toLowerCase() === "closed") {
+    return "Closed";
+  }
+  return hours.split(" - ");
 };
 
 // Resource data
@@ -174,15 +186,16 @@ export default function Resource({ resource }) {
 
   const today = new Date();
   const currentDay = weekdays[today.getDay()];
-  const currentHours = parseHours(hours_of_operation, currentDay) || [
-    startTime,
-    endTime,
-  ];
+  const currentHours = parseHours(hours_of_operation, currentDay);
 
-  // Determine what to display for hours.
+  // Updated displayHours logic checking for "Closed"
   const displayHours =
-    currentHours[0] && currentHours[1]
+    currentHours === "Closed"
+      ? "Closed"
+      : currentHours
       ? `Hours: ${currentHours[0]} - ${currentHours[1]}`
+      : startTime && endTime
+      ? `Hours: ${startTime} - ${endTime}`
       : "Closed";
 
   const startDisplayDate = startDate ? new Date(startDate) : today;
@@ -191,22 +204,14 @@ export default function Resource({ resource }) {
   const getDatesRange = () => {
     const dates = [];
     const today = new Date(); // Current day
-    const limit = addDays(today, 6); // 6 days following today
+    const limit = dateFnsAddDays(today, 6); // 6 days following today
 
     let current = today;
     while (current <= limit) {
       dates.push(new Date(current));
-      current = addDays(current, 1);
+      current = dateFnsAddDays(current, 1);
     }
-
     return dates; // Return dates in natural order
-  };
-
-  // Helper function to add days to a date
-  const addDays = (date, days) => {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
   };
 
   const displayedDates = getDatesRange(startDisplayDate, endDisplayDate);
@@ -250,7 +255,7 @@ export default function Resource({ resource }) {
       });
   };
 
-  // New helper function to get the pin color based on category type.
+  // Helper function to get the pin color based on category type.
   const getPinColor = (category) => {
     switch (category) {
       case "Essentials":
@@ -285,14 +290,22 @@ export default function Resource({ resource }) {
           align-items: center;
         }
         .schedule-dropdown {
-          margin-top: 10px;
-          padding: 15px;
+          margin-top: -1vw;
+          padding: 5px;
           background: #f9f9f9;
           border-radius: 10px;
-          width: 70%;
+          width: 28vw;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           text-align: center;
           animation: fadeIn 0.3s ease-in-out;
+        }
+        /* New styling for each dropdown option with line separation */
+        .schedule-dropdown p {
+          margin: 0;
+          padding: 10px 0;
+        }
+        .schedule-dropdown p:not(:last-child) {
+          border-bottom: 1px solid #ccc;
         }
         .details-container {
           width: 50%;
@@ -410,11 +423,11 @@ export default function Resource({ resource }) {
         /* Top row for pills: categories & More Resources */
         .pills-container {
           display: flex;
-          align-items: flex-start; /* Align items at the top */
+          align-items: flex-start;
           justify-content: space-between;
           width: 100%;
           margin-bottom: 1rem;
-          flex-wrap: nowrap; /* Prevent the More Resources pill from wrapping */
+          flex-wrap: nowrap;
         }
         .categories-container {
           display: flex;
@@ -422,7 +435,6 @@ export default function Resource({ resource }) {
           gap: 0.5rem;
           flex: 1;
         }
-        /* Ensure the More Resources pill never shrinks or wraps */
         .pill.donation.more-resources {
           flex-shrink: 0;
         }
@@ -450,7 +462,6 @@ export default function Resource({ resource }) {
           color: black;
           border: 1px solid #E0E0E0;
         }
-        /* Set default and hover color for the More Resources caret icon */
         .more-resources-icon {
           color: white;
         }
@@ -562,7 +573,7 @@ export default function Resource({ resource }) {
               return (
                 <p key={index}>
                   {format(date, "EEEE, MMMM d, yyyy")} :{" "}
-                  {hours ? `${hours[0]} - ${hours[1]}` : "Closed"}
+                  {hours === "Closed" ? "Closed" : `${hours[0]} - ${hours[1]}`}
                 </p>
               );
             })}
@@ -607,7 +618,7 @@ export default function Resource({ resource }) {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {value}
+                            {truncateUrl(value)}
                           </a>
                         </span>
                       </p>

@@ -29,6 +29,16 @@ import {
   rel="stylesheet"
 />;
 
+// Helper function to truncate a URL to its hostname (or a fallback truncation)
+const truncateUrl = (url, maxLength = 30) => {
+  try {
+    const { hostname } = new URL(url);
+    return hostname;
+  } catch (err) {
+    return url.length > maxLength ? url.slice(0, maxLength) + "..." : url;
+  }
+};
+
 // Utility functions
 const capitalizeFirstLetter = (string) => {
   if (!string) return "";
@@ -45,11 +55,14 @@ const formatPhoneNumber = (phone) => {
   return phone;
 };
 
-// Function to parse the hours of operation
+// Updated parseHours function: returns "Closed" if hours are missing, empty, or "closed"
 const parseHours = (hoursOfOperation, day) => {
   if (!hoursOfOperation) return null;
   const hours = hoursOfOperation[day];
-  return hours ? (hours === "closed" ? null : hours.split(" - ")) : null;
+  if (!hours || hours.trim() === "" || hours.toLowerCase() === "closed") {
+    return "Closed";
+  }
+  return hours.split(" - ");
 };
 
 // Resource data
@@ -188,12 +201,12 @@ export default function Resource({ resource }) {
     return dates;
   };
 
-  // Note: The getDatesRange function currently does not use startDisplayDate or endDisplayDate.
+  // Note: getDatesRange does not currently use startDisplayDate/endDisplayDate.
   const displayedDates = getDatesRange();
 
   const toggleSchedule = () => setScheduleOpen(!scheduleOpen);
 
-  // New handleShareClick function with popup notification
+  // Updated handleShareClick function with popup notification
   const handleShareClick = () => {
     const organizationName = document.querySelector(".header")?.innerText;
     const dates = document.querySelector(".schedule-dropdown")?.innerText;
@@ -245,14 +258,22 @@ export default function Resource({ resource }) {
           align-items: center;
         }
         .schedule-dropdown {
-          margin-top: 10px;
-          padding: 15px;
+          margin-top: -1vw;
+          padding: 10px;
           background: #f9f9f9;
           border-radius: 10px;
-          width: 70%;
+          width: 28vw;
           box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
           text-align: center;
           animation: fadeIn 0.3s ease-in-out;
+        }
+        /* New styling for each dropdown option with line separation */
+        .schedule-dropdown p {
+          margin: 0;
+          padding: 10px 0;
+        }
+        .schedule-dropdown p:not(:last-child) {
+          border-bottom: 1px solid #ccc;
         }
         .details-container {
           width: 50%;
@@ -342,14 +363,9 @@ export default function Resource({ resource }) {
           align-items: center;
           border: 1px solid #E0E0E0;
         }
-        /* Update hover styles: black background, white text */
         .button:hover {
           background-color: black;
           color: white;
-        }
-        /* Ensure share icon turns white on hover */
-        .button:hover .share-icon {
-          color: white !important;
         }
         /* Top row for pills: Categories & More Donations */
         .pills-container {
@@ -390,11 +406,9 @@ export default function Resource({ resource }) {
           color: black;
           border: 1px solid #E0E0E0;
         }
-        /* Ensure More Donations pill never shrinks */
         .pill.donation.more-donations {
           flex-shrink: 0;
         }
-        /* Set default and hover color for the More Donations caret icon */
         .more-donations-icon {
           color: white;
           margin-left: 5px;
@@ -402,7 +416,6 @@ export default function Resource({ resource }) {
         .pill.donation.more-donations:hover .more-donations-icon {
           color: black;
         }
-        /* Add a gap between icons and text */
         .contact-text {
           margin-left: 0.5rem;
         }
@@ -412,7 +425,6 @@ export default function Resource({ resource }) {
         .accessibility-text {
           font-size: 0.8rem;
         }
-        /* Share popup styles */
         .share-popup {
           position: fixed;
           bottom: 20px;
@@ -494,7 +506,7 @@ export default function Resource({ resource }) {
           </p>
           <FontAwesomeIcon
             icon={scheduleOpen ? faChevronUp : faChevronDown}
-            style={{ marginLeft: "1rem" }}
+            style={{ marginLeft: "0.1rem" }}
           />
         </div>
 
@@ -507,7 +519,7 @@ export default function Resource({ resource }) {
               return (
                 <p key={index}>
                   {format(date, "EEEE, MMMM d, yyyy")} :{" "}
-                  {hours ? `${hours[0]} - ${hours[1]}` : "Closed"}
+                  {hours === "Closed" ? "Closed" : `${hours[0]} - ${hours[1]}`}
                 </p>
               );
             })}
@@ -518,7 +530,9 @@ export default function Resource({ resource }) {
         <div className="horizontal-container">
           <FontAwesomeIcon icon={faClock} className="icon" />
           <p>
-            {currentHours
+            {currentHours === "Closed"
+              ? "Closed"
+              : currentHours
               ? `Hours: ${currentHours[0]} - ${currentHours[1]}`
               : "Closed today"}
           </p>
@@ -567,7 +581,7 @@ export default function Resource({ resource }) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {value}
+                          {truncateUrl(value)}
                         </a>
                       </span>
                     </p>
@@ -594,10 +608,7 @@ export default function Resource({ resource }) {
                       <FontAwesomeIcon icon={faInstagram} className="icon" />
                       <span className="contact-text">
                         <a
-                          href={`https://instagram.com/${value.replace(
-                            /^@/,
-                            ""
-                          )}`}
+                          href={`https://instagram.com/${value.replace(/^@/, "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

@@ -17,6 +17,95 @@ import CategoryButtons from "@/components/CategoryButtons";
 import { filterResources } from "@/components/filter";
 import { motion } from "framer-motion";
 
+// --- Sorting Helpers for Donation Resources ---
+
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+// Safely parse a time string (e.g. "9:00 AM") into a Date object using a base date.
+// Returns null if timeStr is missing or not in the expected format.
+const parseTimeForDonation = (timeStr, baseDate) => {
+  if (!timeStr || typeof timeStr !== "string" || !timeStr.includes(" ")) {
+    return null;
+  }
+  const [time, modifier] = timeStr.split(" ");
+  if (!time || !modifier) return null;
+  let [hours, minutes] = time.split(":").map(Number);
+  if (modifier === "PM" && hours !== 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+  const date = new Date(baseDate);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
+// For a given resource, returns an object with:
+// - isOpen: true if the resource is currently open,
+// - nextOpen: a timestamp (ms) indicating when it will next open (or Infinity if none)
+const getOperatingSortKeyForDonation = (resource) => {
+  const hoursOfOperation = resource.hours_of_operation;
+  const now = new Date();
+  const todayIndex = now.getDay();
+  const todayName = daysOfWeek[todayIndex];
+  const todaysHours =
+    hoursOfOperation &&
+    hoursOfOperation[todayName] &&
+    hoursOfOperation[todayName].toLowerCase() !== "closed"
+      ? hoursOfOperation[todayName]
+      : null;
+  
+  if (todaysHours) {
+    const [openStr, closeStr] = todaysHours.split(" - ");
+    const openTime = parseTimeForDonation(openStr, now);
+    const closeTime = parseTimeForDonation(closeStr, now);
+    if (openTime && closeTime) {
+      if (now >= openTime && now < closeTime) {
+        return { isOpen: true, nextOpen: 0 };
+      }
+      if (now < openTime) {
+        return { isOpen: false, nextOpen: openTime.getTime() };
+      }
+    }
+  }
+  // Look ahead for the next open day.
+  for (let i = 1; i < 7; i++) {
+    const nextDayIndex = (todayIndex + i) % 7;
+    const nextDayName = daysOfWeek[nextDayIndex];
+    const nextDayHours =
+      hoursOfOperation &&
+      hoursOfOperation[nextDayName] &&
+      hoursOfOperation[nextDayName].toLowerCase() !== "closed"
+        ? hoursOfOperation[nextDayName]
+        : null;
+    if (nextDayHours) {
+      const [nextOpenStr] = nextDayHours.split(" - ");
+      const nextOpenDate = new Date(now);
+      nextOpenDate.setDate(now.getDate() + i);
+      const openTime = parseTimeForDonation(nextOpenStr, nextOpenDate);
+      if (openTime) {
+        return { isOpen: false, nextOpen: openTime.getTime() };
+      }
+    }
+  }
+  return { isOpen: false, nextOpen: Infinity };
+};
+
+const sortByOperatingStatusForDonation = (a, b) => {
+  const keyA = getOperatingSortKeyForDonation(a);
+  const keyB = getOperatingSortKeyForDonation(b);
+  if (keyA.isOpen && !keyB.isOpen) return -1;
+  if (!keyA.isOpen && keyB.isOpen) return 1;
+  if (!keyA.isOpen && !keyB.isOpen) return keyA.nextOpen - keyB.nextOpen;
+  return 0;
+};
+// --- End Sorting Helpers ---
+
 export default function Home() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,7 +202,7 @@ export default function Home() {
     setVisibleAnimal(4);
   };
 
-  // Compute full filtered arrays for each category (without slicing)
+  // Compute full filtered arrays for each category
   const filteredEssentials = filterResources(
     resources,
     "Essentials",
@@ -146,6 +235,18 @@ export default function Home() {
     startDate,
     endDate
   );
+
+  // Sort the full filtered arrays by operating status (using our new helpers)
+  const sortedFilteredEssentials = [...filteredEssentials].sort(sortByOperatingStatusForDonation);
+  const sortedFilteredShelter = [...filteredShelter].sort(sortByOperatingStatusForDonation);
+  const sortedFilteredMedical = [...filteredMedical].sort(sortByOperatingStatusForDonation);
+  const sortedFilteredAnimal = [...filteredAnimal].sort(sortByOperatingStatusForDonation);
+
+  // Then slice using the visible counts.
+  const essentialsToDisplay = sortedFilteredEssentials.slice(0, visibleEssentials);
+  const shelterToDisplay = sortedFilteredShelter.slice(0, visibleShelter);
+  const medicalToDisplay = sortedFilteredMedical.slice(0, visibleMedical);
+  const animalToDisplay = sortedFilteredAnimal.slice(0, visibleAnimal);
 
   return (
     <div className="relative">
@@ -381,10 +482,7 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -498,7 +596,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Essentials Category */}
+            {/* --- Essentials Category --- */}
             <div className="flex items-center justify-between w-full mt-4">
               <div className="flex items-center gap-4">
                 <h2
@@ -550,17 +648,19 @@ export default function Home() {
                 )}
               </div>
             </div>
+            {/* Sort the full filtered Essentials array before slicing */}
+            {/** We sort using our sortByOperatingStatusForDonation helper */}
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredEssentials
+              {[...filteredEssentials]
+                .sort(sortByOperatingStatusForDonation)
                 .slice(0, visibleEssentials)
                 .map((resource) => (
                   <DonationCard key={resource.id} resource={resource} />
                 ))}
             </div>
 
-            {/* Shelter & Support Services Category */}
+            {/* --- Shelter & Support Services Category --- */}
             <div className="flex flex-wrap items-center justify-between mt-4 gap-4">
-              {/* Left: Title & Category Buttons */}
               <div className="flex items-center gap-4 flex-grow">
                 <h2
                   className="text-xl font-bold"
@@ -591,7 +691,6 @@ export default function Home() {
                   mainCategory="Shelters"
                 />
               </div>
-              {/* Right: Show More/Less Buttons */}
               <div className="flex gap-2">
                 {visibleShelter < filteredShelter.length && (
                   <button
@@ -616,12 +715,15 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredShelter.slice(0, visibleShelter).map((resource) => (
-                <DonationCard key={resource.id} resource={resource} />
-              ))}
+              {[...filteredShelter]
+                .sort(sortByOperatingStatusForDonation)
+                .slice(0, visibleShelter)
+                .map((resource) => (
+                  <DonationCard key={resource.id} resource={resource} />
+                ))}
             </div>
 
-            {/* Medical & Health Category */}
+            {/* --- Medical & Health Category --- */}
             <div className="flex items-center justify-between w-full mt-4">
               <div className="flex items-center gap-4">
                 <h2
@@ -674,12 +776,15 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredMedical.slice(0, visibleMedical).map((resource) => (
-                <DonationCard key={resource.id} resource={resource} />
-              ))}
+              {[...filteredMedical]
+                .sort(sortByOperatingStatusForDonation)
+                .slice(0, visibleMedical)
+                .map((resource) => (
+                  <DonationCard key={resource.id} resource={resource} />
+                ))}
             </div>
 
-            {/* Animal Support Category */}
+            {/* --- Animal Support Category --- */}
             <div className="flex items-center justify-between w-full mt-4">
               <div className="flex items-center gap-4">
                 <h2
@@ -699,9 +804,7 @@ export default function Home() {
                     "Pet Supplies",
                     "Monetary Donations (Animal Support)",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Animal Support"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
@@ -732,9 +835,12 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredAnimal.slice(0, visibleAnimal).map((resource) => (
-                <DonationCard key={resource.id} resource={resource} />
-              ))}
+              {[...filteredAnimal]
+                .sort(sortByOperatingStatusForDonation)
+                .slice(0, visibleAnimal)
+                .map((resource) => (
+                  <DonationCard key={resource.id} resource={resource} />
+                ))}
             </div>
           </div>
         </div>

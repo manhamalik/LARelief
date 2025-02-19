@@ -38,6 +38,84 @@ const MapComponent = dynamic(() => import("@/components/MapComponent"), {
   ssr: false,
 });
 
+// --- NEW: Helper functions for sorting resources by operating status ---
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+// Given a time string (e.g. "9:00 AM") and a base date, returns a Date object.
+const parseTime = (timeStr, baseDate) => {
+  const [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+  if (modifier === "PM" && hours !== 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+  const date = new Date(baseDate);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
+// For a given resource, returns an object with a flag (isOpen) and a nextOpen timestamp.
+// - For currently open resources, nextOpen is set to 0 so they sort before closed ones.
+// - For closed resources, nextOpen is a timestamp (ms) indicating when the location will next open.
+const getOperatingSortKey = (resource) => {
+  const hoursOfOperation = resource.hours_of_operation;
+  const now = new Date();
+  const todayIndex = now.getDay();
+  const todayName = daysOfWeek[todayIndex];
+  const todaysHours =
+    hoursOfOperation && hoursOfOperation[todayName] && hoursOfOperation[todayName].toLowerCase() !== "closed"
+      ? hoursOfOperation[todayName]
+      : null;
+  
+  if (todaysHours) {
+    const [openStr, closeStr] = todaysHours.split(" - ");
+    const openTime = parseTime(openStr, now);
+    const closeTime = parseTime(closeStr, now);
+    if (now >= openTime && now < closeTime) {
+      // Resource is open
+      return { isOpen: true, nextOpen: 0 };
+    }
+    if (now < openTime) {
+      // Not open yet today but will open later today.
+      return { isOpen: false, nextOpen: openTime.getTime() };
+    }
+  }
+  // If no valid hours today or already past closing time, check upcoming days.
+  for (let i = 1; i < 7; i++) {
+    const nextDayIndex = (todayIndex + i) % 7;
+    const nextDayName = daysOfWeek[nextDayIndex];
+    const nextDayHours =
+      hoursOfOperation && hoursOfOperation[nextDayName] && hoursOfOperation[nextDayName].toLowerCase() !== "closed"
+        ? hoursOfOperation[nextDayName]
+        : null;
+    if (nextDayHours) {
+      const [nextOpenStr] = nextDayHours.split(" - ");
+      const nextOpenDate = new Date(now);
+      nextOpenDate.setDate(now.getDate() + i);
+      const openTime = parseTime(nextOpenStr, nextOpenDate);
+      return { isOpen: false, nextOpen: openTime.getTime() };
+    }
+  }
+  // If no open day found, sort these last.
+  return { isOpen: false, nextOpen: Infinity };
+};
+
+const sortByOperatingStatus = (a, b) => {
+  const keyA = getOperatingSortKey(a);
+  const keyB = getOperatingSortKey(b);
+  if (keyA.isOpen && !keyB.isOpen) return -1;
+  if (!keyA.isOpen && keyB.isOpen) return 1;
+  if (!keyA.isOpen && !keyB.isOpen) return keyA.nextOpen - keyB.nextOpen;
+  return 0; // Both open; preserve order.
+};
+// --- End New Sorting Helpers ---
+
 export default function Home() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +201,7 @@ export default function Home() {
     setVisibleCounts((prev) => ({ ...prev, [category]: defaultVisible }));
   };
 
-  // Create full filtered arrays per category and then slice using the corresponding visibleCounts.
+  // For each category, first filter then sort the entire filtered array by operating status, then slice
   const filteredEssentials = filterResources(
     resources,
     "Essentials",
@@ -132,7 +210,8 @@ export default function Home() {
     startDate,
     endDate
   );
-  const essentialsResources = filteredEssentials.slice(
+  const sortedFilteredEssentials = [...filteredEssentials].sort(sortByOperatingStatus);
+  const essentialsResources = sortedFilteredEssentials.slice(
     0,
     visibleCounts["Essentials"]
   );
@@ -145,7 +224,8 @@ export default function Home() {
     startDate,
     endDate
   );
-  const shelterResources = filteredShelter.slice(
+  const sortedFilteredShelter = [...filteredShelter].sort(sortByOperatingStatus);
+  const shelterResources = sortedFilteredShelter.slice(
     0,
     visibleCounts["Shelter & Support Services"]
   );
@@ -158,7 +238,8 @@ export default function Home() {
     startDate,
     endDate
   );
-  const medicalResources = filteredMedical.slice(
+  const sortedFilteredMedical = [...filteredMedical].sort(sortByOperatingStatus);
+  const medicalResources = sortedFilteredMedical.slice(
     0,
     visibleCounts["Medical & Health"]
   );
@@ -171,7 +252,8 @@ export default function Home() {
     startDate,
     endDate
   );
-  const animalResources = filteredAnimal.slice(
+  const sortedFilteredAnimal = [...filteredAnimal].sort(sortByOperatingStatus);
+  const animalResources = sortedFilteredAnimal.slice(
     0,
     visibleCounts["Animal Support"]
   );
@@ -610,9 +692,7 @@ export default function Home() {
                 </h2>
                 <CategoryButtons
                   categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
-                  selectedCategories={
-                    selectedSubCategories["Animal Support"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
