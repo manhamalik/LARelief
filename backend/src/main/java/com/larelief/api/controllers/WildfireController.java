@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class WildfireController {
 
-    private final String CAL_FIRE_URL = "https://www.fire.ca.gov/umbraco/api/IncidentApi/List?inactiveIncidents=false";
+    private final String CAL_FIRE_URL = "https://www.fire.ca.gov/umbraco/api/IncidentApi/List?inactiveIncidents=true";
 
     @GetMapping("/wildfires")
     public ResponseEntity<?> getWildfires() {
