@@ -18,7 +18,6 @@ import { filterResources } from "@/components/filter";
 import { motion } from "framer-motion";
 
 // --- Sorting Helpers for Donation Resources ---
-
 const daysOfWeek = [
   "Sunday",
   "Monday",
@@ -29,8 +28,6 @@ const daysOfWeek = [
   "Saturday",
 ];
 
-// Safely parse a time string (e.g. "9:00 AM") into a Date object using a base date.
-// Returns null if timeStr is missing or not in the expected format.
 const parseTimeForDonation = (timeStr, baseDate) => {
   if (!timeStr || typeof timeStr !== "string" || !timeStr.includes(" ")) {
     return null;
@@ -45,9 +42,6 @@ const parseTimeForDonation = (timeStr, baseDate) => {
   return date;
 };
 
-// For a given resource, returns an object with:
-// - isOpen: true if the resource is currently open,
-// - nextOpen: a timestamp (ms) indicating when it will next open (or Infinity if none)
 const getOperatingSortKeyForDonation = (resource) => {
   const hoursOfOperation = resource.hours_of_operation;
   const now = new Date();
@@ -73,7 +67,6 @@ const getOperatingSortKeyForDonation = (resource) => {
       }
     }
   }
-  // Look ahead for the next open day.
   for (let i = 1; i < 7; i++) {
     const nextDayIndex = (todayIndex + i) % 7;
     const nextDayName = daysOfWeek[nextDayIndex];
@@ -131,7 +124,7 @@ export default function Home() {
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
-    // Reset all visible counts when filters change
+    // Reset visible counts when filters change
     setVisibleEssentials(4);
     setVisibleShelter(4);
     setVisibleMedical(4);
@@ -146,7 +139,7 @@ export default function Home() {
         : [...subCats, subCategory];
       return { ...prev, [mainCategory]: updated };
     });
-    // Reset all visible counts when filters change
+    // Reset visible counts when filters change
     setVisibleEssentials(4);
     setVisibleShelter(4);
     setVisibleMedical(4);
@@ -173,36 +166,17 @@ export default function Home() {
     fetchResources();
   }, []);
 
-  // Handlers for each category’s show more/less
-  const handleShowMoreEssentials = () => {
-    setVisibleEssentials((prev) => prev + 12);
-  };
-  const handleShowLessEssentials = () => {
-    setVisibleEssentials(4);
-  };
+  // Handlers for show more/less
+  const handleShowMoreEssentials = () => setVisibleEssentials((prev) => prev + 12);
+  const handleShowLessEssentials = () => setVisibleEssentials(4);
+  const handleShowMoreShelter = () => setVisibleShelter((prev) => prev + 12);
+  const handleShowLessShelter = () => setVisibleShelter(4);
+  const handleShowMoreMedical = () => setVisibleMedical((prev) => prev + 12);
+  const handleShowLessMedical = () => setVisibleMedical(4);
+  const handleShowMoreAnimal = () => setVisibleAnimal((prev) => prev + 12);
+  const handleShowLessAnimal = () => setVisibleAnimal(4);
 
-  const handleShowMoreShelter = () => {
-    setVisibleShelter((prev) => prev + 12);
-  };
-  const handleShowLessShelter = () => {
-    setVisibleShelter(4);
-  };
-
-  const handleShowMoreMedical = () => {
-    setVisibleMedical((prev) => prev + 12);
-  };
-  const handleShowLessMedical = () => {
-    setVisibleMedical(4);
-  };
-
-  const handleShowMoreAnimal = () => {
-    setVisibleAnimal((prev) => prev + 12);
-  };
-  const handleShowLessAnimal = () => {
-    setVisibleAnimal(4);
-  };
-
-  // Compute full filtered arrays for each category
+  // Compute filtered arrays
   const filteredEssentials = filterResources(
     resources,
     "Essentials",
@@ -236,7 +210,7 @@ export default function Home() {
     endDate
   );
 
-  // Sort the full filtered arrays by operating status (using our new helpers)
+  // Sort filtered arrays
   const sortedFilteredEssentials = [...filteredEssentials].sort(
     sortByOperatingStatusForDonation
   );
@@ -249,15 +223,6 @@ export default function Home() {
   const sortedFilteredAnimal = [...filteredAnimal].sort(
     sortByOperatingStatusForDonation
   );
-
-  // Then slice using the visible counts.
-  const essentialsToDisplay = sortedFilteredEssentials.slice(
-    0,
-    visibleEssentials
-  );
-  const shelterToDisplay = sortedFilteredShelter.slice(0, visibleShelter);
-  const medicalToDisplay = sortedFilteredMedical.slice(0, visibleMedical);
-  const animalToDisplay = sortedFilteredAnimal.slice(0, visibleAnimal);
 
   return (
     <div className="relative">
@@ -515,6 +480,7 @@ export default function Home() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            paddingLeft: "2.5vw",
           }}
         >
           <Head>
@@ -523,10 +489,7 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -649,20 +612,19 @@ export default function Home() {
             </div>
 
             {/* --- Essentials Category --- */}
-            <div className="flex items-center justify-between w-full mt-4">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Essentials
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Essentials
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Food & Water",
@@ -676,241 +638,227 @@ export default function Home() {
                   }
                   mainCategory="Essentials"
                 />
+                <div className="flex gap-2 mt-4 md:mt-0 pr-[1.9vw]">
+                  {visibleEssentials < filteredEssentials.length && (
+                    <motion.button
+                      onClick={handleShowMoreEssentials}
+                      className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleEssentials > 4 && (
+                    <motion.button
+                      onClick={handleShowLessEssentials}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleEssentials < filteredEssentials.length && (
-                  <motion.button
-                    onClick={handleShowMoreEssentials}
-                    className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </motion.button>
-                )}
-                {visibleEssentials > 4 && (
-                  <motion.button
-                    onClick={handleShowLessShelter}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </motion.button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full px-4 pr-0">
+                {[...filteredEssentials]
+                  .sort(sortByOperatingStatusForDonation)
+                  .slice(0, visibleEssentials)
+                  .map((resource) => (
+                    <DonationCard key={resource.id} resource={resource} />
+                  ))}
               </div>
-            </div>
-            {/* Sort the full filtered Essentials array before slicing */}
-            {/** We sort using our sortByOperatingStatusForDonation helper */}
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {[...filteredEssentials]
-                .sort(sortByOperatingStatusForDonation)
-                .slice(0, visibleEssentials)
-                .map((resource) => (
-                  <DonationCard key={resource.id} resource={resource} />
-                ))}
             </div>
 
             {/* --- Shelter & Support Services Category --- */}
-            <div className="flex flex-wrap items-center justify-between mt-4 gap-4">
-              <div className="flex items-center gap-4 flex-grow">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Shelter & Support Services
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Shelter & Support Services
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Emergency Supplies",
                     "Monetary Donations (Shelter & Support Services)",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Shelter & Support Services"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick(
-                      "Shelter & Support Services",
-                      subCategory
-                    )
+                    handleSubCategoryClick("Shelter & Support Services", subCategory)
                   }
                   mainCategory="Shelters"
                 />
+                <div className="flex gap-2 mt-4 md:mt-0 pr-[2.2vw]">
+                  {visibleShelter < filteredShelter.length && (
+                    <motion.button
+                      onClick={handleShowMoreShelter}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleShelter > 4 && (
+                    <motion.button
+                      onClick={handleShowLessShelter}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleShelter < filteredShelter.length && (
-                  <motion.button
-                    onClick={handleShowMoreShelter}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </motion.button>
-                )}
-                {visibleShelter > 4 && (
-                  <motion.button
-                    onClick={handleShowLessShelter}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </motion.button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full px-4">
+                {[...filteredShelter]
+                  .sort(sortByOperatingStatusForDonation)
+                  .slice(0, visibleShelter)
+                  .map((resource) => (
+                    <DonationCard key={resource.id} resource={resource} />
+                  ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {[...filteredShelter]
-                .sort(sortByOperatingStatusForDonation)
-                .slice(0, visibleShelter)
-                .map((resource) => (
-                  <DonationCard key={resource.id} resource={resource} />
-                ))}
             </div>
 
             {/* --- Medical & Health Category --- */}
-            <div className="flex items-center justify-between w-full mt-4">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Medical & Health
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Medical & Health
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Medical Supplies",
                     "Monetary Donations (Medical & Health)",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Medical & Health"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
                   mainCategory="Medical & Health"
                 />
+                <div className="flex gap-2 mt-4 md:mt-0 pr-[2.2vw]">
+                  {visibleMedical < filteredMedical.length && (
+                    <motion.button
+                      onClick={handleShowMoreMedical}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleMedical > 4 && (
+                    <motion.button
+                      onClick={handleShowLessMedical}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleMedical < filteredMedical.length && (
-                  <motion.button
-                    onClick={handleShowMoreMedical}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </motion.button>
-                )}
-                {visibleMedical > 4 && (
-                  <motion.button
-                    onClick={handleShowLessShelter}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </motion.button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full px-4">
+                {[...filteredMedical]
+                  .sort(sortByOperatingStatusForDonation)
+                  .slice(0, visibleMedical)
+                  .map((resource) => (
+                    <DonationCard key={resource.id} resource={resource} />
+                  ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {[...filteredMedical]
-                .sort(sortByOperatingStatusForDonation)
-                .slice(0, visibleMedical)
-                .map((resource) => (
-                  <DonationCard key={resource.id} resource={resource} />
-                ))}
             </div>
 
             {/* --- Animal Support Category --- */}
-            <div className="flex items-center justify-between w-full mt-4">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Animal Support
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Animal Support
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Pet Supplies",
                     "Monetary Donations (Animal Support)",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Animal Support"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
                   mainCategory="Animal Support"
                 />
+                <div className="flex gap-2 mt-4 md:mt-0 pr-[2.2vw]">
+                  {visibleAnimal < filteredAnimal.length && (
+                    <motion.button
+                      onClick={handleShowMoreAnimal}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleAnimal > 4 && (
+                    <motion.button
+                      onClick={handleShowLessAnimal}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleAnimal < filteredAnimal.length && (
-                  <motion.button
-                    onClick={handleShowMoreAnimal}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </motion.button>
-                )}
-                {visibleAnimal > 4 && (
-                  <motion.button
-                    onClick={handleShowLessShelter}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </motion.button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full px-4">
+                {[...filteredAnimal]
+                  .sort(sortByOperatingStatusForDonation)
+                  .slice(0, visibleAnimal)
+                  .map((resource) => (
+                    <DonationCard key={resource.id} resource={resource} />
+                  ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {[...filteredAnimal]
-                .sort(sortByOperatingStatusForDonation)
-                .slice(0, visibleAnimal)
-                .map((resource) => (
-                  <DonationCard key={resource.id} resource={resource} />
-                ))}
             </div>
           </div>
         </div>
