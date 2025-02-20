@@ -203,7 +203,9 @@ export default function Home() {
   };
 
   // Create sorted copies of the filtered lists before slicing.
-  const sortedEssentials = filteredEssentials.slice().sort(sortVolunteerResources);
+  const sortedEssentials = filteredEssentials
+    .slice()
+    .sort(sortVolunteerResources);
   const sortedShelter = filteredShelter.slice().sort(sortVolunteerResources);
   const sortedMedical = filteredMedical.slice().sort(sortVolunteerResources);
   const sortedAnimal = filteredAnimal.slice().sort(sortVolunteerResources);
@@ -311,10 +313,7 @@ export default function Home() {
           </div>
 
           {/* Right Side: Text + Button */}
-          <div
-            data-no-translate="true"
-            className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4"
-          >
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
             <motion.h3
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -429,7 +428,10 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -694,7 +696,9 @@ export default function Home() {
                 </h2>
                 <CategoryButtons
                   categories={["Medical Aid Support", "Mental Health Support"]}
-                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -751,7 +755,9 @@ export default function Home() {
                     "Animal Rescue & Transport",
                     "Pet Supply Distribution",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }

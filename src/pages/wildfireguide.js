@@ -212,6 +212,13 @@ export default function WildfireGuide() {
 
   const [showPopup, setShowPopup] = useState(false);
 
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gray-100"
@@ -232,7 +239,7 @@ export default function WildfireGuide() {
         {/* Optional overlay to darken the background for better text visibility */}
         <div className="min-h-screen flex-col md:flex-row flex bg-gray-10 text-white">
           {/* Left Half */}
-          <div className="relative  w-1/2 flex items-center justify-center">
+          <div className="relative w-1/2 flex items-center justify-center">
             {/* Background Image behind text */}
             <img
               src="images/guideinfo.png"
@@ -242,7 +249,7 @@ export default function WildfireGuide() {
             />
 
             {/* Title (positioned absolutely on top of the background image) */}
-            <h1 className="absolute z-10 text-[3rem] md:text-[5rem] mb-[16rem] drop-shadow-[0_5px_5px_rgba(30,30,0,0.9)] leading-[1.3]">
+            <h1 className="absolute z-10 text-[3rem] md:text-[5rem] mb-[8.5vh] ml-3 drop-shadow-[0_5px_5px_rgba(30,30,0,0.9)] leading-[1.3]">
               WILDFIRE <br />
               GUIDE
             </h1>
@@ -251,7 +258,7 @@ export default function WildfireGuide() {
             <img
               src="images/guidebook.png"
               alt="Guide Book"
-              className="relative w-[30remm] md:w-[50rem]"
+              className="relative w-full h-auto"
             />
           </div>
           {/* Popup */}{" "}
@@ -324,8 +331,8 @@ export default function WildfireGuide() {
           )}
           {/* guide info */}
           <div className="flex flex-col ustify-center pt-36 p-16">
-            <div className="relative w-[60rem] h-[20rem] bg-[#817E7E] rounded-2xl shadow-lg p-6 flex items-center justify-center ">
-              <div className="absolute -right-8 -top-7 w-[60rem] h-[20rem] bg-[#6A6A6A] rounded-2xl shadow-lg p-6 flex items-center justify-center">
+            <div className="relative w-[55rem] h-[19rem] bg-[#817E7E] rounded-2xl shadow-lg p-6 flex items-center justify-center ">
+              <div className="absolute -right-8 -top-7 w-[55rem] h-[19rem] bg-[#6A6A6A] rounded-2xl shadow-lg p-6 flex items-center justify-center">
                 <div className="flex flex-col flex-wrap items-start justify-center">
                   <div className="flex flex-row items-start justify-center p-3 rounded-lg mb-2">
                     <div className="rounded-full bg-[#224D21] p-3 mr-4 mt-1" />
@@ -349,7 +356,7 @@ export default function WildfireGuide() {
                       Stay updated on wildfire alerts and air quality.
                     </p>
                     <button
-                      onClick={() => scrollToSection("wildfire-readiness")}
+                      onClick={() => scrollToSection("wildfire-monitoring")}
                       className="flex py-2 bg-[#183917] text-white font-extrabold rounded-[20px] border border-white hover:bg-lime-800 transitiont text-start text-[1.6rem] p-6"
                     >
                       WILDFIRE MONITORING
@@ -366,7 +373,7 @@ export default function WildfireGuide() {
                       efforts.
                     </p>
                     <button
-                      onClick={() => scrollToSection("wildfire-readiness")}
+                      onClick={() => scrollToSection("post-fire-recovery")}
                       className="flex py-2 bg-[#183917] text-white font-extrabold rounded-[20px] border border-white hover:bg-lime-800 transitiont text-start text-[1.6rem] p-6"
                     >
                       POST-FIRE RECOVERY
@@ -383,9 +390,8 @@ export default function WildfireGuide() {
         </div>
       </section>
 
-      {/* Wildfire Monitoring Section */}
       <section
-        id="wildfire-monitoring"
+        id="wildfire-readiness"
         className="w-full bg-[#183917] p-6 shadow-md"
       >
         <div className="text-white p-6 space-y-8">
@@ -402,7 +408,15 @@ export default function WildfireGuide() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
+      {/* Wildfire Monitoring Section */}
+      <section
+        id="wildfire-monitoring"
+        className="w-full bg-[#183917] p-6 shadow-md"
+      >
+        <div className="text-white p-6 space-y-8">
           {/* Evacuation Planning Section */}
           <h1 className="text-7xl font-bold text-center pt-12 pb-6">
             EVACUATION PLANNING
@@ -436,13 +450,13 @@ export default function WildfireGuide() {
             className="relative flex flex-col items-center justify-center text-center text-white min-h-[50vh]"
             style={{
               backgroundImage: "url('images/ㄴㄱ.png')",
-              backgroundSize: 1600,
+              backgroundSize: 1300,
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
           >
             <div className=" flex flex-col flex-wrap items-center justify-center">
-              <h1 className="text-[2rem] font-bold uppercase text-center ">
+              <h1 className="text-[1.8rem] font-bold uppercase text-center w-[75rem] p-6">
                 Use the{" "}
                 <img
                   src="images/larelieflogo.png"
