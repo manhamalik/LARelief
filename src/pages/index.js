@@ -375,7 +375,7 @@ export default function Home() {
             }}
           ></div>
 
-          <div className="max-w-8xl mx-auto flex-col md:flex-row items-center gap-4 relative z-10">
+          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
             {/* Text Content */}
             <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
               {/* Title */}
