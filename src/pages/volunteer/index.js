@@ -148,6 +148,66 @@ export default function Home() {
     endDate
   );
 
+  // Sorting Helpers
+
+  // Safely converts a time string (e.g., "08:00") into a Date object using a base date.
+  const parseTimeForVolunteer = (timeStr) => {
+    return new Date(`1970-01-01T${timeStr}`);
+  };
+
+  // Examines the event’s hours_of_operation (format "HH:MM - HH:MM")
+  // to determine if it is currently active (returns 0) or, if not,
+  // when it will next open (in milliseconds).
+  const getOperatingSortKeyForVolunteer = (hours_of_operation) => {
+    if (!hours_of_operation || typeof hours_of_operation !== "string") {
+      return Number.MAX_SAFE_INTEGER;
+    }
+    const [openTimeStr, closeTimeStr] = hours_of_operation
+      .split("-")
+      .map((s) => s.trim());
+    const now = new Date();
+    let openDate = parseTimeForVolunteer(openTimeStr);
+    let closeDate = parseTimeForVolunteer(closeTimeStr);
+    // Set open and close times to today's date
+    openDate.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
+    closeDate.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
+    if (now >= openDate && now <= closeDate) {
+      // Currently active – sort key of 0 means highest priority
+      return 0;
+    }
+    let diff = openDate - now;
+    if (diff < 0) {
+      // If open time already passed today, assume next open is tomorrow.
+      diff = openDate.getTime() + 24 * 60 * 60 * 1000 - now.getTime();
+    }
+    return diff;
+  };
+
+  // Sorting function that compares events first by their start_date,
+  // then by end_date (if available, otherwise using start_date),
+  // and finally by the operating hours.
+  const sortVolunteerResources = (a, b) => {
+    const startA = new Date(a.start_date);
+    const startB = new Date(b.start_date);
+    if (startA < startB) return -1;
+    if (startA > startB) return 1;
+
+    const endA = a.end_date ? new Date(a.end_date) : startA;
+    const endB = b.end_date ? new Date(b.end_date) : startB;
+    if (endA < endB) return -1;
+    if (endA > endB) return 1;
+
+    const opKeyA = getOperatingSortKeyForVolunteer(a.hours_of_operation);
+    const opKeyB = getOperatingSortKeyForVolunteer(b.hours_of_operation);
+    return opKeyA - opKeyB;
+  };
+
+  // Create sorted copies of the filtered lists before slicing.
+  const sortedEssentials = filteredEssentials.slice().sort(sortVolunteerResources);
+  const sortedShelter = filteredShelter.slice().sort(sortVolunteerResources);
+  const sortedMedical = filteredMedical.slice().sort(sortVolunteerResources);
+  const sortedAnimal = filteredAnimal.slice().sort(sortVolunteerResources);
+
   return (
     <div className="relative">
       <Head>
@@ -369,10 +429,7 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -554,11 +611,9 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredEssentials
-                .slice(0, visibleEssentials)
-                .map((resource) => (
-                  <VolunteerCard key={resource.id} resource={resource} />
-                ))}
+              {sortedEssentials.slice(0, visibleEssentials).map((resource) => (
+                <VolunteerCard key={resource.id} resource={resource} />
+              ))}
             </div>
 
             {/* Shelter & Support Services Category */}
@@ -617,7 +672,7 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredShelter.slice(0, visibleShelter).map((resource) => (
+              {sortedShelter.slice(0, visibleShelter).map((resource) => (
                 <VolunteerCard key={resource.id} resource={resource} />
               ))}
             </div>
@@ -639,9 +694,7 @@ export default function Home() {
                 </h2>
                 <CategoryButtons
                   categories={["Medical Aid Support", "Mental Health Support"]}
-                  selectedCategories={
-                    selectedSubCategories["Medical & Health"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -672,7 +725,7 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredMedical.slice(0, visibleMedical).map((resource) => (
+              {sortedMedical.slice(0, visibleMedical).map((resource) => (
                 <VolunteerCard key={resource.id} resource={resource} />
               ))}
             </div>
@@ -698,9 +751,7 @@ export default function Home() {
                     "Animal Rescue & Transport",
                     "Pet Supply Distribution",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Animal Support"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
@@ -731,7 +782,7 @@ export default function Home() {
               </div>
             </div>
             <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {filteredAnimal.slice(0, visibleAnimal).map((resource) => (
+              {sortedAnimal.slice(0, visibleAnimal).map((resource) => (
                 <VolunteerCard key={resource.id} resource={resource} />
               ))}
             </div>

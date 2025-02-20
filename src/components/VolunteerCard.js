@@ -19,7 +19,6 @@ import {
 
 // Mapping categories to icons with colors
 const categoryIcons = {
-  //volunteer categories
   "Food & Water Distribution": { icon: faBurger, color: "#015BC3" },
   "Clothing & Supplies Distribution": { icon: faShirt, color: "#015BC3" },
   "Donation Sorting & Packing": { icon: faBoxOpen, color: "#015BC3" },
@@ -44,7 +43,19 @@ const getCurrentDayHours = (hoursOfOperation) => {
   ];
   const todayIndex = new Date().getDay();
   const today = daysOfWeek[todayIndex];
-  return hoursOfOperation?.[today] || "Not Open";
+
+  if (hoursOfOperation?.[today]) {
+    return hoursOfOperation[today];
+  }
+  // Look for the next day with available hours
+  for (let i = 1; i < daysOfWeek.length; i++) {
+    const nextDayIndex = (todayIndex + i) % daysOfWeek.length;
+    const nextDay = daysOfWeek[nextDayIndex];
+    if (hoursOfOperation?.[nextDay]) {
+      return hoursOfOperation[nextDay];
+    }
+  }
+  return "";
 };
 
 const formatDate = (date) => {
@@ -63,7 +74,7 @@ const VolunteerSearch = ({ resource }) => {
     start_date,
     end_date,
     hours_of_operation,
-    link_to_volunteer,
+    sign_up_required,
     carousel_images,
     organization_image,
     types,
@@ -92,7 +103,9 @@ const VolunteerSearch = ({ resource }) => {
 
   const currentDayHours = getCurrentDayHours(hours_of_operation);
   const FormSignUpRequired =
-    link_to_volunteer === true ? "Form Sign-Up Required" : "No Form Required";
+    sign_up_required === true || sign_up_required === "true"
+      ? "Form Sign-Up Required"
+      : "No Form Required";
 
   console.log("Resource types:", types);
 
@@ -101,7 +114,7 @@ const VolunteerSearch = ({ resource }) => {
       key={id}
       className="outerContainer"
       style={{
-        fontFamily: "'Noto Sans Multani', sans-serif", // Updated font here
+        fontFamily: "'Noto Sans Multani', sans-serif",
         position: "relative",
         left: "15%",
       }}
@@ -196,7 +209,7 @@ const VolunteerSearch = ({ resource }) => {
                   style={{
                     color: "#6C727D",
                     marginLeft: "7px",
-                    fontSize: "1rem",
+                    fontSize: "0.9rem",
                   }}
                 >
                   {displayDate}
@@ -217,7 +230,7 @@ const VolunteerSearch = ({ resource }) => {
                   style={{
                     color: "#6C727D",
                     marginLeft: "7px",
-                    fontSize: "1rem",
+                    fontSize: "0.9rem",
                   }}
                 >
                   {currentDayHours}
@@ -262,7 +275,6 @@ const VolunteerSearch = ({ resource }) => {
           transition: transform 0.2s ease-out;
           transform: scale(0.9);
         }
-
         .cardContainer:hover {
           transform: scale(0.91);
           cursor: pointer;
@@ -287,7 +299,7 @@ const VolunteerSearch = ({ resource }) => {
         .timeContainer {
           display: flex;
           align-items: center;
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
         .icon {
           font-size: 1.5rem !important;
@@ -295,7 +307,7 @@ const VolunteerSearch = ({ resource }) => {
         p {
           color: #6c727d;
           margin: 0;
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
       `}</style>
     </div>
