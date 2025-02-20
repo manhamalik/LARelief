@@ -410,12 +410,8 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
               >
-                Our mission is to stand with communities affected by the Los
-                Angeles wildfires. We’re here to make it easier to find the
-                resources, support, and opportunities needed to recover and
-                rebuild. Whether it’s through donations, volunteering, or simply
-                offering a helping hand, we believe in the power of coming
-                together to make a real difference.
+                Our mission is to support communities affected by wildfires with real-time access to essential resources, from shelter and medical care to mental health support and animal care supplies. We provide up-to-date wildfire alerts, air quality tracking, and guides for preparedness, response, and recovery. Our platform also connects people with donation and volunteer opportunities. With multilingual support and "open now" features, we make it easier for everyone to find the help they need to recover and rebuild.
+              
               </motion.p>
 
               {/* Buttons */}
