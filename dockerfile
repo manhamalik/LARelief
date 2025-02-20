@@ -1,10 +1,8 @@
-# Use the official LibreTranslate image as the base
+# Use the official LibreTranslate Docker image
 FROM libretranslate/libretranslate:latest
 
-# Render provides a dynamic port via the $PORT environment variable.
-# We'll expose that port (defaulting to 5000 if not provided).
-EXPOSE ${PORT:-5000}
+# Expose the port (LibreTranslate runs on 5000 by default)
+EXPOSE 5000
 
-# Start LibreTranslate, binding to all interfaces and using the provided PORT.
-# The shell form here lets us use environment variable substitution.
-CMD sh -c 'libretranslate --host 0.0.0.0 --port ${PORT:-5000}'
+# Start the service
+CMD ["./entrypoint.sh"]
