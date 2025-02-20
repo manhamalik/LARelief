@@ -115,8 +115,10 @@ const VolunteerSearch = ({ resource }) => {
       className="outerContainer"
       style={{
         fontFamily: "'Noto Sans Multani', sans-serif",
+        width: "400px",
+        margin: "0 auto",
         position: "relative",
-        left: "15%",
+        right: "11%",
       }}
     >
       <Link
@@ -257,7 +259,6 @@ const VolunteerSearch = ({ resource }) => {
       </Link>
       <style jsx>{`
         .outerContainer {
-          width: 400px;
           position: relative;
         }
         .cardContainer {

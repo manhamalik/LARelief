@@ -714,20 +714,20 @@ export default function Home() {
             </div>
 
             {/* --- Essentials Category --- */}
-            <div className="flex flex-wrap gap-4 mt-0 items-center justify-between">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Essentials
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Essentials
+              </h2>
+
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Food & Water",
@@ -741,112 +741,125 @@ export default function Home() {
                   }
                   mainCategory="Essentials"
                 />
+                <div className="flex gap-2 mt-3">
+                  {visibleCounts["Essentials"] < filteredEssentials.length && (
+                    <motion.button
+                      onClick={() => handleShowMore("Essentials")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleCounts["Essentials"] > defaultVisible && (
+                    <motion.button
+                      onClick={() => handleShowLess("Essentials")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2 mt-3">
-                {visibleCounts["Essentials"] < filteredEssentials.length && (
-                  <button
-                    onClick={() => handleShowMore("Essentials")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </button>
-                )}
-                {visibleCounts["Essentials"] > defaultVisible && (
-                  <button
-                    onClick={() => handleShowLess("Essentials")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+                {essentialsResources.map((resource) => (
+                  <ResourceCard key={resource.id} resource={resource} />
+                ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {essentialsResources.map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
             </div>
 
             {/* --- Shelter & Support Services Category --- */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center">
+            <div className="mt-4">
               <h2
-                className="text-xl font-bold"
+                className="text-xl font-bold mb-7"
                 style={{
                   fontFamily: "'Potta One', normal",
                   fontSize: "50px",
                   color: "#ffffff",
                   marginTop: "15px",
-                  marginBottom: "20px",
                 }}
               >
                 Shelter & Support Services
               </h2>
-              <CategoryButtons
-                categories={[
-                  "Shelters & Housing Assistance",
-                  "Transportation Assistance",
-                  "Legal Aid",
-                ]}
-                selectedCategories={
-                  selectedSubCategories["Shelter & Support Services"] || []
-                }
-                handleCategoryClick={(subCategory) =>
-                  handleSubCategoryClick(
-                    "Shelter & Support Services",
-                    subCategory
-                  )
-                }
-                mainCategory="Shelter & Support Services"
-              />
-            </div>
-            <div className="flex gap-2 mt-3">
-              {visibleCounts["Shelter & Support Services"] <
-                filteredShelter.length && (
-                <button
-                  onClick={() => handleShowMore("Shelter & Support Services")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                >
-                  <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                  <span>Show More</span>
-                </button>
-              )}
-              {visibleCounts["Shelter & Support Services"] > defaultVisible && (
-                <button
-                  onClick={() => handleShowLess("Shelter & Support Services")}
-                  className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                  style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                >
-                  <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                  <span>Show Less</span>
-                </button>
-              )}
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {shelterResources.map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
+                <CategoryButtons
+                  categories={[
+                    "Shelters & Housing Assistance",
+                    "Transportation Assistance",
+                    "Legal Aid",
+                  ]}
+                  selectedCategories={
+                    selectedSubCategories["Shelter & Support Services"] || []
+                  }
+                  handleCategoryClick={(subCategory) =>
+                    handleSubCategoryClick(
+                      "Shelter & Support Services",
+                      subCategory
+                    )
+                  }
+                  mainCategory="Shelter & Support Services"
+                />
+                <div className="flex gap-2 mt-3">
+                  {visibleCounts["Shelter & Support Services"] <
+                    filteredShelter.length && (
+                    <motion.button
+                      onClick={() =>
+                        handleShowMore("Shelter & Support Services")
+                      }
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleCounts["Shelter & Support Services"] >
+                    defaultVisible && (
+                    <motion.button
+                      onClick={() =>
+                        handleShowLess("Shelter & Support Services")
+                      }
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
+              </div>
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+                {shelterResources.map((resource) => (
+                  <ResourceCard key={resource.id} resource={resource} />
+                ))}
+              </div>
             </div>
 
             {/* --- Medical & Health Category --- */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Medical & Health
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Medical & Health
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={[
                     "Medical Aid & First Aid",
@@ -860,51 +873,55 @@ export default function Home() {
                   }
                   mainCategory="Medical & Health"
                 />
+                <div className="flex gap-2">
+                  {visibleCounts["Medical & Health"] <
+                    filteredMedical.length && (
+                    <motion.button
+                      onClick={() => handleShowMore("Medical & Health")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleCounts["Medical & Health"] > defaultVisible && (
+                    <motion.button
+                      onClick={() => handleShowLess("Medical & Health")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleCounts["Medical & Health"] < filteredMedical.length && (
-                  <button
-                    onClick={() => handleShowMore("Medical & Health")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </button>
-                )}
-                {visibleCounts["Medical & Health"] > defaultVisible && (
-                  <button
-                    onClick={() => handleShowLess("Medical & Health")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+                {medicalResources.map((resource) => (
+                  <ResourceCard key={resource.id} resource={resource} />
+                ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {medicalResources.map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
             </div>
 
             {/* --- Animal Support Category --- */}
-            <div className="flex flex-wrap gap-4 mt-4 items-center justify-between">
-              <div className="flex items-center gap-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{
-                    fontFamily: "'Potta One', normal",
-                    fontSize: "50px",
-                    color: "#ffffff",
-                    marginTop: "15px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  Animal Support
-                </h2>
+            <div className="mt-4">
+              <h2
+                className="text-xl font-bold mb-7"
+                style={{
+                  fontFamily: "'Potta One', normal",
+                  fontSize: "50px",
+                  color: "#ffffff",
+                  marginTop: "15px",
+                }}
+              >
+                Animal Support
+              </h2>
+              <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={["Animal Boarding", "Veterinary Care & Pet Food"]}
                   selectedCategories={
@@ -915,34 +932,38 @@ export default function Home() {
                   }
                   mainCategory="Animal Support"
                 />
+                <div className="flex gap-2">
+                  {visibleCounts["Animal Support"] < filteredAnimal.length && (
+                    <motion.button
+                      onClick={() => handleShowMore("Animal Support")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} width="16px" />
+                      <span>Show More</span>
+                    </motion.button>
+                  )}
+                  {visibleCounts["Animal Support"] > defaultVisible && (
+                    <motion.button
+                      onClick={() => handleShowLess("Animal Support")}
+                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
+                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
+                      <span>Show Less</span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                {visibleCounts["Animal Support"] < filteredAnimal.length && (
-                  <button
-                    onClick={() => handleShowMore("Animal Support")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronDown} width="16px" />
-                    <span>Show More</span>
-                  </button>
-                )}
-                {visibleCounts["Animal Support"] > defaultVisible && (
-                  <button
-                    onClick={() => handleShowLess("Animal Support")}
-                    className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                    style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                  >
-                    <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                    <span>Show Less</span>
-                  </button>
-                )}
+              <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
+                {animalResources.map((resource) => (
+                  <ResourceCard key={resource.id} resource={resource} />
+                ))}
               </div>
-            </div>
-            <div className="resource-cards mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center -mx-[4.8vw] w-[100vw] pr-[4vw]">
-              {animalResources.map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
             </div>
           </div>
         </div>
