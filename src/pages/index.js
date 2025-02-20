@@ -319,9 +319,9 @@ export default function Home() {
               fontFamily: "'Tilt Warp', sans-serif",
               textShadow: "0px 11.36px 11.36px rgba(0, 0, 0, 0.15)",
             }}
-            initial={{ y: 30, opacity: 0.2 }}
+            initial={{ y: 25, opacity: 0.2 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.1, ease: "easeInOut" }}
+            transition={{ duration: 1.05, ease: "easeInOut" }}
           >
             Discover Aid Near You
           </motion.h1>
@@ -330,9 +330,9 @@ export default function Home() {
             initial={{ background: "rgba(206, 206, 206, 0.62)" }}
             animate={{
               background: "rgba(218, 218, 218, 0)",
-              scale: [0.93, 1, 1],
+              scale: [0.97, 1, 1],
             }}
-            transition={{ duration: 1.06, ease: "easeInOut" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
           >
             <Link
               to="map"
