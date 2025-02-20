@@ -44,15 +44,21 @@ const TileLayer = dynamic(
   () => import("react-leaflet").then((mod) => mod.TileLayer),
   { ssr: false }
 );
-const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), {
-  ssr: false,
-});
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  {
+    ssr: false,
+  }
+);
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
-const ClusteredMarkers = dynamic(() => import("@/components/ClusteredMarkers"), {
-  ssr: false,
-});
+const ClusteredMarkers = dynamic(
+  () => import("@/components/ClusteredMarkers"),
+  {
+    ssr: false,
+  }
+);
 
 // Leaflet CSS
 import "leaflet/dist/leaflet.css";
@@ -62,20 +68,44 @@ const iconConfig = {
   "Food & Water": { icon: "fa-solid fa-burger", color: "#015BC3" },
   "Clothing & Personal Items": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
   "Hygiene & Sanitation": { icon: "fa-solid fa-bath ", color: "#015BC3" },
-  "Financial Support": { icon: "fa-solid fa-money-bill-wave", color: "#015BC3" },
-  "Shelters & Housing Assistance": { icon: "fa-solid fa-home", color: "#4D03CD" },
-  "Transportation Assistance": { icon: "fa-solid fa-car-side", color: "#4D03CD" },
+  "Financial Support": {
+    icon: "fa-solid fa-money-bill-wave",
+    color: "#015BC3",
+  },
+  "Shelters & Housing Assistance": {
+    icon: "fa-solid fa-home",
+    color: "#4D03CD",
+  },
+  "Transportation Assistance": {
+    icon: "fa-solid fa-car-side",
+    color: "#4D03CD",
+  },
   "Legal Aid": { icon: "fa-solid fa-gavel", color: "#4D03CD" },
-  "Medical Aid & First Aid": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
-  "Mental Health Support": { icon: "fa-solid fa-people-group", color: "#CC0000" },
+  "Medical Aid & First Aid": {
+    icon: "fa-solid fa-briefcase-medical",
+    color: "#CC0000",
+  },
+  "Mental Health Support": {
+    icon: "fa-solid fa-people-group",
+    color: "#CC0000",
+  },
   "Animal Boarding": { icon: "fa-solid fa-dog", color: "#DB5D02" },
   "Veterinary Care & Pet Food": { icon: "fa-solid fa-paw", color: "#DB5D02" },
   "Clothing & Bedding": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
-  "Hygiene & Sanitation Supplies": { icon: "fa-solid fa-bath ", color: "#015BC3" },
+  "Hygiene & Sanitation Supplies": {
+    icon: "fa-solid fa-bath ",
+    color: "#015BC3",
+  },
   "Emergency Supplies": { icon: "fa-solid fa-home", color: "#4D03CD" },
-  "Medical Supplies": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
+  "Medical Supplies": {
+    icon: "fa-solid fa-briefcase-medical",
+    color: "#CC0000",
+  },
   "Pet Supplies": { icon: "fa-solid fa-dog", color: "#DB5D02" },
-  "Monetary Donations (Essentials)": { icon: "fa-solid fa-money-bill-wave", color: "#015BC3" },
+  "Monetary Donations (Essentials)": {
+    icon: "fa-solid fa-money-bill-wave",
+    color: "#015BC3",
+  },
   "Monetary Donations (Shelter & Support Services)": {
     icon: "fa-solid fa-money-bill-wave",
     color: "#4D03CD",
@@ -89,14 +119,29 @@ const iconConfig = {
     color: "#DB5D02",
   },
   "Food & Water Distribution": { icon: "fa-solid fa-burger", color: "#015BC3" },
-  "Clothing & Supplies Distribution": { icon: "fa-solid fa-tshirt", color: "#015BC3" },
-  "Donation Sorting & Packing": { icon: "fa-solid fa-box-open", color: "#015BC3" },
+  "Clothing & Supplies Distribution": {
+    icon: "fa-solid fa-tshirt",
+    color: "#015BC3",
+  },
+  "Donation Sorting & Packing": {
+    icon: "fa-solid fa-box-open",
+    color: "#015BC3",
+  },
   "Shelter Assistance": { icon: "fa-solid fa-home", color: "#4D03CD" },
-  "Transportation & Delivery Support": { icon: "fa-solid fa-car-side", color: "#4D03CD" },
-  "Medical Aid Support": { icon: "fa-solid fa-briefcase-medical", color: "#CC0000" },
+  "Transportation & Delivery Support": {
+    icon: "fa-solid fa-car-side",
+    color: "#4D03CD",
+  },
+  "Medical Aid Support": {
+    icon: "fa-solid fa-briefcase-medical",
+    color: "#CC0000",
+  },
   "Animal Shelter Assistance": { icon: "fa-solid fa-dog", color: "#DB5D02" },
   "Animal Rescue & Transport": { icon: "fa-solid fa-paw", color: "#DB5D02" },
-  "Pet Supply Distribution": { icon: "fa-solid fa-bowl-food", color: "#DB5D02" },
+  "Pet Supply Distribution": {
+    icon: "fa-solid fa-bowl-food",
+    color: "#DB5D02",
+  },
 };
 
 // Utility for converting 12-hour to 24-hour time
@@ -115,12 +160,28 @@ function isLocationOpen(location) {
   const now = new Date();
 
   // A) Date range check
-  let startDate = location.start_date ? new Date(location.start_date) : new Date(0);
-  let endDate = location.end_date ? new Date(location.end_date) : new Date(9999, 11, 31);
+  let startDate = location.start_date
+    ? new Date(location.start_date)
+    : new Date(0);
+  let endDate = location.end_date
+    ? new Date(location.end_date)
+    : new Date(9999, 11, 31);
 
-  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-  const endMidnight = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+  const todayMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+  const startMidnight = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    startDate.getDate()
+  );
+  const endMidnight = new Date(
+    endDate.getFullYear(),
+    endDate.getMonth(),
+    endDate.getDate()
+  );
 
   if (todayMidnight < startMidnight) return false;
   if (todayMidnight > endMidnight) return false;
@@ -174,10 +235,14 @@ export default function MapPage() {
   const dataSources = {
     resources: resourcesData,
     donations: donationsData,
-    volunteering: volunteeringData
+    volunteering: volunteeringData,
   };
-  
-  const combinedData = [...resourcesData, ...donationsData, ...volunteeringData];
+
+  const combinedData = [
+    ...resourcesData,
+    ...donationsData,
+    ...volunteeringData,
+  ];
 
   // Track which location to center on
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -185,56 +250,53 @@ export default function MapPage() {
   // -------------- EFFECTS --------------
 
   // Fetch Resources
-useEffect(() => {
-  const fetchResources = async () => {
-    try {
-      const res = await fetch("/api/resource-list");
-      const data = await res.json();
-      setResourcesData(data);
-    } catch (error) {
-      console.error("Error fetching resources:", error);
-    }
-  };
-  fetchResources();
-}, []);
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await fetch("/api/resource-list");
+        const data = await res.json();
+        setResourcesData(data);
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      }
+    };
+    fetchResources();
+  }, []);
 
-// Fetch Donations
-useEffect(() => {
-  const fetchDonations = async () => {
-    try {
-      const res = await fetch("/api/donate-list");
-      const data = await res.json();
+  // Fetch Donations
+  useEffect(() => {
+    const fetchDonations = async () => {
+      try {
+        const res = await fetch("/api/donate-list");
+        const data = await res.json();
 
-      // Normalize data
-      const normalizedData = data.map((item) => ({
-        ...item,
-        name: item.organization_name || item.name, // Add a fallback for `name`
-      }));
+        // Normalize data
+        const normalizedData = data.map((item) => ({
+          ...item,
+          name: item.organization_name || item.name, // Add a fallback for `name`
+        }));
 
-      setDonationsData(normalizedData);
-    } catch (error) {
-      console.error("Error fetching donations:", error);
-    }
-  };
-  fetchDonations();
-}, []);
+        setDonationsData(normalizedData);
+      } catch (error) {
+        console.error("Error fetching donations:", error);
+      }
+    };
+    fetchDonations();
+  }, []);
 
-
-
-// Fetch Volunteer
-useEffect(() => {
-  const fetchVolunteering = async () => {
-    try {
-      const res = await fetch("/api/volunteer-list");
-      const data = await res.json();
-      setVolunteeringData(data);
-    } catch (error) {
-      console.error("Error fetching volunteering:", error);
-    }
-  };
-  fetchVolunteering();
-}, []);
-
+  // Fetch Volunteer
+  useEffect(() => {
+    const fetchVolunteering = async () => {
+      try {
+        const res = await fetch("/api/volunteer-list");
+        const data = await res.json();
+        setVolunteeringData(data);
+      } catch (error) {
+        console.error("Error fetching volunteering:", error);
+      }
+    };
+    fetchVolunteering();
+  }, []);
 
   // 1. Load Leaflet + custom icons
   useEffect(() => {
@@ -263,9 +325,10 @@ useEffect(() => {
         const iconsHTML = types
           .map((type) => {
             const cfg = iconConfig[type] || {};
-            return `<i class="fa ${
-              (cfg.icon || "fa-circle").replace("fa-solid ", "")
-            }" style="color: ${cfg.color || "#000"}; font-size:18px;"></i>`;
+            return `<i class="fa ${(cfg.icon || "fa-circle").replace(
+              "fa-solid ",
+              ""
+            )}" style="color: ${cfg.color || "#000"}; font-size:18px;"></i>`;
           })
           .join("");
         return L.divIcon({
@@ -289,19 +352,19 @@ useEffect(() => {
     } else if (sidebar === "volunteering") {
       data = volunteeringData;
     }
-  
+
     // Filter by subcategory
     if (selectedSubcategories.length > 0) {
       data = data.filter((item) =>
         item.types?.some((type) => selectedSubcategories.includes(type))
       );
     }
-  
+
     // Filter by "Open Now"
     if (openNow) {
       data = data.filter(isLocationOpen);
     }
-  
+
     setFilteredData(data);
   }, [
     sidebar,
@@ -311,7 +374,6 @@ useEffect(() => {
     donationsData,
     volunteeringData,
   ]);
-  
 
   // 3. Fetch wildfires if active
   useEffect(() => {
@@ -401,7 +463,7 @@ useEffect(() => {
       organization_name: resource.organization_name,
     });
   };
-  
+
   // Handle search submission
   const handleSearch = (e) => {
     e.preventDefault();
@@ -482,9 +544,17 @@ useEffect(() => {
         color: "#015BC3",
         subcategories: [
           { label: "Food & Water", icon: faBurger, color: "#015BC3" },
-          { label: "Clothing & Personal Items", icon: faTshirt, color: "#015BC3" },
+          {
+            label: "Clothing & Personal Items",
+            icon: faTshirt,
+            color: "#015BC3",
+          },
           { label: "Hygiene & Sanitation", icon: faBath, color: "#015BC3" },
-          { label: "Financial Support", icon: faMoneyBillWave, color: "#015BC3" },
+          {
+            label: "Financial Support",
+            icon: faMoneyBillWave,
+            color: "#015BC3",
+          },
         ],
       },
       {
@@ -492,8 +562,16 @@ useEffect(() => {
         icon: faMapPin,
         color: "#4D03CD",
         subcategories: [
-          { label: "Shelters & Housing Assistance", icon: faHome, color: "#4D03CD" },
-          { label: "Transportation Assistance", icon: faCarSide, color: "#4D03CD" },
+          {
+            label: "Shelters & Housing Assistance",
+            icon: faHome,
+            color: "#4D03CD",
+          },
+          {
+            label: "Transportation Assistance",
+            icon: faCarSide,
+            color: "#4D03CD",
+          },
           { label: "Legal Aid", icon: faGavel, color: "#4D03CD" },
         ],
       },
@@ -502,8 +580,16 @@ useEffect(() => {
         icon: faMapPin,
         color: "#CC0000",
         subcategories: [
-          { label: "Medical Aid & First Aid", icon: faBriefcaseMedical, color: "#CC0000" },
-          { label: "Mental Health Support", icon: faPeopleGroup, color: "#CC0000" },
+          {
+            label: "Medical Aid & First Aid",
+            icon: faBriefcaseMedical,
+            color: "#CC0000",
+          },
+          {
+            label: "Mental Health Support",
+            icon: faPeopleGroup,
+            color: "#CC0000",
+          },
         ],
       },
       {
@@ -512,7 +598,11 @@ useEffect(() => {
         color: "#DB5D02",
         subcategories: [
           { label: "Animal Boarding", icon: faDog, color: "#DB5D02" },
-          { label: "Veterinary Care & Pet Food", icon: faPaw, color: "#DB5D02" },
+          {
+            label: "Veterinary Care & Pet Food",
+            icon: faPaw,
+            color: "#DB5D02",
+          },
         ],
       },
     ],
@@ -524,7 +614,11 @@ useEffect(() => {
         subcategories: [
           { label: "Food & Water", icon: faBurger, color: "#015BC3" },
           { label: "Clothing & Bedding", icon: faTshirt, color: "#015BC3" },
-          { label: "Hygiene & Sanitation Supplies", icon: faBath, color: "#015BC3" },
+          {
+            label: "Hygiene & Sanitation Supplies",
+            icon: faBath,
+            color: "#015BC3",
+          },
         ],
       },
       {
@@ -540,7 +634,11 @@ useEffect(() => {
         icon: faMapPin,
         color: "#CC0000",
         subcategories: [
-          { label: "Medical Supplies", icon: faBriefcaseMedical, color: "#CC0000" },
+          {
+            label: "Medical Supplies",
+            icon: faBriefcaseMedical,
+            color: "#CC0000",
+          },
         ],
       },
       {
@@ -558,9 +656,21 @@ useEffect(() => {
         icon: faMapPin,
         color: "#015BC3",
         subcategories: [
-          { label: "Food & Water Distribution", icon: faBurger, color: "#015BC3" },
-          { label: "Clothing & Supplies Distribution", icon: faTshirt, color: "#015BC3" },
-          { label: "Donation Sorting & Packing", icon: faBoxOpen, color: "#015BC3" },
+          {
+            label: "Food & Water Distribution",
+            icon: faBurger,
+            color: "#015BC3",
+          },
+          {
+            label: "Clothing & Supplies Distribution",
+            icon: faTshirt,
+            color: "#015BC3",
+          },
+          {
+            label: "Donation Sorting & Packing",
+            icon: faBoxOpen,
+            color: "#015BC3",
+          },
         ],
       },
       {
@@ -569,7 +679,11 @@ useEffect(() => {
         color: "#4D03CD",
         subcategories: [
           { label: "Shelter Assistance", icon: faHome, color: "#4D03CD" },
-          { label: "Transportation & Delivery Support", icon: faCarSide, color: "#4D03CD" },
+          {
+            label: "Transportation & Delivery Support",
+            icon: faCarSide,
+            color: "#4D03CD",
+          },
         ],
       },
       {
@@ -577,8 +691,16 @@ useEffect(() => {
         icon: faMapPin,
         color: "#CC0000",
         subcategories: [
-          { label: "Medical Aid Support", icon: faBriefcaseMedical, color: "#CC0000" },
-          { label: "Mental Health Support", icon: faPeopleGroup, color: "#CC0000" },
+          {
+            label: "Medical Aid Support",
+            icon: faBriefcaseMedical,
+            color: "#CC0000",
+          },
+          {
+            label: "Mental Health Support",
+            icon: faPeopleGroup,
+            color: "#CC0000",
+          },
         ],
       },
       {
@@ -588,19 +710,22 @@ useEffect(() => {
         subcategories: [
           { label: "Animal Shelter Assistance", icon: faDog, color: "#DB5D02" },
           { label: "Animal Rescue & Transport", icon: faPaw, color: "#DB5D02" },
-          { label: "Pet Supply Distribution", icon: faBowlFood, color: "#DB5D02" },
+          {
+            label: "Pet Supply Distribution",
+            icon: faBowlFood,
+            color: "#DB5D02",
+          },
         ],
       },
     ],
   };
-  
 
   // -------------- RENDER SIDEBAR --------------
   const renderSidebar = () => {
     let sidebarHeading = "Resource Options";
     if (sidebar === "donations") sidebarHeading = "Donation Options";
     else if (sidebar === "volunteering") sidebarHeading = "Volunteer Options";
-  
+
     return (
       <aside className="w-[25vw] h-[calc(100vh-80px)] overflow-y-auto bg-white p-6 shadow-xl flex-shrink-0 rounded-tr-2xl rounded-br-2xl">
         <div className="inline-block px-2 py-0 text-black bg-white border-2 border-black rounded-full text-[0.8vw] font-bold shadow-sm mb-1">
@@ -612,36 +737,42 @@ useEffect(() => {
               <li key={category.label}>
                 {/* Category label */}
                 <div className="flex items-center gap-3 font-bold text-[1.2vw]">
-  <FontAwesomeIcon icon={category.icon} style={{ color: category.color }} />
-  {category.label}
-</div>
+                  <FontAwesomeIcon
+                    icon={category.icon}
+                    style={{ color: category.color }}
+                  />
+                  {category.label}
+                </div>
 
                 {/* “Select All” button */}
-              <button
-                className="inline-block px-2 py-0 text-white bg-black rounded-full text-[0.8vw] font-semibold shadow hover:bg-gray-800"
-                onClick={() => {
-                  const subsInThisCat = category.subcategories.map((s) => s.label);
-                  if (sidebar === "donations") {
-                    subsInThisCat.push(`Monetary Donations (${category.label})`);
-                  }
-                  const currentlySelected = subsInThisCat.every((sub) =>
-                    selectedSubcategories.includes(sub)
-                  );
-                  if (currentlySelected) {
-                    setSelectedSubcategories((prev) =>
-                      prev.filter((s) => !subsInThisCat.includes(s))
+                <button
+                  className="inline-block px-2 py-0 text-white bg-black rounded-full text-[0.8vw] font-semibold shadow hover:bg-gray-800"
+                  onClick={() => {
+                    const subsInThisCat = category.subcategories.map(
+                      (s) => s.label
                     );
-                  } else {
-                    setSelectedSubcategories((prev) => [
-                      ...new Set([...prev, ...subsInThisCat]),
-                    ]);
-                  }
-                }}
-              >
-                Select All
-              </button>
+                    if (sidebar === "donations") {
+                      subsInThisCat.push(
+                        `Monetary Donations (${category.label})`
+                      );
+                    }
+                    const currentlySelected = subsInThisCat.every((sub) =>
+                      selectedSubcategories.includes(sub)
+                    );
+                    if (currentlySelected) {
+                      setSelectedSubcategories((prev) =>
+                        prev.filter((s) => !subsInThisCat.includes(s))
+                      );
+                    } else {
+                      setSelectedSubcategories((prev) => [
+                        ...new Set([...prev, ...subsInThisCat]),
+                      ]);
+                    }
+                  }}
+                >
+                  Select All
+                </button>
 
-  
                 {/* Subcategory list */}
                 <ul className="pl-6 mt-2 space-y-2 ">
                   {category.subcategories.map((subcategory) => (
@@ -661,7 +792,7 @@ useEffect(() => {
                       {subcategory.label}
                     </li>
                   ))}
-  
+
                   {/* For “donations,” also show “Monetary Donations” for each category */}
                   {sidebar === "donations" && (
                     <li
@@ -674,13 +805,17 @@ useEffect(() => {
                           : ""
                       }`}
                       onClick={() =>
-                        handleSubcategoryClick(`Monetary Donations (${category.label})`)
+                        handleSubcategoryClick(
+                          `Monetary Donations (${category.label})`
+                        )
                       }
                     >
                       <FontAwesomeIcon
                         icon={faMoneyBillWave}
                         style={{
-                          color: iconConfig[`Monetary Donations (${category.label})`]?.color,
+                          color:
+                            iconConfig[`Monetary Donations (${category.label})`]
+                              ?.color,
                         }}
                       />
                       <span>Monetary Donations</span>
@@ -696,7 +831,6 @@ useEffect(() => {
       </aside>
     );
   };
-  
 
   // -------------- MAIN RETURN --------------
   return (
@@ -736,15 +870,17 @@ useEffect(() => {
             >
               {/* Search box */}
               <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                placeholder="Search for organization"
-                value={searchQuery}
-                onChange={handleInputChange}
-                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                className="w-64 rounded-md border border-gray-300 py-[0.5vw] pl-3 pr-10 focus:outline-none rounded-[13vw] shadow-lg placeholder-gray-500 text-[1vw]"
-                style={{ placeholderColor: "#71767B" }}
-              />
+                <input
+                  type="text"
+                  placeholder="Search for organization"
+                  value={searchQuery}
+                  onChange={handleInputChange}
+                  onFocus={() =>
+                    suggestions.length > 0 && setShowSuggestions(true)
+                  }
+                  className="w-64 rounded-md border border-gray-300 py-[0.5vw] pl-3 pr-10 focus:outline-none rounded-[13vw] shadow-lg placeholder-gray-500 text-[1vw]"
+                  style={{ placeholderColor: "#71767B" }}
+                />
 
                 <button
                   type="submit"
@@ -777,74 +913,79 @@ useEffect(() => {
                 )}
               </form>
 
- {/* The four toggle buttons */}
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    openNow ? "bg-[#027B00] text-white" : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("open_now")}
->
-  <FontAwesomeIcon
-    icon={faClock}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: openNow ? "#FFFFFF" : "#027B00" }}
-  />
-  Open Now
-</button>
+              {/* The four toggle buttons */}
+              <button
+                className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+                  openNow
+                    ? "bg-[#027B00] text-white"
+                    : "bg-[#FFFFFF] text-black"
+                }`}
+                onClick={() => handleButtonClick("open_now")}
+              >
+                <FontAwesomeIcon
+                  icon={faClock}
+                  className="mr-2 text-lg" // Increased size and added gap
+                  style={{ color: openNow ? "#FFFFFF" : "#027B00" }}
+                />
+                Open Now
+              </button>
 
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    sidebar === "donations"
-      ? "bg-[#2B9FD0] text-white"
-      : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("donations")}
->
-  <FontAwesomeIcon
-    icon={faCircleDollarToSlot}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: sidebar === "donations" ? "#FFFFFF" : "#2B9FD0" }}
-  />
-  Donations Needed
-</button>
+              <button
+                className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+                  sidebar === "donations"
+                    ? "bg-[#2B9FD0] text-white"
+                    : "bg-[#FFFFFF] text-black"
+                }`}
+                onClick={() => handleButtonClick("donations")}
+              >
+                <FontAwesomeIcon
+                  icon={faCircleDollarToSlot}
+                  className="mr-2 text-lg" // Increased size and added gap
+                  style={{
+                    color: sidebar === "donations" ? "#FFFFFF" : "#2B9FD0",
+                  }}
+                />
+                Donations Needed
+              </button>
 
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    sidebar === "volunteering"
-      ? "bg-[#D55858] text-white"
-      : "bg-[#FFFFFF] text-black"
-  }`}
-  onClick={() => handleButtonClick("volunteering")}
->
-  <FontAwesomeIcon
-    icon={faHandHoldingHeart}
-    className="mr-2 text-lg" // Increased size and added gap
-    style={{ color: sidebar === "volunteering" ? "#FFFFFF" : "#D55858" }}
-  />
-  Volunteer Opportunities
-</button>
+              <button
+                className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+                  sidebar === "volunteering"
+                    ? "bg-[#D55858] text-white"
+                    : "bg-[#FFFFFF] text-black"
+                }`}
+                onClick={() => handleButtonClick("volunteering")}
+              >
+                <FontAwesomeIcon
+                  icon={faHandHoldingHeart}
+                  className="mr-2 text-lg" // Increased size and added gap
+                  style={{
+                    color: sidebar === "volunteering" ? "#FFFFFF" : "#D55858",
+                  }}
+                />
+                Volunteer Opportunities
+              </button>
 
-<button
-  className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
-    wildfireActive
-      ? "bg-orange-500 text-black"
-      : "bg-[#982525] text-white"
-  }`}
-  onClick={() => handleButtonClick("wildfire")}
->
-  <img
-    src="/images/fire.png"
-    alt="Wildfire"
-    className="w-6 h-6 inline-block mr-2" // Increased size and added gap
-    style={{
-      filter: wildfireActive ? "brightness(0) saturate(100%) hue-rotate(25deg) contrast(150%)" : "none",
-    }}
-  />
-  Wildfire Warning
-</button>
-
-
-
+              <button
+                className={`px-4 py-[0.5vw] text-[0.9vw] rounded-[10vw] font-semibold ${
+                  wildfireActive
+                    ? "bg-orange-500 text-black"
+                    : "bg-[#982525] text-white"
+                }`}
+                onClick={() => handleButtonClick("wildfire")}
+              >
+                <img
+                  src="/images/fire.png"
+                  alt="Wildfire"
+                  className="w-6 h-6 inline-block mr-2" // Increased size and added gap
+                  style={{
+                    filter: wildfireActive
+                      ? "brightness(0) saturate(100%) hue-rotate(25deg) contrast(150%)"
+                      : "none",
+                  }}
+                />
+                Wildfire Warning
+              </button>
             </div>
             {/* end of the absolute container for controls */}
 
@@ -853,7 +994,7 @@ useEffect(() => {
               <ClusteredMarkers
                 resources={filteredData}
                 createCustomIcon={customCreateIcon}
-                handleMarkerClick={handleMarkerClick} 
+                handleMarkerClick={handleMarkerClick}
               />
             )}
 
@@ -876,7 +1017,11 @@ useEffect(() => {
                 if (!Latitude || !Longitude) return null;
 
                 return (
-                  <Marker key={UniqueId} position={[Latitude, Longitude]} icon={fireIcon}>
+                  <Marker
+                    key={UniqueId}
+                    position={[Latitude, Longitude]}
+                    icon={fireIcon}
+                  >
                     <Popup>
                       <div>
                         <h3 style={{ marginTop: 0 }}>{Name}</h3>
@@ -907,24 +1052,28 @@ useEffect(() => {
 
           {/* “Floating” popup for selected resource */}
           {selectedResource && (
-  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50
-                  bg-white text-black rounded-xl shadow-lg p-4 w-80">
-    {sidebar === "resources" && (
-      <ResourceCard resource={selectedResource} />
-    )}
-    {sidebar === "donations" && (
-  <>
-    {console.log("Selected Resource Passed to DonationCard:", selectedResource)}
-    <DonationCard resource={selectedResource} />
-  </>
-)}
+            <div
+              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50
+                  bg-white text-black rounded-xl shadow-lg p-4 w-80"
+            >
+              {sidebar === "resources" && (
+                <ResourceCard resource={selectedResource} />
+              )}
+              {sidebar === "donations" && (
+                <>
+                  {console.log(
+                    "Selected Resource Passed to DonationCard:",
+                    selectedResource
+                  )}
+                  <DonationCard resource={selectedResource} />
+                </>
+              )}
 
-    {sidebar === "volunteering" && (
-      <VolunteerCard resource={selectedResource} />
-    )}
-  </div>
-)}
-
+              {sidebar === "volunteering" && (
+                <VolunteerCard resource={selectedResource} />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

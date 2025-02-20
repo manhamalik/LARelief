@@ -1,8 +1,8 @@
-# Use the official LibreTranslate Docker image
+# Use the official LibreTranslate image
 FROM libretranslate/libretranslate:latest
 
-# Expose the port (LibreTranslate runs on 5000 by default)
+# Expose the default port
 EXPOSE 5000
 
-# Start the service
-CMD ["./entrypoint.sh"]
+# Start LibreTranslate API
+CMD ["libretranslate", "--host", "0.0.0.0", "--port", "5000"]

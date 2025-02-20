@@ -367,7 +367,7 @@ export default function Home() {
         <div>
           {/* Lighter green square on right with drop shadow */}
           <div
-            className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px]"
+            className="absolute top-0 right-0 h-full bg-[#267738] rounded-tl-[160px] rounded-bl-[100px] hidden md:block "
             style={{
               zIndex: 0,
               width: "30.5%",
@@ -375,16 +375,15 @@ export default function Home() {
             }}
           ></div>
 
-          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+          <div className="max-w-8xl mx-auto flex-col md:flex-row items-center gap-4 relative z-10">
             {/* Text Content */}
             <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
               {/* Title */}
               <h2
-                className="mb-6"
+                className="mb-6 text-4xl md:text-[94px]"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "94px",
                   lineHeight: "1.1",
                   whiteSpace: "nowrap",
                   textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
@@ -394,12 +393,12 @@ export default function Home() {
               </h2>
 
               {/* Paragraph */}
+
               <motion.p
-                className="text-lg md:text-xl mb-8 leading-relaxed"
+                className="text-md md:text-[22px] mb-8 leading-relaxed"
                 style={{
                   fontFamily: "'Noto Sans Multani', sans-serif",
                   fontWeight: "400",
-                  fontSize: "22px",
                 }}
                 initial={{ opacity: 0, y: 50 }}
                 viewport={{ once: true }}
@@ -416,7 +415,7 @@ export default function Home() {
 
               {/* Buttons */}
               <motion.div
-                className="flex gap-4"
+                className="flex flex-col md:flex-row gap-4"
                 initial={{ opacity: 0, y: 50 }}
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -425,10 +424,9 @@ export default function Home() {
                 {/* Using ScrollLink to scroll to the section with id "map" */}
                 <ScrollLink to="map" smooth={true} duration={500} offset={-70}>
                   <motion.button
-                    className="bg-white text-[#183917] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
+                    className="bg-white text-[#183917] text-md md:text-[20px] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#183917] hover:text-white hover:border-white transition-all duration-300 cursor-pointer"
                     style={{
                       fontFamily: "'Noto Sans Multani', sans-serif",
-                      fontSize: "20px",
                     }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -438,10 +436,9 @@ export default function Home() {
                 </ScrollLink>
 
                 <motion.button
-                  className="bg-transparent border-2 border-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-green-900 transition-all duration-300"
+                  className="bg-transparent border-2 border-white text-md md:text-[20px] font-bold py-3 px-8 rounded-full hover:bg-white hover:text-green-900 transition-all duration-300"
                   style={{
                     fontFamily: "'Noto Sans Multani', sans-serif",
-                    fontSize: "20px",
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -453,7 +450,7 @@ export default function Home() {
             </div>
 
             {/* Image Content */}
-            <div className="md:w-[55%] relative h-full pr-8">
+            <div className="md:w-[55%] relative h-full pr-8 md:left-0 left-1/4">
               <motion.div
                 className="relative z-10"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -464,19 +461,19 @@ export default function Home() {
                 <img
                   src="/images/mission-graphic.png"
                   alt="Support graphic"
-                  className="w-[73%] h-auto"
+                  className="md:w-[73%] w-[50%] h-auto "
                 />
               </motion.div>
               {/* Vertical Texts */}
+
+              {/* VERTICAL (Desktop) Version */}
               <motion.div
                 data-no-translate="true"
-                className="absolute top-[16vw] transform -translate-y-[14vw] right-[-3rem] text-green-100 font-extrabold z-20"
+                className="hidden md:block absolute top-[16vw] transform -translate-y-[14vw] right-[-3rem] text-white font-extrabold z-20"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "105px",
-                  letterSpacing: "normal",
-                  color: "#ffffff",
+                  fontSize: "105px", // Larger for desktop
                   textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
                 }}
                 initial={{ x: 150, opacity: 0, rotate: -90 }}
@@ -489,7 +486,7 @@ export default function Home() {
 
               <motion.div
                 data-no-translate="true"
-                className="absolute top-[16vw] transform -translate-y-[16vw] right-[-8.7rem] text-green-100 font-extrabold z-10"
+                className="hidden md:block absolute top-[10vh] md:top-[16vw] transform -translate-y-[64vw] right-[-8.7rem] text-green-100 font-extrabold z-10"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
@@ -502,6 +499,42 @@ export default function Home() {
                 whileInView={{ x: 0, opacity: 1, rotate: -90 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
+              >
+                SUPPORT
+              </motion.div>
+
+              {/* HORIZONTAL (Mobile) Version */}
+              <motion.div
+                data-no-translate="true"
+                className="block md:hidden absolute top-[8vh] left-4 text-white font-extrabold z-0"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "48px", // Smaller for mobile
+                  textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
+                }}
+                initial={{ y: 50, opacity: 0, rotate: 0 }}
+                whileInView={{ y: 0, opacity: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              >
+                SUPPORT
+              </motion.div>
+              <motion.div
+                data-no-translate="true"
+                className="block md:hidden absolute top-[13vh] left-4 text-white font-extrabold z-0"
+                style={{
+                  fontFamily: "'Noto Sans', sans-serif",
+                  fontWeight: "900",
+                  fontSize: "48px",
+                  letterSpacing: "normal",
+                  WebkitTextStroke: "1px #ffffff",
+                  color: "transparent",
+                }}
+                initial={{ y: 50, opacity: 0, rotate: 0 }}
+                whileInView={{ y: 0, opacity: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: "easeOut" }}
               >
                 SUPPORT
               </motion.div>

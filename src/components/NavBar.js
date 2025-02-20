@@ -283,12 +283,42 @@ const NavBar = ({ opacity = 100, isShopEnabled }) => {
             <Image
               src="/images/mobile-menu.png"
               alt="Menu"
-              className="h-8 w-auto"
+              className="h-8 w-auto cursor-pointer items-center"
               width={32}
               height={32}
             />
           </button>
         </div>
+        {isOpen && (
+          <div className="absolute top-full left-0 w-full bg-white text-black py-4 px-6 md:hidden">
+            <ul className="space-y-4">
+              <li
+                onClick={() => {
+                  handleNavigation("map");
+                  toggleMenu();
+                }}
+                className="cursor-pointer"
+              >
+                Map
+              </li>
+              <li>
+                <Link href="/volunteer">
+                  <span onClick={toggleMenu}>Volunteer</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/donate">
+                  <span onClick={toggleMenu}>Donate</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact">
+                  <span onClick={toggleMenu}>Contact</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );
