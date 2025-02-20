@@ -298,12 +298,17 @@ export default function Home() {
       {/* Hero Section */}
       <div id="hero" className="relative h-screen w-full">
         {/* Background Image */}
-        <Image
+        <img
           src="/images/imagenew.jpg"
           alt="Background Image"
-          fill
-          style={{ objectFit: "cover" }}
-          priority
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            objectFit: "cover",
+          }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black opacity-40"></div>
