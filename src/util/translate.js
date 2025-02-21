@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5050/translate"; // Change if needed
+const API_URL = "https://languagedocker-1.onrender.com/translate"; // Change if needed
 
 export const translateText = async (text, targetLang) => {
   if (!text.trim()) return text; // Ignore empty strings
