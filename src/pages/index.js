@@ -410,8 +410,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
               >
-                Our mission is to support communities affected by wildfires with real-time access to essential resources, from shelter and medical care to mental health support and animal care supplies. We provide up-to-date wildfire alerts, air quality tracking, and guides for preparedness, response, and recovery. Our platform also connects people with donation and volunteer opportunities. With multilingual support and "open now" features, we make it easier for everyone to find the help they need to recover and rebuild.
-              
+                Our mission is to support communities affected by wildfires with real-time access to essential resources, from shelter and medical care to mental health support and animal care supplies. We provide up-to-date wildfire alerts, air quality tracking, and guides for preparedness, response, and recovery. Our platform also connects people with donation and volunteer opportunities. With multilingual support and &quot;open now&quot; features, we make it easier for everyone to find the help they need to recover and rebuild.
               </motion.p>
 
               {/* Buttons */}
