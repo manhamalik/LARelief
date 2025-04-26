@@ -647,17 +647,14 @@ export default function Home() {
                     selectedSubCategories["Shelter & Support Services"] || []
                   }
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick(
-                      "Shelter & Support Services",
-                      subCategory
-                    )
+                    handleSubCategoryClick("Shelter & Support Services", subCategory)
                   }
                   mainCategory="Shelter & Support Services"
                 />
-                <div className="flex gap-2 mt-4 md:mt-0 pr-[1.9vw]">
-                  {visibleEssentials < filteredEssentials.length && (
+                <div className="flex gap-2 mt-4 md:mt-0">
+                  {visibleShelter < filteredShelter.length && (
                     <motion.button
-                      onClick={handleShowMoreEssentials}
+                      onClick={handleShowMoreShelter}
                       className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}
@@ -667,9 +664,9 @@ export default function Home() {
                       <span>Show More</span>
                     </motion.button>
                   )}
-                  {visibleEssentials > 4 && (
+                  {visibleShelter > 4 && (
                     <motion.button
-                      onClick={handleShowLessEssentials}
+                      onClick={handleShowLessShelter}
                       className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}
@@ -678,16 +675,6 @@ export default function Home() {
                       <FontAwesomeIcon icon={faChevronUp} width="16px" />
                       <span>Show Less</span>
                     </motion.button>
-                  )}
-                  {visibleShelter > 4 && (
-                    <button
-                      onClick={handleShowLessShelter}
-                      className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
-                      style={{ fontFamily: "'Noto Sans', sans-serif" }}
-                    >
-                      <FontAwesomeIcon icon={faChevronUp} width="16px" />
-                      <span>Show Less</span>
-                    </button>
                   )}
                 </div>
               </div>
@@ -714,18 +701,16 @@ export default function Home() {
               <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={["Medical Aid Support", "Mental Health Support"]}
-                  selectedCategories={
-                    selectedSubCategories["Medical & Health"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
                   mainCategory="Medical & Health"
                 />
-                <div className="flex gap-2 mt-4 md:mt-0 pr-[1.9vw]">
-                  {visibleEssentials < filteredEssentials.length && (
+                <div className="flex gap-2 mt-4 md:mt-0">
+                  {visibleMedical < filteredMedical.length && (
                     <motion.button
-                      onClick={handleShowMoreEssentials}
+                      onClick={handleShowMoreMedical}
                       className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}
@@ -735,9 +720,9 @@ export default function Home() {
                       <span>Show More</span>
                     </motion.button>
                   )}
-                  {visibleEssentials > 4 && (
+                  {visibleMedical > 4 && (
                     <motion.button
-                      onClick={handleShowLessEssentials}
+                      onClick={handleShowLessMedical}
                       className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}
@@ -776,18 +761,16 @@ export default function Home() {
                     "Animal Rescue & Transport",
                     "Pet Supply Distribution",
                   ]}
-                  selectedCategories={
-                    selectedSubCategories["Animal Support"] || []
-                  }
+                  selectedCategories={selectedSubCategories["Animal Support"] || []}
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }
                   mainCategory="Animal Support"
                 />
-                <div className="flex gap-2 mt-4 md:mt-0 pr-[1.9vw]">
-                  {visibleEssentials < filteredEssentials.length && (
+                <div className="flex gap-2 mt-4 md:mt-0">
+                  {visibleAnimal < filteredAnimal.length && (
                     <motion.button
-                      onClick={handleShowMoreEssentials}
+                      onClick={handleShowMoreAnimal}
                       className="bg-white text-black font-bold py-1.5 px-3 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}
@@ -797,9 +780,9 @@ export default function Home() {
                       <span>Show More</span>
                     </motion.button>
                   )}
-                  {visibleEssentials > 4 && (
+                  {visibleAnimal > 4 && (
                     <motion.button
-                      onClick={handleShowLessEssentials}
+                      onClick={handleShowLessAnimal}
                       className="bg-white text-black font-bold py-1.5 px-4 rounded-full flex gap-1 items-center"
                       style={{ fontFamily: "'Noto Sans', sans-serif" }}
                       whileHover={{ scale: 1.05 }}

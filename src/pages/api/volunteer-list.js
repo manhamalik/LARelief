@@ -1,52 +1,33 @@
-import { Client } from "pg";
+import { supabase } from '../../lib/supabaseClient'
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', ['GET'])
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const client = new Client({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT,
-    ssl: {
-      rejectUnauthorized: false, // Required for Render-hosted databases
-    },
-  });
+  const { data, error } = await supabase
+    .from('volunteering')
+    .select(`
+      *,
+      volunteer_category (
+        categories ( name )
+      ),
+      volunteer_type_map (
+        volunteer_types ( name )
+      )
+    `)
 
-  try {
-    await client.connect();
-
-    const query = `
-            SELECT v.*, 
-                   COALESCE(json_agg(DISTINCT c.name) FILTER (WHERE c.name IS NOT NULL), '[]'::json) AS categories,
-                   COALESCE(json_agg(DISTINCT t.name) FILTER (WHERE t.name IS NOT NULL), '[]'::json) AS types
-            FROM volunteering v
-            LEFT JOIN volunteer_category vc ON v.id = vc.volunteer_id
-            LEFT JOIN categories c ON vc.category_id = c.id
-            LEFT JOIN volunteer_type_map vtm ON v.id = vtm.volunteer_id
-            LEFT JOIN volunteer_types t ON vtm.type_id = t.id
-            GROUP BY v.id
-        `;
-
-    const result = await client.query(query);
-
-    // Ensure JSON fields are properly formatted
-    const formattedRows = result.rows.map((row) => ({
-      ...row,
-      categories: Array.isArray(row.categories)
-        ? row.categories
-        : JSON.parse(row.categories),
-    }));
-
-    res.status(200).json(formattedRows);
-  } catch (error) {
-    console.error("Database query error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await client.end();
+  if (error) {
+    console.error('Supabase error:', error)
+    return res.status(500).json({ error: error.message })
   }
+
+  const formatted = data.map(v => ({
+    ...v,
+    categories: v.volunteer_category.map(vc => vc.categories.name),
+    types:      v.volunteer_type_map.map(vt => vt.volunteer_types.name)
+  }))
+
+  return res.status(200).json(formatted)
 }

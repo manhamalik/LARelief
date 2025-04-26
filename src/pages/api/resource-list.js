@@ -1,51 +1,38 @@
-import { Client } from "pg";
+import { supabase } from '../../lib/supabaseClient'
 
 export default async function handler(req, res) {
-    if (req.method !== "GET") {
-        res.status(405).json({ error: "Method not allowed" });
-        return;
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', ['GET'])
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // fetch with joins over Supabase’s HTTP API
+  const { data, error } = await supabase
+    .from('resources')
+    .select(`
+      *,
+      resource_category (
+        categories ( name )
+      ),
+      resource_type_map (
+        resource_types ( name )
+      )
+    `)
+
+  if (error) {
+    console.error('Supabase error:', error)
+    return res.status(500).json({ error: error.message })
+  }
+
+  // collapse the join tables into simple arrays
+  const formatted = data.map(r => {
+    const { resource_category, resource_type_map, ...rest } = r
+    return {
+      ...rest,
+      categories: resource_category?.map(rc => rc.categories.name) || [],
+      types:      resource_type_map?.map(rt => rt.resource_types.name) || []
     }
+  })
 
-    const client = new Client({
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASS,
-        port: process.env.DB_PORT,
-        ssl: {
-            rejectUnauthorized: false, // Required for Render-hosted databases
-        },
-    });   
-
-    try {
-        await client.connect();
-
-        const query = `
-            SELECT r.*, 
-                   COALESCE(json_agg(DISTINCT c.name) FILTER (WHERE c.name IS NOT NULL), '[]'::json) AS categories,
-                   COALESCE(json_agg(DISTINCT t.name) FILTER (WHERE t.name IS NOT NULL), '[]'::json) AS types
-            FROM resources r
-            LEFT JOIN resource_category rc ON r.id = rc.resource_id
-            LEFT JOIN categories c ON rc.category_id = c.id
-            LEFT JOIN resource_type_map rt ON r.id = rt.resource_id
-            LEFT JOIN resource_types t ON rt.type_id = t.id
-            GROUP BY r.id
-        `;
-
-        const result = await client.query(query);
-
-        // Ensure JSON fields are properly formatted
-        const formattedRows = result.rows.map((row) => ({
-            ...row,
-            categories: Array.isArray(row.categories) ? row.categories : JSON.parse(row.categories),
-            types: Array.isArray(row.types) ? row.types : JSON.parse(row.types),
-        }));
-
-        res.status(200).json(formattedRows);
-    } catch (error) {
-        console.error("Database query error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    } finally {
-        await client.end();
-    }
+  return res.status(200).json(formatted)
 }
