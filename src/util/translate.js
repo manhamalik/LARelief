@@ -28,4 +28,25 @@ export const translateText = async (text, targetLang) => {
     console.log("✅ Supabase cache hit");
     return cached[langCol];
   }
+  
+  // 2. Translate from LibreTranslate
+  let translatedText = text;
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source: "en",
+        target: targetLang,
+        format: "text",
+      }),
+    });
+
+    const json = await res.json();
+    translatedText = json.translatedText || text;
+  } catch (e) {
+    console.error("Translation failed:", e);
+    return text;
+  }
 };
