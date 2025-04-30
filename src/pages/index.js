@@ -382,7 +382,7 @@ export default function Home() {
 
           <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
             {/* Text Content */}
-            <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full pl-16">
+            <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full md:pl-16 mt-10 md:mt-0">
               {/* Title */}
               <h2
                 className="mb-6 text-4xl md:text-[94px]"
@@ -400,7 +400,7 @@ export default function Home() {
               {/* Paragraph */}
 
               <motion.p
-                className="text-md md:text-[22px] mb-8 leading-relaxed"
+                className="text-[12px] md:text-[22px] mb-8 leading-relaxed"
                 style={{
                   fontFamily: "'Noto Sans Multani', sans-serif",
                   fontWeight: "400",
@@ -410,7 +410,15 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
               >
-                Our mission is to support communities affected by wildfires with real-time access to essential resources, from shelter and medical care to mental health support and animal care supplies. We provide up-to-date wildfire alerts, air quality tracking, and guides for preparedness, response, and recovery. Our platform also connects people with donation and volunteer opportunities. With multilingual support and &quot;open now&quot; features, we make it easier for everyone to find the help they need to recover and rebuild.
+                Our mission is to support communities affected by wildfires with
+                real-time access to essential resources, from shelter and
+                medical care to mental health support and animal care supplies.
+                We provide up-to-date wildfire alerts, air quality tracking, and
+                guides for preparedness, response, and recovery. Our platform
+                also connects people with donation and volunteer opportunities.
+                With multilingual support and &quot;open now&quot; features, we
+                make it easier for everyone to find the help they need to
+                recover and rebuild.
               </motion.p>
 
               {/* Buttons */}
@@ -450,7 +458,7 @@ export default function Home() {
             </div>
 
             {/* Image Content */}
-            <div className="md:w-[55%] relative h-full pr-8 md:left-0 left-1/4">
+            <div className="md:w-[55%] relative h-full pr-8 md:left-0 sm:left-1/4 flex justify-center items-center">
               <motion.div
                 className="relative z-10"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -461,7 +469,7 @@ export default function Home() {
                 <img
                   src="/images/mission-graphic.png"
                   alt="Support graphic"
-                  className="md:w-[73%] w-[50%] h-auto "
+                  className="md:w-[73%] w-[17rem] h-auto mx-auto"
                 />
               </motion.div>
               {/* Vertical Texts */}
@@ -506,11 +514,11 @@ export default function Home() {
               {/* HORIZONTAL (Mobile) Version */}
               <motion.div
                 data-no-translate="true"
-                className="block md:hidden absolute top-[8vh] left-4 text-white font-extrabold z-0"
+                className="block md:hidden absolute top-[8vh] text-white font-extrabold z-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "48px", // Smaller for mobile
+                  fontSize: "55px", // Smaller for mobile
                   textShadow: "0px 2px 2px rgba(0, 0, 0, 0.3)",
                 }}
                 initial={{ y: 50, opacity: 0, rotate: 0 }}
@@ -522,11 +530,11 @@ export default function Home() {
               </motion.div>
               <motion.div
                 data-no-translate="true"
-                className="block md:hidden absolute top-[13vh] left-4 text-white font-extrabold z-0"
+                className="block md:hidden absolute top-[17vh] text-white font-extrabold z-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "48px",
+                  fontSize: "55px", // Smaller for mobile
                   letterSpacing: "normal",
                   WebkitTextStroke: "1px #ffffff",
                   color: "transparent",
@@ -606,11 +614,10 @@ export default function Home() {
               <div className="max-w-2xl">
                 <h2 className="relative text-center">
                   <span
-                    className="absolute inset-0 text-center"
+                    className="absolute inset-0 text-center text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       top: "-0.25rem",
                       left: "-0.75rem",
                       color: "transparent",
@@ -620,11 +627,10 @@ export default function Home() {
                     SEARCH FOR
                   </span>
                   <span
-                    className="relative text-white"
+                    className="relative text-white text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                     }}
                   >
@@ -640,7 +646,7 @@ export default function Home() {
                   fontWeight: "700",
                 }}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-col md:flex-row">
                   <motion.div
                     className="search-filter-containers relative flex items-center"
                     whileHover={{ scale: 1.05 }}
@@ -651,7 +657,7 @@ export default function Home() {
                       placeholder="Name of organization"
                       onChange={handleSearch}
                       value={searchInput}
-                      className="rounded-full py-2 px-4"
+                      className="rounded-full py-2 px-4 relative w-full md:w-[280px]"
                     />
                     <FontAwesomeIcon
                       icon={faMagnifyingGlass}
@@ -670,7 +676,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div>
+                    <div className="relative w-full">
                       <DatePicker
                         selected={startDate}
                         onChange={(dates) => {
@@ -682,7 +688,7 @@ export default function Home() {
                         endDate={endDate}
                         selectsRange
                         placeholderText="Date"
-                        className="rounded-full w-60 h-10 text-center pr-4"
+                        className="rounded-full w-[full] py-2 px-4 pl-5 md:w-[200px]"
                       />
                       <FontAwesomeIcon
                         icon={faCalendarAlt}
@@ -690,8 +696,12 @@ export default function Home() {
                           color: "#71767B",
                           position: "absolute",
                           height: "20px",
-                          top: "20%",
-                          right: "12px",
+                          top: "22%",
+                          right:
+                            typeof window !== "undefined" &&
+                            window.innerWidth < 768
+                              ? "13rem"
+                              : "1rem", // Adjusted for mobile
                         }}
                       />
                     </div>
@@ -711,10 +721,9 @@ export default function Home() {
             {/* --- Essentials Category --- */}
             <div className="mt-4">
               <h2
-                className="text-xl font-bold mb-7"
+                className="font-bold mb-7 text-[40px] md:text-[50px] leading-[1.2]"
                 style={{
                   fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
                   color: "#ffffff",
                   marginTop: "15px",
                 }}
@@ -773,10 +782,9 @@ export default function Home() {
             {/* --- Shelter & Support Services Category --- */}
             <div className="mt-4">
               <h2
-                className="text-xl font-bold mb-7"
+                className="font-bold mb-7 text-[40px] md:text-[50px] leading-[1.2]"
                 style={{
                   fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
                   color: "#ffffff",
                   marginTop: "15px",
                 }}
@@ -844,10 +852,9 @@ export default function Home() {
             {/* --- Medical & Health Category --- */}
             <div className="mt-4">
               <h2
-                className="text-xl font-bold mb-7"
+                className="font-bold mb-7 text-[40px] md:text-[50px] leading-[1.2]"
                 style={{
                   fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
                   color: "#ffffff",
                   marginTop: "15px",
                 }}
@@ -868,7 +875,7 @@ export default function Home() {
                   }
                   mainCategory="Medical & Health"
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-3">
                   {visibleCounts["Medical & Health"] <
                     filteredMedical.length && (
                     <motion.button
@@ -906,10 +913,9 @@ export default function Home() {
             {/* --- Animal Support Category --- */}
             <div className="mt-4">
               <h2
-                className="text-xl font-bold mb-7"
+                className="text-xl font-bold mb-7 text-[40px] md:text-[50px]"
                 style={{
                   fontFamily: "'Potta One', normal",
-                  fontSize: "50px",
                   color: "#ffffff",
                   marginTop: "15px",
                 }}
@@ -927,7 +933,7 @@ export default function Home() {
                   }
                   mainCategory="Animal Support"
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-3">
                   {visibleCounts["Animal Support"] < filteredAnimal.length && (
                     <motion.button
                       onClick={() => handleShowMore("Animal Support")}
@@ -977,11 +983,11 @@ export default function Home() {
             {/* Text Content */}
             <div className="flex flex-col justify-center items-start lg:w-1/2 text-white text-left">
               <div className="flex flex-col justify-center items-start h-full mx-auto">
-                <h2 className="text-5xl md:text-6xl font-bold mb-4 w-[400px]">
+                <h2 className="text-5xl md:text-6xl font-bold mb-4 w-[400px] mt-10">
                   {bethehope.map((char, index) => (
                     <motion.span
                       key={index}
-                      className="text-[5.5rem] mr-4"
+                      className="text-[3.5rem] md:text-[5.5rem] mr-4"
                       style={{
                         fontFamily: "'Dancing Script', cursive",
                         fontWeight: 400,
@@ -1004,7 +1010,7 @@ export default function Home() {
                   <br />
                   <span
                     data-no-translate="true"
-                    className="text-white text-[6rem]"
+                    className="text-white text-[4.2rem] md:text-[6rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: 800,
@@ -1014,7 +1020,7 @@ export default function Home() {
                   </span>
                 </h2>
                 <motion.p
-                  className="text-[1.65rem] mb-8 w-[550px]"
+                  className="md:text-[1.65rem] mb-8 w-[350px] md:w-[550px]"
                   style={{ fontFamily: "'Noto Sans', sans-serif" }}
                   initial={{ opacity: 0, y: 50 }}
                   viewport={{ once: true }}
@@ -1035,11 +1041,10 @@ export default function Home() {
                 >
                   <button
                     onClick={() => navigate("/volunteer")}
-                    className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
+                    className="bg-[#183917] text-[1.5rem] md:text-[1.8rem] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[15rem] md:w-[16.3rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: 800,
-                      fontSize: "1.8rem",
                     }}
                   >
                     <span className="flex-grow text-left">VOLUNTEER</span>
@@ -1047,11 +1052,10 @@ export default function Home() {
                   </button>
                   <button
                     onClick={() => navigate("/donate")}
-                    className="bg-[#183917] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[16.3rem]"
+                    className="bg-[#183917] text-[1.5rem] md:text-[1.8rem] text-white font-bold py-2 px-6 rounded-2xl hover:bg-white hover:text-[#183917] border border-white transition-all duration-300 flex items-center justify-between w-[15rem] md:w-[16.3rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: 800,
-                      fontSize: "1.8rem",
                     }}
                   >
                     <span className="flex-grow text-left">DONATE</span>
@@ -1066,12 +1070,11 @@ export default function Home() {
               <div className="relative w-full flex justify-center">
                 {/* Background SUPPORT text */}
                 <div
-                  className="absolute inset-0 flex flex-col justify-center items-center z-0 text-[#184822] mr-10"
+                  className="absolute inset-0 flex flex-col justify-center items-center z-0 text-[#184822] md:mr-10 text-[5.5rem] md:text-[12rem]"
                   style={{
                     fontFamily: "'Noto Sans', sans-serif",
                     fontWeight: 800,
                     lineHeight: "0.88",
-                    fontSize: "12rem",
                     letterSpacing: "-0.5rem",
                   }}
                 >
@@ -1117,7 +1120,7 @@ export default function Home() {
                 <img
                   src="/images/globe.png"
                   alt="Earth Graphic"
-                  className="relative z-10 w-[45.25vw] mt-[9.5rem] ml-[3rem] mr-10"
+                  className="relative z-10 w-[20rem] md:w-[44rem] mt-[7rem] md:mt-[9.5rem] md:ml-[3rem] md:mr-10"
                 />
               </div>
             </div>
@@ -1132,11 +1135,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <h2 className="relative text-center">
             <span
-              className="absolute inset-0 text-center"
+              className="absolute inset-0 text-center text-[3.2rem] md:text-[5.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "5.5rem",
                 top: "-0.25rem",
                 left: "-0.75rem",
                 color: "transparent",
@@ -1146,11 +1148,10 @@ export default function Home() {
               FAQs
             </span>
             <span
-              className="relative text-white"
+              className="relative text-white text-[3.2rem] md:text-[5.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "5.5rem",
                 textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
               }}
             >

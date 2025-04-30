@@ -20,11 +20,10 @@ const Dropdown = ({ title, content }) => {
       >
         <button
           onClick={toggleDropdown}
-          className="flex justify-between w-full p-4 text-left focus:outline-none"
+          className="flex justify-between w-full p-4 text-left focus:outline-none md:text-[1.15rem]"
           style={{
             fontFamily: "'Noto Sans', sans-serif",
             fontWeight: "bold",
-            fontSize: "1.15rem",
           }}
         >
           <span>{title}</span>
@@ -37,7 +36,7 @@ const Dropdown = ({ title, content }) => {
 
       {/* Dropdown content */}
       <div
-        className={`w-full mx-auto bg-snow rounded-b-2xl shadow-md shadow-black/10 overflow-x-auto custom-scrollbar`}
+        className={`w-full mx-auto bg-snow rounded-b-2xl shadow-md shadow-black/10 overflow-x-auto custom-scrollbar md:text-[1.1rem]`}
       >
         <div
           ref={contentRef}
@@ -51,7 +50,6 @@ const Dropdown = ({ title, content }) => {
             style={{
               fontFamily: "'Noto Sans', sans-serif",
               fontWeight: "400",
-              fontSize: "1.1rem",
             }}
           >
             <p className="text-left">{content}</p>

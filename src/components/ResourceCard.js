@@ -174,11 +174,10 @@ const ResourceCard = ({ resource }) => {
   return (
     <div
       key={id}
-      className="outerContainer"
+      className="outerContainer md:left-[15%]"
       style={{
         fontFamily: "'Noto Sans Multani', sans-serif",
         position: "relative",
-        left: "15%",
       }}
     >
       <Link
@@ -291,7 +290,8 @@ const ResourceCard = ({ resource }) => {
       </Link>
       <style jsx>{`
         .outerContainer {
-          width: 400px;
+          width: 100%;
+          max-width: 390px;
           position: relative;
         }
         .cardContainer {
