@@ -41,7 +41,7 @@ jobs:
               const { createClient } = require('@supabase/supabase-js');
               const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-              // Ping Supabase by querying a table (e.g., 'songs')
+              // Ping Supabase by querying a table
               const { data, error } = await supabase.from('translations').select('*').limit(10);
 
               // Handle errors
