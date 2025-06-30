@@ -167,7 +167,8 @@ export default function Home() {
   }, []);
 
   // Handlers for show more/less
-  const handleShowMoreEssentials = () => setVisibleEssentials((prev) => prev + 12);
+  const handleShowMoreEssentials = () =>
+    setVisibleEssentials((prev) => prev + 12);
   const handleShowLessEssentials = () => setVisibleEssentials(4);
   const handleShowMoreShelter = () => setVisibleShelter((prev) => prev + 12);
   const handleShowLessShelter = () => setVisibleShelter(4);
@@ -250,16 +251,14 @@ export default function Home() {
       {/* Mission Section */}
       <section
         id="mission"
-        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
+        className="bg-[#183917] text-white min-h-screen flex items-center justify-center md:px-8 relative overflow-hidden"
       >
         <div>
           {/* Title Text */}
           <div
-            className="absolute top-0 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold"
+            className="absolute top-0 pt-4 md:pt-2 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold h-[16vh] md:h-[20vh] w-[82vw] md:w-[30vw]"
             style={{
               zIndex: 0,
-              height: "10vw",
-              width: "30vw",
               boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",
               fontFamily: "'Noto Sans', sans-serif",
               textAlign: "center",
@@ -272,13 +271,11 @@ export default function Home() {
               transition={{ duration: 1 }}
             >
               <motion.span
-                className="absolute inset-0"
+                className="absolute inset-0 text-[3.8rem] md:text-[5.5rem] top-[-1rem] md:top-[-2rem] md:left-[-1rem]"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "5vw",
-                  top: "-2rem",
-                  left: "-1rem",
+
                   color: "transparent",
                   WebkitTextStroke: "1px #ffffff",
                   zIndex: 1,
@@ -290,11 +287,10 @@ export default function Home() {
                 DONATE
               </motion.span>
               <span
-                className="relative text-white"
+                className="relative text-white text-[3.8rem] md:text-[5.5rem]"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
-                  fontSize: "5vw",
                   textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                   zIndex: 2,
                 }}
@@ -306,7 +302,7 @@ export default function Home() {
 
           {/* Lighter Green Square on Right */}
           <div
-            className="absolute top-12 right-0 h-full bg-[#267738] rounded-tl-[13vw] rounded-bl-[13vw]"
+            className="hidden md:block absolute top-12 right-0 h-full bg-[#267738] rounded-tl-[13vw] rounded-bl-[13vw]"
             style={{
               zIndex: 0,
               width: "30.5%",
@@ -315,7 +311,109 @@ export default function Home() {
             }}
           ></div>
 
-          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+          <div className="md:hidden relative w-full mt-[6rem]">
+            <img
+              src="/images/donate main mobile.png"
+              alt="Donate main mobile"
+              className="md:hidden w-full h-full object-cover"
+            />
+
+            {/* Box Overlay */}
+            <div className="absolute inset-0 top-[38%] flex items-center justify-center z-10">
+              <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
+                {/* Text Content */}
+                <div className="w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full">
+                  <motion.div
+                    className="relative bg-[#183917] rounded-[2.5vw] border-[0.2rem] border-white shadow-lg mt-[8vw] py-2 px-4 w-[55vw]"
+                    style={{
+                      fontFamily: "'Noto Sans', sans-serif",
+                      color: "#ffffff",
+                      maxWidth: "90%",
+                    }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    whileHover={{ scale: 1.04 }}
+                  >
+                    {/* Circle with Star */}
+                    <div
+                      className="absolute -top-[7vw] left-[26vw] transform -translate-x-1/2 bg-white rounded-full w-[12vw] h-[12vw] flex items-center justify-center"
+                      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
+                    >
+                      <i
+                        className="fas fa-star text-[#183917]"
+                        style={{ fontSize: "1.2rem" }}
+                      ></i>
+                    </div>
+                    {/* Text Content */}
+                    <p
+                      className="mb-2 pt-3 text-[1rem]"
+                      style={{
+                        fontWeight: "600",
+                        margin: "0 auto",
+                      }}
+                    >
+                      Help by donating to any of the
+                    </p>
+                    <motion.p
+                      style={{
+                        fontWeight: "900",
+                        fontSize: "2.2rem",
+                        margin: "0 auto",
+                        paddingTop: "1rem",
+                        lineHeight: "1rem",
+                      }}
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 1 }}
+                    >
+                      100+
+                    </motion.p>
+                    <motion.p
+                      style={{
+                        fontWeight: "900",
+                        fontSize: "1.2rem",
+                        maxWidth: "85%",
+                        margin: "0 auto",
+                        paddingTop: "0.5rem",
+                        lineHeight: "5vw",
+                      }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 1 }}
+                    >
+                      organizations
+                    </motion.p>
+                    <p
+                      style={{
+                        fontWeight: "600",
+                        fontSize: "0.7rem",
+                        margin: "0 auto",
+                        paddingTop: "0.7rem",
+                      }}
+                    >
+                      supporting Los Angeles through wildfires
+                    </p>
+                  </motion.div>
+                  {/* EXPLORE OPPORTUNITIES Button */}
+                  <motion.button
+                    onClick={() =>
+                      scroller.scrollTo("resources", {
+                        smooth: true,
+                        duration: 500,
+                        offset: -50,
+                      })
+                    }
+                    className="mt-6 bg-white text-[#194218] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+                    style={{ fontSize: "1.1rem" }}
+                    whileHover={{ scale: 1.03 }}
+                  >
+                    EXPLORE OPPORTUNITIES
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:flex max-w-8xl mx-auto flex flex-col md:flex-row items-center gap-4 relative z-10">
             {/* Text Content */}
             <div className="w-[100vw] z-10 flex flex-col justify-center items-center text-center h-full">
               <motion.div
@@ -416,10 +514,10 @@ export default function Home() {
               </motion.button>
             </div>
 
-            {/* Image Content - Support Image */}
-            <div className="relative h-full right-[15vw] z-1">
+            {/* Desktop Image Content - Support Image */}
+            <div className="hidden md:block relative h-full right-[15vw] z-1">
               <motion.div
-                className="relative z-50"
+                className=" relative z-50"
                 initial={{ opacity: 0.7, y: 0 }}
                 animate={{ opacity: 1, y: 0, scale: [1, 1.03, 1] }}
                 transition={{ duration: 1, ease: "easeInOut" }}
@@ -489,7 +587,10 @@ export default function Home() {
               name="description"
               content="Find aid and resources near you for emergencies and support."
             />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <link
               href="https://fonts.googleapis.com/css2?family=Tilt+Warp:wght@400;700&family=Noto+Sans:wght@700&display=swap"
               rel="stylesheet"
@@ -500,18 +601,17 @@ export default function Home() {
             />
           </Head>
 
-          <div className="px-8 pt-8 select-none overflow-x-hidden">
+          <div className="px-2 md:px-8 pt-8 select-none overflow-x-hidden">
             <div className="heading-container max-w-7xl flex flex-col md:flex-row md:items-baseline gap-6">
               <div className="max-w-2xl">
                 {/* Section Header */}
                 <h2 className="relative text-center">
                   {/* Stroke/Outline Layer */}
                   <span
-                    className="absolute inset-0 text-center"
+                    className="absolute inset-0 text-center text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       top: "-0.25rem",
                       left: "-0.75rem",
                       color: "transparent",
@@ -522,11 +622,10 @@ export default function Home() {
                   </span>
                   {/* Main Filled Layer */}
                   <span
-                    className="relative text-white"
+                    className="relative text-white text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                     }}
                   >
@@ -542,8 +641,7 @@ export default function Home() {
                   fontWeight: "700",
                 }}
               >
-                {/* Search and Date Filter */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-col md:flex-row">
                   <motion.div
                     className="search-filter-containers relative flex items-center"
                     whileHover={{ scale: 1.05 }}
@@ -554,7 +652,7 @@ export default function Home() {
                       placeholder="Name of organization"
                       onChange={handleSearch}
                       value={searchInput}
-                      className="rounded-full py-2 px-4"
+                      className="rounded-full py-2 px-4 relative w-full md:w-[280px]"
                     />
                     <FontAwesomeIcon
                       icon={faMagnifyingGlass}
@@ -573,7 +671,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div>
+                    <div className="relative w-full">
                       <DatePicker
                         selected={startDate}
                         onChange={(dates) => {
@@ -585,16 +683,16 @@ export default function Home() {
                         endDate={endDate}
                         selectsRange
                         placeholderText="Date"
-                        className="rounded-full w-60 h-10 text-center pr-4"
+                        className="rounded-full w-[full] py-2 px-4 pl-5 md:w-[200px]"
                       />
                       <FontAwesomeIcon
                         icon={faCalendarAlt}
+                        className="right-[9.5rem] md:right-[2rem]"
                         style={{
                           color: "#71767B",
                           position: "absolute",
                           height: "20px",
-                          top: "20%",
-                          right: "12px",
+                          top: "22%",
                         }}
                       />
                     </div>
@@ -678,7 +776,7 @@ export default function Home() {
             {/* --- Shelter & Support Services Category --- */}
             <div className="mt-4">
               <h2
-                className="text-xl font-bold mb-7"
+                className="text-[1.25rem] font-bold mb-7 sm:leading-[1.3rem]"
                 style={{
                   fontFamily: "'Potta One', normal",
                   fontSize: "50px",
@@ -694,9 +792,14 @@ export default function Home() {
                     "Emergency Supplies",
                     "Monetary Donations (Shelter & Support Services)",
                   ]}
-                  selectedCategories={selectedSubCategories["Shelter & Support Services"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Shelter & Support Services"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick("Shelter & Support Services", subCategory)
+                    handleSubCategoryClick(
+                      "Shelter & Support Services",
+                      subCategory
+                    )
                   }
                   mainCategory="Shelters"
                 />
@@ -756,7 +859,9 @@ export default function Home() {
                     "Medical Supplies",
                     "Monetary Donations (Medical & Health)",
                   ]}
-                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -818,7 +923,9 @@ export default function Home() {
                     "Pet Supplies",
                     "Monetary Donations (Animal Support)",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }

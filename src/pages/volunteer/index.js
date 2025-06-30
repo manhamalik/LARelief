@@ -237,26 +237,32 @@ export default function Home() {
       {/* Mission Section */}
       <section
         id="mission"
-        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 px-8 relative overflow-hidden"
+        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden"
       >
-        {/* Road Background Image */}
+        {/* Road Background Image, desktop version*/}
         <motion.img
           src="/images/road.png"
           alt="Green road shape"
-          className="absolute bottom-0 left-0 w-full md:h-auto object-cover"
+          className="hidden md:block absolute bottom-0 left-0 w-full md:h-auto object-cover"
           style={{ zIndex: 0 }}
           initial={{ x: -150, y: -100, opacity: 0.5 }}
           animate={{ x: 0, y: 0, opacity: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
         />
 
+        {/* Road Background Image, mobile version*/}
+        <img
+          src="images/volunteer main mobile.png"
+          alt="Green road shape"
+          className="md:hidden absolute w-full object-over"
+          style={{ zIndex: 0 }}
+        />
+
         {/* VOLUNTEER Label */}
         <div
-          className="absolute top-0 left-0 bg-[#227541] rounded-br-[12vw] flex items-center justify-center"
+          className="absolute top-0 md:left-0 bg-[#227541] rounded-bl-[3.5rem] rounded-br-[3.5rem] md:rounded-bl-[0] md:rounded-br-[8rem] h-[10rem] w-[22rem] md:h-[13rem] md:w-[44rem] flex items-center justify-center"
           style={{
             zIndex: 1,
-            height: "10vw",
-            width: "43vw",
             fontFamily: "'Noto Sans', sans-serif",
             textAlign: "center",
           }}
@@ -269,12 +275,11 @@ export default function Home() {
           >
             <motion.span
               data-no-translate="true"
-              className="absolute inset-0"
+              className="absolute inset-0 text-[3rem] md:text-[5.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: 900,
-                fontSize: "5vw",
-                top: "-2rem",
+                top: "-1.3rem",
                 left: "-1vw",
                 color: "transparent",
                 WebkitTextStroke: "1px #ffffff",
@@ -288,11 +293,11 @@ export default function Home() {
             </motion.span>
             <span
               data-no-translate="true"
-              className="relative text-white"
+              className="relative text-white text-[3rem] md:text-[5.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: 900,
-                fontSize: "5vw",
+
                 textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                 zIndex: 2,
               }}
@@ -303,8 +308,8 @@ export default function Home() {
         </div>
 
         {/* Main Content Row */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center w-full max-w-7xl mt-[4vw] ml-[0vw]">
-          <div className="w-full mt-0">
+        <div className=" relative z-10 flex flex-col md:flex-row items-center w-full max-w-7xl mt-[4vw] ml-[0vw]">
+          <div className="hidden md:block w-full mt-0">
             <img
               src="/images/volunteer.png"
               alt="Volunteers"
@@ -313,12 +318,11 @@ export default function Home() {
           </div>
 
           {/* Right Side: Text + Button */}
-          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4">
+          <div className="w-full mt-[16rem] md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4 mt-[10rem] text-[5vw] md:text-[1.8rem]">
             <motion.h3
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "400",
-                fontSize: "1.5vw",
                 maxWidth: "100%",
                 margin: "0 auto",
                 textAlign: "center",
@@ -331,11 +335,10 @@ export default function Home() {
             </motion.h3>
             <motion.h3
               data-no-translate="true"
-              className="font-extrabold mt-2"
+              className="font-extrabold mt-2 text-[10.5vw] md:text-[6rem] text-[#F2F2F2]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "5.5vw",
                 margin: "0 auto",
                 paddingTop: "2.25vw",
                 lineHeight: "1rem",
@@ -348,13 +351,12 @@ export default function Home() {
               10,000+
             </motion.h3>
             <motion.p
+              className="text-[2rem] md:text-[5rem] text-[#F2F2F2] pt-5 md:pt-8 pb-2 md:pb-0"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "900",
-                fontSize: "5vw",
                 maxWidth: "85%",
                 margin: "0 auto",
-                paddingTop: "2.5vw",
                 paddingRight: "5vw",
                 lineHeight: "4vw",
                 textAlign: "center",
@@ -366,17 +368,14 @@ export default function Home() {
               volunteers
             </motion.p>
             <motion.p
-              className="-mt-3vw"
+              className="-mt-3vw md:text-[1.6rem] w-[60vw] md:w-[15vw]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
                 fontWeight: "400",
-                fontSize: "1.5vw",
-                maxWidth: "46%",
                 margin: "0 auto",
                 padding: "0vw",
                 paddingTop: "0.5vw",
                 textAlign: "center",
-                lineHeight: "2vw",
               }}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -393,10 +392,9 @@ export default function Home() {
                   offset: -50,
                 })
               }
-              className="flex justify-center mt-6 bg-white text-[#194218] ml-[5vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300"
+              className="flex justify-center mt-6 bg-white text-[#194218] ml-[5vw] font-bold py-3 md:px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300 text-[1rem] md:text-[1.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
-                fontSize: "1.5vw",
               }}
               transition={{ duration: 0, ease: "easeInOut" }}
               whileHover={{ scale: 1.03 }}
@@ -448,18 +446,17 @@ export default function Home() {
           </Head>
 
           {/* Header and Search */}
-          <div className="px-8 pt-8 select-none overflow-x-hidden">
+          <div className="px-2 md:px-8 pt-8 select-none overflow-x-hidden">
             <div className="heading-container w-[95vw] flex flex-col md:flex-row md:items-baseline gap-6">
               <div className="max-w-2xl">
                 {/* Section Header */}
                 <h2 className="relative text-center">
                   {/* Stroke/Outline Layer */}
                   <span
-                    className="absolute inset-0 text-center"
+                    className="absolute inset-0 text-center text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       top: "-0.25rem",
                       left: "-0.75rem",
                       color: "transparent",
@@ -470,11 +467,10 @@ export default function Home() {
                   </span>
                   {/* Main Filled Layer */}
                   <span
-                    className="relative text-white"
+                    className="relative text-white text-[3.2rem] md:text-[5.5rem]"
                     style={{
                       fontFamily: "'Noto Sans', sans-serif",
                       fontWeight: "900",
-                      fontSize: "5.5rem",
                       textShadow: "0px 10px 4px rgba(0, 0, 0, 0.25)",
                     }}
                   >
@@ -490,8 +486,7 @@ export default function Home() {
                   fontWeight: "700",
                 }}
               >
-                {/* Search and Date Filter */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-col md:flex-row">
                   <motion.div
                     className="search-filter-containers relative flex items-center"
                     whileHover={{ scale: 1.05 }}
@@ -502,8 +497,7 @@ export default function Home() {
                       placeholder="Name of organization"
                       onChange={handleSearch}
                       value={searchInput}
-                      style={{ fontFamily: "'Noto Sans Multani', sans-serif" }}
-                      className="rounded-full py-2 px-4"
+                      className="rounded-full py-2 px-4 relative w-full md:w-[280px]"
                     />
                     <FontAwesomeIcon
                       icon={faMagnifyingGlass}
@@ -522,7 +516,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div>
+                    <div className="relative w-full">
                       <DatePicker
                         selected={startDate}
                         onChange={(dates) => {
@@ -534,19 +528,16 @@ export default function Home() {
                         endDate={endDate}
                         selectsRange
                         placeholderText="Date"
-                        style={{
-                          fontFamily: "'Noto Sans Multani', sans-serif",
-                        }}
-                        className="rounded-full w-60 h-10 text-center pr-4"
+                        className="rounded-full w-[full] py-2 px-4 pl-5 md:w-[200px]"
                       />
                       <FontAwesomeIcon
                         icon={faCalendarAlt}
+                        className="md:right-[1.5rem] right-[10rem]"
                         style={{
                           color: "#71767B",
                           position: "absolute",
                           height: "20px",
-                          top: "20%",
-                          right: "12px",
+                          top: "22%",
                         }}
                       />
                     </div>
@@ -647,7 +638,10 @@ export default function Home() {
                     selectedSubCategories["Shelter & Support Services"] || []
                   }
                   handleCategoryClick={(subCategory) =>
-                    handleSubCategoryClick("Shelter & Support Services", subCategory)
+                    handleSubCategoryClick(
+                      "Shelter & Support Services",
+                      subCategory
+                    )
                   }
                   mainCategory="Shelter & Support Services"
                 />
@@ -701,7 +695,9 @@ export default function Home() {
               <div className="flex flex-col md:flex-row items-start justify-between mb-[-1vw]">
                 <CategoryButtons
                   categories={["Medical Aid Support", "Mental Health Support"]}
-                  selectedCategories={selectedSubCategories["Medical & Health"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Medical & Health"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Medical & Health", subCategory)
                   }
@@ -761,7 +757,9 @@ export default function Home() {
                     "Animal Rescue & Transport",
                     "Pet Supply Distribution",
                   ]}
-                  selectedCategories={selectedSubCategories["Animal Support"] || []}
+                  selectedCategories={
+                    selectedSubCategories["Animal Support"] || []
+                  }
                   handleCategoryClick={(subCategory) =>
                     handleSubCategoryClick("Animal Support", subCategory)
                   }

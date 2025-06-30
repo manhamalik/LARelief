@@ -11,6 +11,8 @@ const LANG_COLUMN_MAP = {
   ko: "to_ko",
 };
 
+const API_URL = "https://languagedocker-1.onrender.com/translate";
+
 export const translateText = async (text, targetLang) => {
   if (!text.trim()) return text;
 
@@ -28,4 +30,40 @@ export const translateText = async (text, targetLang) => {
     console.log("✅ Supabase cache hit");
     return cached[langCol];
   }
+
+  // 2. Translate from LibreTranslate
+  let translatedText = text;
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source: "en",
+        target: targetLang,
+        format: "text",
+      }),
+    });
+
+    const json = await res.json();
+    translatedText = json.translatedText || text;
+  } catch (e) {
+    console.error("Translation failed:", e);
+    return text;
+  }
+
+  // 3. Insert or update in Supabase
+  if (cached) {
+    await supabase
+      .from("translations")
+      .update({ [langCol]: translatedText })
+      .eq("text", text.trim());
+  } else {
+    await supabase.from("translations").insert({
+      text: text.trim(),
+      [langCol]: translatedText,
+    });
+  }
+
+  return translatedText;
 };

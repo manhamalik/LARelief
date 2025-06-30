@@ -367,7 +367,7 @@ export default function Home() {
 
       <section
         id="mission"
-        className="bg-[#183917] text-white min-h-screen flex items-center justify-center px-4 md:px-8 relative overflow-hidden overflow-x-hidden"
+        className="bg-[#183917] text-white min-h-screen flex items-center justify-center md:px-8 relative overflow-hidden overflow-x-hidden"
       >
         <div>
           {/* Lighter green square on right with drop shadow */}
@@ -385,7 +385,7 @@ export default function Home() {
             <div className="md:w-[80%] lg:w-[50%] w-full z-10 flex flex-col justify-center items-center text-center h-full md:pl-16 mt-10 md:mt-0">
               {/* Title */}
               <h2
-                className="mb-6 text-4xl md:text-[94px]"
+                className="mt-6 mb-8 text-[50px] md:text-[94px]"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
@@ -400,7 +400,7 @@ export default function Home() {
               {/* Paragraph */}
 
               <motion.p
-                className="text-[12px] md:text-[22px] mb-8 leading-relaxed"
+                className="text-[15px] md:text-[22px] mb-8 leading-relaxed"
                 style={{
                   fontFamily: "'Noto Sans Multani', sans-serif",
                   fontWeight: "400",
@@ -469,7 +469,7 @@ export default function Home() {
                 <img
                   src="/images/mission-graphic.png"
                   alt="Support graphic"
-                  className="md:w-[73%] w-[17rem] h-auto mx-auto"
+                  className="md:w-[73%] w-[15rem] h-auto mx-auto"
                 />
               </motion.div>
               {/* Vertical Texts */}
@@ -530,7 +530,7 @@ export default function Home() {
               </motion.div>
               <motion.div
                 data-no-translate="true"
-                className="block md:hidden absolute top-[17vh] text-white font-extrabold z-0"
+                className="block md:hidden absolute top-[15vh] text-white font-extrabold z-0"
                 style={{
                   fontFamily: "'Noto Sans', sans-serif",
                   fontWeight: "900",
@@ -692,16 +692,12 @@ export default function Home() {
                       />
                       <FontAwesomeIcon
                         icon={faCalendarAlt}
+                        className="right-[9rem] md:right-[1.5rem]"
                         style={{
                           color: "#71767B",
                           position: "absolute",
                           height: "20px",
                           top: "22%",
-                          right:
-                            typeof window !== "undefined" &&
-                            window.innerWidth < 768
-                              ? "13rem"
-                              : "1rem", // Adjusted for mobile
                         }}
                       />
                     </div>
