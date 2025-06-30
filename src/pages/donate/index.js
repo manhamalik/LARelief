@@ -256,7 +256,7 @@ export default function Home() {
         <div>
           {/* Title Text */}
           <div
-            className="absolute top-0 pt-4 md:pt-2 left-[13vw] bg-[#227541] rounded-br-[7vw] rounded-bl-[7vw] flex items-center justify-center text-white font-bold h-[16vh] md:h-[20vh] w-[82vw] md:w-[30vw]"
+            className="absolute top-0 pt-4 md:pt-2 left-[13vw] bg-[#227541] rounded-b-[4rem] md:rounded-b-[7vw] flex items-center justify-center text-white font-bold h-[16vh] md:h-[20vh] w-[82vw] md:w-[30vw]"
             style={{
               zIndex: 0,
               boxShadow: "-18px 0 2px 0 rgba(0, 0, 0, 0.3)",

@@ -318,7 +318,7 @@ export default function Home() {
           </div>
 
           {/* Right Side: Text + Button */}
-          <div className="w-full mt-[16rem] md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4 mt-[10rem] text-[5vw] md:text-[1.8rem]">
+          <div className="w-full mt-[16rem] md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left px-4 mt-[10rem] text-[5vw] md:text-[1.8rem] mt-0 md:mt-[-2rem]">
             <motion.h3
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
@@ -392,7 +392,7 @@ export default function Home() {
                   offset: -50,
                 })
               }
-              className="flex justify-center mt-6 bg-white text-[#194218] ml-[5vw] font-bold py-3 md:px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300 text-[1rem] md:text-[1.5rem]"
+              className="flex justify-center mt-6 bg-white text-[#194218] md:ml-[5vw] font-bold py-3 px-8 rounded-full border-2 border-white hover:bg-[#194218] hover:text-white transition-all duration-300 text-[1rem] md:text-[1.5rem]"
               style={{
                 fontFamily: "'Noto Sans', sans-serif",
               }}
