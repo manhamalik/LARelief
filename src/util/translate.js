@@ -51,19 +51,4 @@ export const translateText = async (text, targetLang) => {
     console.error("Translation failed:", e);
     return text;
   }
-
-  // 3. Insert or update in Supabase
-  if (cached) {
-    await supabase
-      .from("translations")
-      .update({ [langCol]: translatedText })
-      .eq("text", text.trim());
-  } else {
-    await supabase.from("translations").insert({
-      text: text.trim(),
-      [langCol]: translatedText,
-    });
-  }
-
-  return translatedText;
 };
